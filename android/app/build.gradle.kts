@@ -1,5 +1,6 @@
 import java.io.FileInputStream
 import java.util.Properties
+import java.util.concurrent.TimeUnit
 
 plugins {
     id("com.android.application")
@@ -111,8 +112,53 @@ android {
 
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
 
+// Contracts belong to this checkout and are pinned by the parent gitlink.
+val productRepository = rootProject.projectDir.parentFile.canonicalFile
+val contractsDirectory = productRepository.resolve("contracts")
+val verifySharedContracts by tasks.registering {
+    group = "verification"
+    description = "Verify the pinned, clean Contracts submodule before builds and protocol tests."
+    doLast {
+        if (!contractsDirectory.resolve(".git").exists() || !contractsDirectory.resolve("vectors/link_frames.json").isFile) {
+            throw GradleException("Contracts is missing. From the Vixen root run: git submodule update --init --recursive")
+        }
+        fun gitAt(directory: File, vararg arguments: String): String {
+            val command = listOf("git", "--no-optional-locks", "-c", "safe.directory=${directory.invariantSeparatorsPath}", "-C", directory.absolutePath) + arguments
+            val process = ProcessBuilder(command).redirectErrorStream(true).start()
+            if (!process.waitFor(30, TimeUnit.SECONDS)) {
+                process.destroyForcibly()
+                throw GradleException("Contracts Git verification timed out")
+            }
+            val output = process.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }.trim()
+            if (process.exitValue() != 0) throw GradleException("Contracts Git verification failed: $output")
+            return output
+        }
+        if (gitAt(productRepository, "config", "--file", ".gitmodules", "--get", "submodule.shared-contracts.path") != "contracts" ||
+            gitAt(productRepository, "config", "--file", ".gitmodules", "--get", "submodule.shared-contracts.url") != "https://github.com/mikevan/LayerTime-Contracts.git") {
+            throw GradleException("Contracts submodule metadata differs from the canonical repository")
+        }
+        val entry = gitAt(productRepository, "ls-files", "--stage", "--", "contracts").split(Regex("\\s+"), limit = 4)
+        if (entry.size != 4 || entry[0] != "160000" || entry[2] != "0" || entry[3] != "contracts") {
+            throw GradleException("Contracts must be recorded as one pinned Git submodule")
+        }
+        if (File(gitAt(contractsDirectory, "rev-parse", "--show-toplevel")).canonicalFile != contractsDirectory.canonicalFile ||
+            gitAt(contractsDirectory, "rev-parse", "HEAD") != entry[1]) {
+            throw GradleException("Contracts checkout differs from its recorded Git commit")
+        }
+        if (gitAt(contractsDirectory, "status", "--porcelain=v1", "--untracked-files=all").isNotEmpty() ||
+            gitAt(contractsDirectory, "ls-files", "--others", "--ignored", "--exclude-standard", "--", "vectors").isNotEmpty()) {
+            throw GradleException("Contracts has local changes or extra vector files; restore the pinned source before building")
+        }
+        logger.lifecycle("Shared Contracts verified at ${entry[1]}")
+    }
+}
+tasks.named("preBuild").configure { dependsOn(verifySharedContracts) }
+
 // Explicit offline audit files must invalidate test caching when their contents change.
 tasks.withType<org.gradle.api.tasks.testing.Test>().configureEach {
+    dependsOn(verifySharedContracts)
+    systemProperty("vixen.contractsDir", contractsDirectory.absolutePath)
+    inputs.files(fileTree(contractsDirectory) { include("vectors/**") })
     listOf("LAYERTIME_INTENT_EXAMPLES", "LAYERTIME_INTENT_RESPONSES", "LAYERTIME_QUANTITY_EXAMPLES", "LAYERTIME_QUANTITY_RESPONSES").forEach { key ->
         val auditPath = providers.environmentVariable(key).orNull
         inputs.property(key, auditPath ?: "")

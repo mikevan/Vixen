@@ -1,0 +1,3 @@
+[submodule "shared-contracts"]
+	path = contracts
+	url = https://github.com/mikevan/LayerTime-Contracts.git
