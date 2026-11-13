@@ -1,0 +1,9 @@
+# Vixen
+
+Flagship Android analysis product, formerly LayerScope. Android installation IDs and Kotlin package names are preserved for update compatibility.
+
+Android project: `android/`. Product AI workflow and tracked teaching/evaluation assets: `tools/ai-training/`. Notella remains a separate training product. Native inference is pinned by `third_party/llama.cpp.lock.json`; restore it with `tools/ai/fetch-runtime.ps1`. Wireshark native libraries must be rebuilt/staged using the Android build tooling.
+
+Protocol reference: sibling LayerTime-Contracts. Hunter firmware and watch firmware are independent products. This source extraction is not a device-verified release. Local models, signing keys, private captures, old APK releases and build caches were not copied.
+
+Source ancestry is recorded in `EXTRACTION.json`; original Git history remains in LayerTime. EXTRACTION.json records the initial local preparation; subsequent checkpoints are recorded in Git history.
