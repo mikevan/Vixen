@@ -55,6 +55,11 @@ jobs:
           CANDIDATE_REPOSITORY: ${{ inputs.candidate_repository }}
           CANDIDATE_REVISION: ${{ inputs.candidate_revision }}
         run: python ci-tools/tools/ci/test_dependency_candidate.py
+      - name: Record exact source and dependency commits
+        shell: bash
+        run: |
+          git -C product show -s --format=fuller HEAD > product/source-manifest.txt
+          git -C product submodule status --recursive >> product/source-manifest.txt
       - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3
         with:
           distribution: temurin
@@ -89,6 +94,7 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
           path: |
+            product/source-manifest.txt
             product/native.log
             product/android.log
             product/android/app/build/outputs/apk/
