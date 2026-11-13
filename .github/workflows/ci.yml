@@ -1,0 +1,97 @@
+name: Vixen CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      product_ref:
+        type: string
+        default: main
+      candidate_repository:
+        type: string
+        default: ''
+      candidate_revision:
+        type: string
+        default: ''
+permissions:
+  contents: read
+concurrency:
+  group: Vixen-${{ github.workflow }}-${{ github.ref }}-${{ inputs.candidate_repository }}
+  cancel-in-progress: true
+jobs:
+  android:
+    name: Vixen Android build and tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: mikevan/Vixen
+          ref: ${{ inputs.product_ref || github.ref }}
+          path: product
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Fetch candidate staging tool
+        if: inputs.candidate_repository != ''
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: mikevan/LayerTime
+          ref: main
+          path: ci-tools
+          sparse-checkout: tools/ci/test_dependency_candidate.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Stage shared-library candidate in this temporary checkout
+        if: inputs.candidate_repository != ''
+        env:
+          PRODUCT_ROOT: ${{ github.workspace }}/product
+          CANDIDATE_REPOSITORY: ${{ inputs.candidate_repository }}
+          CANDIDATE_REVISION: ${{ inputs.candidate_revision }}
+        run: python ci-tools/tools/ci/test_dependency_candidate.py
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407
+      - name: Install Android build tools
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'ndk;30.0.16248370' 'cmake;3.22.1'
+      - name: Fetch pinned inference source
+        run: pwsh -NoProfile -File product/tools/ai/fetch-runtime.ps1
+      - name: Build Wireshark native dependencies from source
+        env:
+          CMAKE_BUILD_PARALLEL_LEVEL: '2'
+          CMAKE_POLICY_VERSION_MINIMUM: '3.5'
+        run: |
+          set -o pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y cpio pkg-config flex bison m4 libfl2
+          export NDK="$ANDROID_HOME/ndk/30.0.16248370"
+          bash product/android/wireshark-spike/build_wireshark_arm64.sh "$RUNNER_TEMP/wireshark-arm64" 2>&1 | tee product/native.log
+      - name: Build diagnostic APK and Play candidate; run both unit test variants
+        run: |
+          set -o pipefail
+          cd product/android
+          bash gradlew --no-daemon --max-workers=2 :app:assembleFullDebug :app:testFullDebugUnitTest :app:testPlayReleaseUnitTest :app:bundlePlayRelease :app:assemblePlayRelease 2>&1 | tee ../android.log
+      - name: Save build results and logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: vixen-android-${{ github.run_id }}-${{ inputs.candidate_repository || 'pinned' }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            product/native.log
+            product/android.log
+            product/android/app/build/outputs/apk/
+            product/android/app/build/outputs/bundle/playRelease/
+            product/android/app/build/test-results/
+            product/android/app/build/reports/tests/
+            product/android/app/build/outputs/logs/
+            product/candidate-validation.json

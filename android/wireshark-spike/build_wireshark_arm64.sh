@@ -41,10 +41,10 @@ export PATH="$PREFIX/bin:$TOOLS/root/usr/bin:$HOME/.local/bin:$PATH"
 CMX=(-G Ninja -DCMAKE_TOOLCHAIN_FILE="$TCF" -DANDROID_ABI=$ABI -DANDROID_PLATFORM=android-$API
      -DCMAKE_INSTALL_PREFIX="$PREFIX" -DCMAKE_BUILD_TYPE=Release
      -DCMAKE_SHARED_LINKER_FLAGS="$PG16" -DCMAKE_MODULE_LINKER_FLAGS="$PG16")
-tarball() { [ -d "$SRC/$2" ] || { curl -sSL -o "$SRC/$2.tar" "$1"; tar -C "$SRC" -xf "$SRC/$2.tar"; }; }
+tarball() { [ -d "$SRC/$2" ] || { curl --fail --retry 3 -sSL -o "$SRC/$2.tar" "$1"; tar -C "$SRC" -xf "$SRC/$2.tar"; }; }
 
 echo "### 0 host build tools (no root): cmake/ninja/meson via pip; flex/bison/m4 via apt-get download"
-pip3 install --user --quiet cmake ninja meson packaging   # packaging: GLib 2.80 meson.build needs it
+pip3 install --user --quiet cmake==3.31.6 ninja==1.11.1.3 meson==1.7.2 packaging==24.2   # packaging: GLib 2.80 meson.build needs it
 ( cd "$TOOLS/debs"; for p in flex bison m4 libfl2; do ls ${p}_*.deb >/dev/null 2>&1 || apt-get download "$p"; done )
 for d in "$TOOLS"/debs/*.deb; do dpkg -x "$d" "$TOOLS/root"; done
 
@@ -66,7 +66,7 @@ echo "### 4 GLib (tarball omits the gvdb submodule: fetch it from the GNOME GitH
 tarball https://github.com/GNOME/glib/archive/refs/tags/$GLIB_TAG.tar.gz glib-$GLIB_TAG
 G="$SRC/glib-$GLIB_TAG"
 [ -f "$G/subprojects/gvdb/meson.build" ] || { rm -rf "$G/subprojects/gvdb";
-  curl -sSL https://github.com/GNOME/gvdb/archive/$GVDB_REV.tar.gz | tar -C "$G/subprojects" -xz;
+  curl --fail --retry 3 -sSL https://github.com/GNOME/gvdb/archive/$GVDB_REV.tar.gz | tar -C "$G/subprojects" -xz;
   mv "$G/subprojects/gvdb-$GVDB_REV" "$G/subprojects/gvdb"; }
 cat > "$ROOT/android-cross.ini" <<INI
 [binaries]
@@ -91,7 +91,7 @@ INI
     -Dnls=disabled -Dlibmount=disabled -Dselinux=disabled; } && meson compile -C b && meson install -C b )
 
 echo "### 5 libgpg-error $GPGERR_VER (add the missing aarch64-Android lock object)"
-tarball http://archive.ubuntu.com/ubuntu/pool/main/libg/libgpg-error/libgpg-error_$GPGERR_VER.orig.tar.bz2 libgpg-error-$GPGERR_VER
+tarball https://archive.ubuntu.com/ubuntu/pool/main/libg/libgpg-error/libgpg-error_$GPGERR_VER.orig.tar.bz2 libgpg-error-$GPGERR_VER
 E="$SRC/libgpg-error-$GPGERR_VER"
 # bionic LP64 pthread_mutex_t: 40 bytes, zero-initialised == glibc x86_64 layout
 cp -n "$E/src/syscfg/lock-obj-pub.x86_64-unknown-linux-gnu.h" "$E/src/syscfg/lock-obj-pub.aarch64-unknown-linux-android.h"
@@ -102,7 +102,7 @@ printf '#!/bin/sh\nexec "%s/bin/gpgrt-config" gpg-error "$@"\n' "$PREFIX" > "$PR
 chmod +x "$PREFIX/bin/gpg-error-config"
 
 echo "### 6 libgcrypt $GCRYPT_VER (lld rejects stale version-script names without --undefined-version)"
-tarball http://archive.ubuntu.com/ubuntu/pool/main/libg/libgcrypt20/libgcrypt20_$GCRYPT_VER.orig.tar.bz2 libgcrypt-$GCRYPT_VER
+tarball https://archive.ubuntu.com/ubuntu/pool/main/libg/libgcrypt20/libgcrypt20_$GCRYPT_VER.orig.tar.bz2 libgcrypt-$GCRYPT_VER
 ( cd "$SRC/libgcrypt-$GCRYPT_VER" && { [ -f Makefile ] || ./configure --host=$TRIPLE --prefix="$PREFIX" \
     --enable-shared --disable-static --disable-doc --with-libgpg-error-prefix="$PREFIX" CC="$CC"; } \
   && make LDFLAGS="-Wl,--undefined-version $PG16" -j"$(nproc)" && make install )
