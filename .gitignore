@@ -12,3 +12,6 @@ keystore.properties
 third_party/llama.cpp/
 
 .kotlin/
+
+# Locally staged diagnostic model package, excluded from source and CI.
+/android/app/src/debug/assets/ai/development/

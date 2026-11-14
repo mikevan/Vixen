@@ -39,6 +39,8 @@ class LinkForegroundService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
+        com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.start(applicationContext)
+        com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.start(applicationContext)
         client = LinkClient(applicationContext)
         active = client
         createChannel()

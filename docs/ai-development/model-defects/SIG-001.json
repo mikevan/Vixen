@@ -1,0 +1,78 @@
+{
+  "id": "SIG-001",
+  "status": "open",
+  "category": "model-evidence-grounding",
+  "priority": "qualification-blocker",
+  "title": "Signature hypothesis is narrated as an observation; follow-on observer roles are also confused.",
+  "discoveredOn": "2026-11-14",
+  "simulationOnly": true,
+  "trainingApproved": false,
+  "modelFixVerified": false,
+  "model": {
+    "modelId": "layertime-qwen3-4b-domain-development",
+    "modelVersion": "domain-v1-1090-q4km",
+    "weightsSha256": "658a4d4bbc86efff54ace9663cdec230479d3c04ae1eca6f2a1c34a895631fce"
+  },
+  "observed": [
+    {
+      "case": "flood-only",
+      "input": "proceduralState=CANDIDATE; first=flood at 1000 ms; followOn=null; no drone observation in limitations.",
+      "actualHeadline": "Flood followed by an unqualified drone observation in a simulation.",
+      "expected": "Describe the supplied flood candidate. Explicitly say no follow-on observation is provided. Never populate a missing stage from the signature name."
+    },
+    {
+      "case": "follow-on-after-60-seconds",
+      "input": "Flood at 1000 ms, then a drone observation at 61000 ms; distinct simulated producers; gaps in coverage.",
+      "actualSignificance": "The sequence supports the hypothesis that a flood occurred and was later observed by a drone in the same simulation; neither event is established outside the exercise.",
+      "expected": "A drone was observed 60 seconds after the flood signal. Do not make the drone an observer or assert cause, coordination, identity or intent."
+    }
+  ],
+  "evidence": {
+    "reviewRoot": "C:\\workspace\\TUltra-Project\\LayerTime\\tools\\ci\\logs\\signature-ai-review-20261114T075300Z",
+    "hashBoundCases": [
+      {
+        "case": "flood-only",
+        "inputSha256": "af9cb66fc0349c2026671ecd60862225dc49cd33bf9d051bae4e65f57227d416",
+        "outputSha256": "bb9a284af1fc07c5bbc5a931dee1115455b0304725d940a28d684aae74267c17",
+        "identityValid": true,
+        "formatValid": true,
+        "semanticPassed": false,
+        "finding": "Invents a drone follow-on despite followOn=null.",
+        "totalMs": 120589
+      },
+      {
+        "case": "follow-on-after-60-seconds",
+        "inputSha256": "a331f124a75415ae5167161ee6ff8c0143fb045fb04516ddade14d26fae4023e",
+        "outputSha256": "cc5c647d46448b6ea572aa2625ae26053b08c7c1e4f04c42523c2737d7fb964d",
+        "identityValid": true,
+        "formatValid": true,
+        "semanticPassed": false,
+        "finding": "Reverses the observer role: says the flood was observed by a drone; evidence supplies a drone observation, not a drone acting as observer. Omits the supplied 60-second gap.",
+        "totalMs": 92133
+      }
+    ],
+    "reviewKind": "agent-authored-not-independent-expert-validation",
+    "sourceSha256": "13704b8f4407fd2a1d09d849a383a0c074d06018922b5101ce728cc801d2184a"
+  },
+  "reproduce": {
+    "runnerArgument": "signatureAiSimulation=true",
+    "source": "android\\app\\src\\androidTest\\java\\com\\projectrevivesolutions\\layertime\\controller\\SignatureAiSimulation.kt",
+    "requirements": "Diagnostic app with the recorded model SHA cached; matching Android instrumentation APK. Runs fictional observations through production signature matching and actual offline inference.",
+    "command": "adb -s <authorized-phone> shell am instrument -w -e signatureAiSimulation true com.projectrevivesolutions.layerscope.diag.test/com.projectrevivesolutions.layertime.controller.BuilderSmokeInstrumentation"
+  },
+  "excludedRun": "The initial run leaked later-stage drone context into first-stage limitations. It is preserved separately and excluded from model-only accuracy attribution. Corrected inputs reproduce the defect.",
+  "causeStatus": "Observed semantic model failure under the corrected input. Training-data, prompt and weight contributions are not isolated; no hardware or ontology root cause is established.",
+  "containment": "Normal model qualification remains closed; simulation directly invokes the unqualified development provider only. No live warnings or Hunter commands.",
+  "fixAcceptance": [
+    "No invented follow-on when a signature names later stages but followOn is null.",
+    "Preserve observed entities, observer roles, event order, measured gaps and uncertainty.",
+    "Distinguish missing evidence from negative evidence and a hypothesis from an observation.",
+    "Pass held-out variations with unfamiliar names and event combinations, partial sequences, benign lookalikes and contradictory evidence.",
+    "Retain passes on the existing unchanged frozen acceptance suite; no weakening or training on held-out evaluation answers.",
+    "Verify the resulting quantized weights on supported phones; schema validity, a prompt-only workaround or output suppression alone does not establish a model fix."
+  ],
+  "qualificationScope": "Two authored simulation cases with agent review; not field accuracy or independent expert validation.",
+  "currentRegressionSuite": "android\\app\\src\\androidTest\\assets\\model-evaluations\\signature-grounding-v1.json",
+  "currentRegressionCase": "sig-001-missing-follow-on",
+  "currentRunnerNote": "Current runner excludes simulation labels from model-visible input. Original labeled payloads and their exact hashes remain preserved; the current regression is an unlabeled variant, not a replacement of original evidence."
+}

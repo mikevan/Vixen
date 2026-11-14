@@ -157,6 +157,7 @@ import java.util.Locale
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.start(applicationContext)
         enableEdgeToEdge()
         ControllerRepository.deviceReport = DeviceReportBuilder.build(applicationContext)
         // The shipped workflow (deauth triage) loads once; the Builder shows it and TRIAGE runs it.

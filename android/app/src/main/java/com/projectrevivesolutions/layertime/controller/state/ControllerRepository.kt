@@ -32,6 +32,8 @@ object ControllerRepository {
 
     private val _device = MutableStateFlow<String>("")
     val deviceLabel: StateFlow<String> = _device.asStateFlow()
+    private val _hunterAddress=MutableStateFlow<String?>(null)
+    val hunterAddress:StateFlow<String?> = _hunterAddress.asStateFlow()
 
     private val _status = MutableStateFlow<StatusSnapshot?>(null)
     val status: StateFlow<StatusSnapshot?> = _status.asStateFlow()
@@ -81,8 +83,18 @@ object ControllerRepository {
     private var currentSession: Int = -1
     private val mirror = EventGrouper()
     private val mirrorLock = Any()
+    private val _latestFieldAnalysis=MutableStateFlow<String?>(null)
+    val latestFieldAnalysis=_latestFieldAnalysis.asStateFlow()
+    private val _latestFieldSnapshot=MutableStateFlow<com.projectrevivesolutions.layertime.controller.ai.FieldShadowTasks.Snapshot?>(null)
+    val latestFieldSnapshot=_latestFieldSnapshot.asStateFlow()
 
     private fun now() = System.currentTimeMillis()
+    private fun fieldRecord(kind:String, values:Map<String,Any?>):ObservationJournal.Receipt? {
+        return FieldObservationJournal.record(kind, linkedMapOf<String,Any?>(
+            "hunter" to _device.value, "hunterAddress" to _hunterAddress.value, "sessionId" to currentSession).apply {putAll(values)})
+    }
+    fun onChangeGap(changeSeq:Long) {fieldRecord("change_gap",mapOf("changeSeq" to changeSeq))}
+
 
     fun log(category: LogEntry.Category, message: String) {
         _log.update { it.takeLast(LOG_HISTORY_LIMIT - 1) + LogEntry(now(), category, message) }
@@ -95,10 +107,21 @@ object ControllerRepository {
         if (state != ConnState.CONNECTED) { _sensorsApplied.value = null; _evidenceHoldApplied.value = null }
         _connDetail.value = detail
         _conn.value = state
+        fieldRecord("connection",mapOf("state" to state.name,"detail" to detail))
         log(LogEntry.Category.CONNECTION, "state=$state" + (detail?.let { " ($it)" } ?: ""))
     }
 
-    fun setDeviceLabel(label: String) { _device.value = label }
+    fun setDeviceLabel(label: String, address:String? = null) {
+        if(address!=null && !_hunterAddress.value.equals(address,ignoreCase=true)) {
+            _hunterAddress.value=address
+            _status.value=null;_server.value=null
+            currentSession=-1
+            _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null
+            synchronized(mirrorLock) {mirror.clear()}
+            publishEvents()
+        }
+        _device.value=label
+    }
 
     fun onServerInfo(ack: Frame.HelloAck) {
         _server.value = ack
@@ -109,9 +132,11 @@ object ControllerRepository {
             if (currentSession != -1) log(LogEntry.Category.LINK,
                 "new session ${ack.sessionId} from HELLO_ACK (was $currentSession): clearing event mirror")
             currentSession = ack.sessionId
+            _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null
             synchronized(mirrorLock) { mirror.clear() }
             publishEvents()
         }
+        fieldRecord("hello",mapOf("capabilities" to ack.capabilities,"serverMajor" to ack.serverMajor,"serverMinor" to ack.serverMinor))
         val caps = LinkConstants.Capability.describe(ack.capabilities).joinToString(",")
         log(LogEntry.Category.LINK,
             "HELLO_ACK server ${ack.serverMajor}.${ack.serverMinor}, session=${ack.sessionId}, " +
@@ -126,9 +151,12 @@ object ControllerRepository {
             if (currentSession != -1) log(LogEntry.Category.LINK,
                 "new session ${s.sessionId} (was $currentSession): clearing event mirror")
             currentSession = s.sessionId
+            _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null
             synchronized(mirrorLock) { mirror.clear() }
             publishEvents()
         }
+        fieldRecord("status",mapOf("changeSeq" to s.changeSeq,"flags" to s.flags,"selected" to s.selected,
+            "active" to s.active,"eventCount" to s.eventCount,"heartbeat" to s.heartbeat))
         // A record whose MAC never arrived is shown on its own after a few seconds; the
         // Status heartbeat is what lets that happen when no other frame comes.
         onMirrorChange(synchronized(mirrorLock) { mirror.flush(now()) })
@@ -151,11 +179,16 @@ object ControllerRepository {
      * history keep the rest.
      */
     fun onEventSummary(e: Frame.EventSummary): Boolean {
+        val inputReceipt=fieldRecord("event_summary",mapOf("eventId" to e.eventId,"detector" to e.detector,
+            "confidence" to e.confidence,"sourceKind" to e.sourceKind,"band" to e.band,
+            "channel" to e.channel,"rssi" to e.rssi,"count" to e.count,"countIsLowerBound" to (e.count==65535),
+            "ageSeconds" to e.ageSeconds,"ageIsLowerBound" to (e.ageSeconds==65535),"flags" to e.flags))
         val t = now()
         val (new, change) = synchronized(mirrorLock) {
             val existing = mirror.record(e.eventId)
             val row = EventRow(
                 sessionId = currentSession,
+                producerAddress = _hunterAddress.value,
                 eventId = e.eventId,
                 detector = e.detector,
                 detectorName = LinkConstants.ReconTarget.name(e.detector),
@@ -172,8 +205,22 @@ object ControllerRepository {
                 detail = existing?.detail,
                 firstSeenMillis = existing?.firstSeenMillis ?: t,
                 lastUpdatedMillis = t,
-                rssiHistory = ((existing?.rssiHistory ?: emptyList()) + RssiSample(t, e.rssi)).takeLast(RssiSample.KEEP),
+                rssiHistory = ((existing?.rssiHistory ?: emptyList()) + RssiSample(t, e.rssi, System.nanoTime()/1_000_000L, e.eventId, e.count, e.ageSeconds)).takeLast(RssiSample.KEEP),
             )
+            _latestFieldSnapshot.value=if(inputReceipt?.queued==true && row.producerAddress!=null && currentSession in 1..65535)
+                com.projectrevivesolutions.layertime.controller.ai.FieldShadowTasks.Snapshot(inputReceipt.runId,inputReceipt.sequence,
+                    row.producerAddress,currentSession,e.eventId,t,linkedMapOf(
+                        "recordType" to "detector_event_summary","detector" to row.detectorName,
+                        "radioDomain" to LinkConstants.SourceKind.name(row.sourceKind),"band" to LinkConstants.Band.name(row.band),
+                        "channel" to row.channel,"rssiDbm" to row.rssi,"reportedSightings" to row.count,
+                        "countIsLowerBound" to (row.count==65535),"reportedAgeSeconds" to row.ageSeconds,
+                        "ageIsLowerBound" to (row.ageSeconds==65535),"detectorConfidence" to LinkConstants.Confidence.name(row.confidence),
+                        "observedIdentifier" to row.sourceId,"reportedDetail" to row.detail)) else null
+            val analysis=com.projectrevivesolutions.layertime.controller.events.EventTriage.classify(row)
+            _latestFieldAnalysis.value="Hunter event #${e.eventId}: ${analysis.reason}"
+            fieldRecord("event_analysis",mapOf("eventId" to e.eventId,"inputRunId" to inputReceipt?.runId,
+                "inputSequence" to inputReceipt?.sequence,"inputQueued" to (inputReceipt?.queued==true),
+                "engine" to "event_triage","modelUsed" to false,"verdict" to analysis.triage.name,"reason" to analysis.reason))
             (existing == null) to mirror.onRecord(row, t)
         }
         onMirrorChange(change)
@@ -183,7 +230,13 @@ object ControllerRepository {
     }
 
     fun onEventText(eventId: Long, field: Int, text: String) {
+        fieldRecord("event_text",mapOf("eventId" to eventId,"field" to field,"text" to text))
         onMirrorChange(synchronized(mirrorLock) { mirror.onText(eventId, field, text, now()) })
+        val current=_latestFieldSnapshot.value
+        if(current!=null && current.sessionId==currentSession && current.eventId==eventId && current.hunterAddress==_hunterAddress.value) {
+            val key=when(field){LinkConstants.TextField.SOURCE_ID->"observedIdentifier";LinkConstants.TextField.DETAIL->"reportedDetail";else->null}
+            if(key!=null)_latestFieldSnapshot.value=current.withFacts(current.facts+mapOf(key to text))
+        }
     }
 
     private fun onMirrorChange(change: EventGrouper.Change) {
@@ -234,12 +287,14 @@ object ControllerRepository {
 
     /** The Hunter cleared its detections (ReconClearEvents answered OK): the same session, an empty list. */
     fun clearEventList() {
+        fieldRecord("events_cleared",emptyMap())
+        _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null
         synchronized(mirrorLock) { mirror.clear() }
         _events.value = emptyList()
     }
 
     fun reset() {
-        synchronized(mirrorLock) { mirror.clear() }; currentSession = -1
+        synchronized(mirrorLock) { mirror.clear() }; currentSession = -1; _hunterAddress.value=null; _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null
         _events.value = emptyList(); _status.value = null; _server.value = null
         _background.value = null
     }

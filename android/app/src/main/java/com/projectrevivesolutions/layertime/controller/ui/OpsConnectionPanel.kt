@@ -50,7 +50,7 @@ fun OpsLinkStrip(online:Boolean,connecting:Boolean,stale:Boolean,events:Int) {
             Spacer(Modifier.weight(1f))
             val color=when { online && stale -> OpsAmber; online -> OpsGreen; connecting -> OpsCyan; else -> OpsMuted }
             Box(Modifier.size(5.dp).background(color,CircleShape))
-            Text(when {online && stale -> "Link stale"; online -> "Link online"; connecting -> "Linking…"; else -> "Link offline"},
+            Text(when {online && stale -> "Link stale"; online -> "Link online"; connecting -> "Linkingâ€¦"; else -> "Link offline"},
                 color=color,style=OpsType.copy(fontSize=10.sp))
             Spacer(Modifier.weight(1f))
             Icon(Icons.Outlined.CalendarMonth,null,tint=OpsMuted,modifier=Modifier.size(15.dp))
@@ -83,7 +83,7 @@ fun OpsHunterActionsPanel(
                 Text("///",color=OpsCyan.copy(alpha=.65f),style=OpsType.copy(letterSpacing=1.sp))
             }
             OpsRule()
-            OpsGlassAction(if(scanning)"Scanning…" else "Scan",Icons.Outlined.Search,!scanning,Modifier.fillMaxWidth(),onScan)
+            OpsGlassAction(if(scanning)"Scanningâ€¦" else "Scan",Icons.Outlined.Search,!scanning,Modifier.fillMaxWidth(),onScan)
             scanSentence?.let { Text(it,color=OpsCyan,style=OpsType) }
             notice?.let { Text(it.text,color=if(it.tone==ConnNotice.Tone.PROBLEM)OpsAmber else OpsCyan,style=OpsType) }
             clearSentence?.let { Text(it,color=if(clearFailed)OpsAmber else OpsCyan,style=OpsType) }
@@ -97,7 +97,7 @@ fun OpsHunterActionsPanel(
                     Icon(Icons.Outlined.Laptop,null,tint=if(linked)OpsGreen else OpsInk,modifier=Modifier.size(18.dp))
                     Text(h.name,color=if(linked)OpsInk else OpsMuted,style=OpsType.copy(fontSize=12.sp,lineHeight=15.sp),maxLines=1,
                         modifier=Modifier.weight(1f).alignByBaseline())
-                    Text(when { linked -> "Connected"; mine && connecting -> "Linking…"
+                    Text(when { linked -> "Connected"; mine && connecting -> "Linkingâ€¦"
                         h.card==HunterRoster.Card.YES -> "SD card"; h.card==HunterRoster.Card.NO -> "No SD card"; else -> "" },
                         color=if(linked)OpsGreen else OpsMuted,style=OpsType.copy(fontSize=10.sp),modifier=Modifier.alignByBaseline())
                 }
@@ -108,6 +108,8 @@ fun OpsHunterActionsPanel(
                         OpsGlassAction("Clear Card",Icons.Outlined.DeleteSweep,!scanning && !clearBusy,Modifier.weight(1f),{ onClearCard(h) })
                 }
             }
+            OpsRule()
+            FieldJournalPanel()
             metadata?.let {
                 OpsRule()
                 val sections=it.split('|').map { section -> section.trim() }

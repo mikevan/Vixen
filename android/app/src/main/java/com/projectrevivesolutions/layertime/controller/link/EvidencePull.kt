@@ -14,7 +14,7 @@ object EvidencePull {
     sealed interface State {
         data object Idle : State
         data class Pulling(val eventId: Long, val phase: String, val listed: Int, val bytes: Int, val expected: Int) : State
-        data class Done(val eventId: Long, val window: LinkEvidence.Window, val frames: Int, val file: File, val elapsedMs: Long) : State
+        data class Done(val eventId: Long, val window: LinkEvidence.Window, val frames: Int, val file: File, val elapsedMs: Long, val origin: HunterEvidenceOrigin? = null) : State
         data class Failed(val eventId: Long, val message: String) : State
     }
     private val _state = MutableStateFlow<State>(State.Idle)

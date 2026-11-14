@@ -82,6 +82,11 @@ object TriageSession {
         val w = _workflow.value ?: return false
         val frames = captureFrames() ?: return false
         if (frames.isEmpty()) return false
+        val origin=(PcapImport.state.value as? PcapImport.State.Done)?.origin
+        if(origin!=null && !origin.matches(e.sessionId,e.eventId,e.producerAddress)) {
+            _error.value="This recording belongs to another Hunter session or event. Analyze it separately instead."
+            return false
+        }
         val address = e.sourceId?.lowercase()
         val anchor = frames.firstOrNull { it.isDisconnect && (address == null || it.sa == address) }
             ?: run { _error.value="No matching disconnect observation links this recording to the selected detection. Run the capture independently to inspect it."; return false }
@@ -115,10 +120,17 @@ object TriageSession {
             job?.cancel();_run.value=null;_error.value=null;_runFor.value=subject;_running.value=true
         }
         val evidence=coverage()
+        val recording=PcapImport.state.value as? PcapImport.State.Done
+        val trace=mapOf("captureId" to recording?.captureId,"hunterAddress" to recording?.origin?.hunterAddress,
+            "sessionId" to recording?.origin?.sessionId,"eventId" to recording?.origin?.eventId,
+            "payloadSha256" to recording?.origin?.payloadSha256,"engine" to "validated_workflow",
+            "subject" to subject,"training" to (recording?.training ?: false))
+        com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.record("analysis_started",trace)
         job=scope.launch {
             try {
                 val result=Engine.run(w,RunContext(event,FrameSource { frames },evidence))
                 generation.publish(token) {
+                    com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.record("analysis_completed",trace + mapOf("stepErrors" to result.steps.count {it.error!=null}))
                     _run.value=result
                     _error.value=result.steps.firstOrNull { it.error!=null }?.let { "${it.step}: ${it.error}" }
                 }

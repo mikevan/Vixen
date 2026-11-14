@@ -15,6 +15,7 @@ class NativeLlamaProvider(
     private val grammar: ByteArray,
     private val developmentOnly: Boolean = false,
     private val promptFormat: String = LocalPromptFormat.ID,
+    private val explanationGrammar: ByteArray? = null,
 ) : LocalModelProvider, AutoCloseable {
     private val worker=Executors.newSingleThreadExecutor {task->Thread(task,"LayerTime-local-model").apply {isDaemon=true}}
     private val requests=AtomicLong(1)
@@ -48,7 +49,8 @@ class NativeLlamaProvider(
         return queued(onCancel={val h=handle;if(h!=0L)NativeLlama.cancel(h,id)}) {active->
             val loaded=readyHandle()
             check(active()) {"Local inference was cancelled during loading."}
-            val out=NativeLlama.generate(loaded,id,input,grammar,request.maxOutputTokens,
+            val selectedGrammar=if(request.outputSchema==FieldShadowTasks.schema) explanationGrammar ?: grammar else grammar
+            val out=NativeLlama.generate(loaded,id,input,selectedGrammar,request.maxOutputTokens,
                 manifest.contextTokens,Runtime.getRuntime().availableProcessors().coerceIn(1,6))
             LocalModelResponse(out.toString(Charsets.UTF_8),manifest.id,manifest.version)
         }

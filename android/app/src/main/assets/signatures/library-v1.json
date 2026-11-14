@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "libraryRevision": 1,
+  "signatures": [
+    {
+      "id": "flood-followed-by-drone-observation",
+      "revision": 1,
+      "status": "draft-hypothesis",
+      "qualified": false,
+      "provenance": "Owner-proposed MVP scenario; not an empirically established attack pattern.",
+      "firstKind": "flood",
+      "followKind": "drone-observation",
+      "maxGapMs": 90000,
+      "captureWindowMs": 10000,
+      "analysisBudgetGoalMs": 30000,
+      "automaticWarningEnabled": false,
+      "proceduralTriggerDefinition": null,
+      "requiredEvidence": [
+        "Versioned upstream definition of flood, detector configuration and supporting evidence.",
+        "Independent support for the drone observation; a generic radio hit is insufficient.",
+        "An explicit shared clock mapping and uncertainty before comparing producer timestamps.",
+        "Preserved source/session identities, slice references and loss/coverage reports."
+      ],
+      "lookalikes": [
+        "Unrelated radio interference followed by an unrelated aircraft observation.",
+        "Legitimate nearby activity coinciding in time."
+      ],
+      "qualificationRequired": [
+        "Positive sequences, partial sequences, reverse order, outside interval and benign lookalikes.",
+        "Missed events, false warnings and warning lead time on held-out recordings.",
+        "Offline operation and restart/replay behavior on supported phones."
+      ],
+      "limits": [
+        "90 seconds is a scenario parameter, not an established attack timing law.",
+        "30 seconds is a development analysis goal, not a proven response time or universal deadline.",
+        "The matcher reports temporal association, not causality or attack confirmation."
+      ]
+    }
+  ]
+}

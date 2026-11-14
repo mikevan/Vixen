@@ -26,6 +26,9 @@ object BundledModelFactory {
                 require(features.contains("asimddp") && features.contains("asimdhp")) {
                     "This experimental inference build requires ARM dot-product and FP16 CPU support."
                 }
+                require(!BuildConfig.LT_ARM_I8MM_EXPERIMENT || Regex("\\bi8mm\\b").containsMatchIn(features)) {
+                    "This experimental inference build requires ARM integer matrix multiplication support."
+                }
             }
             require(raw.length<=32000)
             val data=FlowJson.parse(raw) as? Map<*,*> ?: error("Invalid model manifest.")
@@ -37,12 +40,19 @@ object BundledModelFactory {
             val version=data["modelVersion"] as? String ?: error("Missing model version.")
             val hash=data["sha256"] as? String ?: error("Missing model hash.")
             require(id.length in 1..120 && version.length in 1..120 && hash.matches(Regex("[a-f0-9]{64}")))
+            val cacheOnly=data["weightsLocation"]=="deviceCache"
+            require(data["weightsLocation"]==null || cacheOnly)
+            require(!cacheOnly || development) {"Cache-only packages are diagnostic only."}
+            require(!cacheOnly || File(context.filesDir,"ai-models/$hash/$filename").isFile) {
+                "The diagnostic model is not installed on this device."
+            }
             val trained=data["blueTeamTrained"]==true && data["releaseEligible"]==true
             require(development || trained)
             val tokens=(data["contextTokens"] as? Long)?.takeIf {it in 256..16384}?.toInt() ?: error("Invalid context budget.")
             val tasks=(data["tasks"] as? List<*>)?.map {AiTask.valueOf(it as String)}?.toSet() ?: error("Missing model tasks.")
             val manifest=LocalModelManifest(id,version,hash,1,tasks,setOf(ModelCapability.STRUCTURED_OUTPUT),tokens,trained)
             val grammar=context.assets.open("ai/json.gbnf").use {it.readBytes()}
+            val explanationGrammar=context.assets.open("ai/evidence-explanation.gbnf").use {it.readBytes()}
             NativeLlamaProvider(manifest,modelFile={
                 val dir=File(context.filesDir,"ai-models/$hash").apply {mkdirs()}
                 val destination=File(dir,filename)
@@ -52,13 +62,14 @@ object BundledModelFactory {
                     return sha.digest().joinToString(""){"%02x".format(it)}
                 }
                 if(!destination.isFile || digest(destination)!=hash) {
+                    check(!cacheOnly) {"The diagnostic model cache does not match its manifest."}
                     val pending=File(dir,"weights.pending")
                     context.assets.open("$assetDir/$filename").use {input->pending.outputStream().use {input.copyTo(it,1024*1024)}}
                     check(digest(pending)==hash) {"Bundled model integrity check failed."}
                     check(pending.renameTo(destination)) {"Could not install the bundled model."}
                 }
                 destination
-            },grammar=grammar,developmentOnly=development,promptFormat=promptFormat)
+            },grammar=grammar,developmentOnly=development,promptFormat=promptFormat,explanationGrammar=explanationGrammar)
         }.getOrElse {object:LocalModelProvider {
             override fun availability()=ModelAvailability(ModelState.INCOMPATIBLE,reason="The bundled model package is incompatible or incomplete.")
             override suspend fun countInputTokens(request:LocalModelRequest):Int=error("Model package unavailable.")

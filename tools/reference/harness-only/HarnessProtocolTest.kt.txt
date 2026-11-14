@@ -1,0 +1,32 @@
+package com.projectrevivesolutions.layertime.controller
+import com.projectrevivesolutions.layertime.controller.signatures.HarnessProtocol
+import com.projectrevivesolutions.layertime.controller.signatures.LiveEvidenceSlices
+import org.junit.Assert.*
+import org.junit.Test
+class HarnessProtocolTest {
+    private fun bytes(time:Long,stage:Int,sd:Boolean=true):ByteArray {
+        val b=ByteArray(20);b[0]=0xe0.toByte();b[1]=1;b[2]=stage.toByte();b[3]=(if(sd)7 else 3).toByte();b[4]=1
+        for(i in 0..3)b[8+i]=(time shr (8*i)).toByte()
+        b[12]=1;if(stage==1){b[14]=120;b[16]=80};if(stage>=4)b[18]=1;return b
+    }
+    @Test fun boundary_stages_and_sd_recording_decode() {
+        for((t,s) in listOf(0L to 1,9999L to 1,10000L to 2,20000L to 3,50000L to 4,61000L to 5)) {
+            val decoded=HarnessProtocol.decode(bytes(t,s))!!;assertEquals(s,decoded.stage);assertEquals(t,decoded.elapsedMs);assertEquals(7,decoded.flags)
+        }
+    }
+    @Test fun malformed_or_inconsistent_packets_are_rejected() {
+        assertNull(HarnessProtocol.decode(ByteArray(19)))
+        assertNull(HarnessProtocol.decode(bytes(20000,1)))
+        assertNull(HarnessProtocol.decode(bytes(50000,4).also {it[18]=0}))
+        assertNull(HarnessProtocol.decode(bytes(0,1).also {it[4]=0}))
+    }
+    @Test fun source_clock_is_not_mislabeled_as_phone_receipt_time() {
+        val output=mutableListOf<Map<String,Any?>>()
+        val p=LiveEvidenceSlices({output.add(it)})
+        p.accept(LiveEvidenceSlices.Record("r",1,20000,"event_summary",mapOf("hunterAddress" to "peer","sessionId" to 1,
+            "eventId" to 1L,"count" to 1,"confidence" to 2,"ageSeconds" to 0),true,"source-clock","source_monotonic_elapsed_ms"))
+        assertEquals("source-clock",output.single()["clockDomain"])
+        val row=(output.single()["records"] as List<*>).single() as Map<*,*>
+        assertEquals(20000L,row["clockTimeMs"]);assertNull(row["receivedMonotonicMs"])
+    }
+}

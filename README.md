@@ -9,3 +9,5 @@ Clone with `git clone --recurse-submodules https://github.com/mikevan/Vixen.git`
 Source ancestry is recorded in `EXTRACTION.json`; original Git history remains in LayerTime. EXTRACTION.json records the initial local preparation; subsequent checkpoints are recorded in Git history.
 
 GitHub Actions builds the diagnostic APK and unsigned Play APK/AAB from source, runs both unit-test variants, and retains results for 14 days. See [Play candidate preparation](docs/play-candidate.md) for device testing, signing and submission requirements.
+
+MVP objectives, KPI definitions, passive instrumentation and non-interference requirements: [MVP OKRs](docs/mvp-okrs.md).

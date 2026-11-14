@@ -66,12 +66,18 @@ fun TriageSection(e: EventRow, onOpenWireshark: () -> Unit) {
     val isDeauth = e.detectorName.equals("DEAUTH", ignoreCase = true)
     // null, "pulling", or "importing": this panel's own pull, so an older import is never mistaken for it.
     var stage by remember(e.eventId) { mutableStateOf<String?>(null) }
-    val pcapName = "hunter_event_${e.eventId}.pcap"
+    var pcapName by remember(e.sessionId,e.eventId) { mutableStateOf<String?>(null) }
     LaunchedEffect(pull, stage) {
         val p = pull
         if (stage == "pulling" && p is EvidencePull.State.Done && p.eventId == e.eventId) {
-            stage = "importing"
-            PcapImport.start(context, android.net.Uri.fromFile(p.file))
+            if(p.origin?.matches(e.sessionId,e.eventId,e.producerAddress)==true) {
+                stage = "importing"
+                pcapName=p.file.name
+                PcapImport.start(context, android.net.Uri.fromFile(p.file),origin=p.origin)
+            } else {
+                stage=null
+                EvidencePull.set(EvidencePull.State.Failed(e.eventId,"These frames belong to another Hunter session or event."))
+            }
         }
         if (stage == "pulling" && p is EvidencePull.State.Failed && p.eventId == e.eventId) stage = null
     }

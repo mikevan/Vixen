@@ -74,4 +74,25 @@ class LinkEvidenceTest {
         assertEquals((16 + 1024).toLong(), u32(r2 + 8)); assertEquals((16 + 1500).toLong(), u32(r2 + 12))
         assertEquals(p.size, r2 + 16 + 16 + 1024)
     }
+    @Test fun wrong_event_duplicate_indexes_unknown_bytes_and_overruns_are_refused() {
+        val wrong=LinkEvidence.Assembler(42)
+        wrong.onWindow(LinkEvidence.Window(1,43,1,1,0,0,1,false))
+        assertFalse(wrong.complete());assertEquals(1,wrong.gaps)
+        val duplicate=LinkEvidence.Assembler(42)
+        duplicate.onWindow(LinkEvidence.Window(1,42,1,1,0,0,1,false))
+        duplicate.onIndex(idx(0,2));duplicate.onIndex(idx(0,2))
+        assertEquals(1,duplicate.gaps)
+        val unknown=LinkEvidence.Assembler(42)
+        unknown.onBytes(LinkEvidence.Bytes(1,63,0,byteArrayOf(1)))
+        assertEquals(0,unknown.bytesReceived);assertEquals(1,unknown.gaps)
+        val overrun=LinkEvidence.Assembler(42)
+        overrun.onIndex(idx(0,2));overrun.onBytes(LinkEvidence.Bytes(1,0,0,byteArrayOf(1,2,3)))
+        assertEquals(0,overrun.bytesReceived);assertEquals(1,overrun.gaps)
+    }
+    @Test fun noncontiguous_frame_numbers_cannot_complete_a_window() {
+        val a=LinkEvidence.Assembler(42)
+        a.onWindow(LinkEvidence.Window(1,42,1,1,0,0,1,false))
+        a.onIndex(idx(1,1));a.onBytes(LinkEvidence.Bytes(1,1,0,byteArrayOf(1)))
+        assertFalse(a.complete())
+    }
 }

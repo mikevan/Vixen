@@ -9,18 +9,33 @@ import com.projectrevivesolutions.layertime.controller.wireshark.WiresharkDecode
 
 /** No test framework dependency: exercise the actual Android regex and native decoder. */
 class BuilderSmokeInstrumentation:Instrumentation() {
+    private var runtimeCacheLabel="build128"
+    private var runtimeCacheChecks=false
+    private var liveSliceChecks=false
+    private var historicalSliceReplay=false
+    private var signatureAiSimulation=false
+    private var evacuationPolicyChecks=false
+    private var evacuationProofOnly=false
+    private var fieldAiEvaluation:String?=null
     private var fieldCapture:String?=null
     private var aiRuntime=false
     private var groundedPack=false
     private var groundedAi=false
     private var intentPractice=false
     private var domainAiCase:String?=null
-    override fun onCreate(arguments:Bundle?) {fieldCapture=arguments?.getString("fieldCapture");aiRuntime=arguments?.getString("aiRuntime")=="true";
+    override fun onCreate(arguments:Bundle?) {evacuationProofOnly=arguments?.getString("evacuationProofOnly")=="true";evacuationPolicyChecks=arguments?.getString("evacuationPolicyChecks")=="true";signatureAiSimulation=arguments?.getString("signatureAiSimulation")=="true";historicalSliceReplay=arguments?.getString("historicalSliceReplay")=="true";liveSliceChecks=arguments?.getString("liveSliceChecks")=="true";runtimeCacheLabel=arguments?.getString("runtimeCacheLabel") ?: "build128";runtimeCacheChecks=arguments?.getString("runtimeCacheChecks")=="true";fieldAiEvaluation=arguments?.getString("fieldAiEvaluation");fieldCapture=arguments?.getString("fieldCapture");aiRuntime=arguments?.getString("aiRuntime")=="true";
         groundedPack=arguments?.getString("groundedPack")=="true";groundedAi=arguments?.getString("groundedAi")=="true";
         intentPractice=arguments?.getString("intentPractice")=="true";domainAiCase=arguments?.getString("domainAiCase");super.onCreate(arguments);start()}
     override fun onStart() {
         val result=Bundle()
         try {
+            if(evacuationProofOnly){runSignatureAiSimulation(targetContext,context,result,"evacuation-policy-v1",true);finish(Activity.RESULT_OK,result);return}
+            if(evacuationPolicyChecks){runSignatureAiSimulation(targetContext,context,result,"evacuation-policy-v1");finish(Activity.RESULT_OK,result);return}
+            if(signatureAiSimulation){runSignatureAiSimulation(targetContext,context,result);finish(Activity.RESULT_OK,result);return}
+            if(historicalSliceReplay){runHistoricalSliceReplay(targetContext,result);finish(Activity.RESULT_OK,result);return}
+            if(liveSliceChecks){runLiveSliceChecks(targetContext,result);finish(Activity.RESULT_OK,result);return}
+            if(runtimeCacheChecks){runRuntimeCacheChecks(targetContext,result,runtimeCacheLabel);finish(Activity.RESULT_OK,result);return}
+            fieldAiEvaluation?.let {runFieldCollectionEvaluation(targetContext,result,it);finish(Activity.RESULT_OK,result);return}
             domainAiCase?.let {runDomainAiAcceptance(targetContext,result,it);finish(Activity.RESULT_OK,result);return}
             if(intentPractice){runIntentPracticeChecks(targetContext,context,result);finish(Activity.RESULT_OK,result);return}
             if(groundedPack || groundedAi){runGroundedCaptureChecks(targetContext,context,result,groundedAi);finish(Activity.RESULT_OK,result);return}

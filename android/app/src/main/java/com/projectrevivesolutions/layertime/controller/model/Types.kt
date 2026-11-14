@@ -43,10 +43,13 @@ data class EventRow(
     val rssiHistory: List<RssiSample> = emptyList(),
     /** The Hunter event ids folded into this row, lowest first; empty for a raw record. */
     val mergedEventIds: List<Long> = emptyList(),
+    val producerAddress: String? = null,
 )
 
 /** One signal reading for an event, as the phone received it. */
-data class RssiSample(val timeMillis: Long, val rssi: Int) {
+data class RssiSample(val timeMillis: Long, val rssi: Int,
+    val receivedMonotonicMs: Long? = null, val hunterEventId: Long? = null,
+    val sightingCount: Int? = null, val ageSeconds: Int? = null) {
     companion object { const val KEEP = 32 }
 }
 

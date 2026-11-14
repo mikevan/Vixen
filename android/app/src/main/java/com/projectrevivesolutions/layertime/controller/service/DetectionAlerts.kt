@@ -102,9 +102,9 @@ class DetectionAlerts(private val ctx: Context) {
         val worth = fresh   // AlertSelector already left out Low rows
         if (worth.size > 3) {
             val latest = worth.last()
-            post(SUMMARY_ID, "${worth.size} new detections.", "Latest: ${describe(latest)}", sleepMode)
+            post(SUMMARY_ID, "${worth.size} new detections.", "Latest: ${describe(latest)}", sleepMode, worth)
         } else {
-            for (e in worth) post(NOTIF_BASE + (e.eventId % 1000).toInt(), "${e.detectorName} detected.", describe(e), sleepMode)
+            for (e in worth) post(NOTIF_BASE + (e.eventId % 1000).toInt(), "${e.detectorName} detected.", describe(e), sleepMode, listOf(e))
         }
     }
 
@@ -113,7 +113,7 @@ class DetectionAlerts(private val ctx: Context) {
             ", ${LinkConstants.Band.name(e.band)} channel ${e.channel}, ${e.rssi} dBm, " +
             "${LinkConstants.Confidence.name(e.confidence).lowercase()} confidence."
 
-    private fun post(id: Int, title: String, text: String, quiet: Boolean) {
+    private fun post(id: Int, title: String, text: String, quiet: Boolean, measured:List<EventRow>) {
         val open = PendingIntent.getActivity(
             ctx, 0,
             Intent(ctx, MainActivity::class.java)
@@ -130,7 +130,15 @@ class DetectionAlerts(private val ctx: Context) {
         b.setContentTitle(title).setContentText(text).setSmallIcon(R.drawable.ic_launcher_foreground)
             .setCategory(Notification.CATEGORY_ALARM).setContentIntent(open).setAutoCancel(true)
             .setStyle(Notification.BigTextStyle().bigText(text))
-        runCatching { nm.notify(id, b.build()) }.onFailure { Log.i(TAG, "alert not posted: ${it.message}") }
+        runCatching { nm.notify(id, b.build()) }.onSuccess {
+            val enabled=runCatching {nm.areNotificationsEnabled()}.getOrNull()
+            for(e in measured)com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.mark("warning_submitted",
+                com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.eventKey(e.producerAddress,e.sessionId,e.eventId),
+                mapOf("notificationId" to id,"notificationsEnabled" to enabled,"quiet" to quiet,"detector" to e.detector))
+        }.onFailure {
+            com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.mark("warning_submit_failed",fields=mapOf("notificationId" to id))
+            Log.i(TAG, "alert not posted: ${it.message}")
+        }
     }
 
     companion object {

@@ -24,6 +24,18 @@ class AiCoordinator(private val provider: LocalModelProvider) {
 
     private suspend fun <T> executeResponse(request: LocalModelRequest, timeoutMs: Long,
                                           decode: (LocalModelResponse) -> T): AiOutcome<T> {
+        val stamp=com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.begin("ai_attempt",mapOf("task" to request.task.name,"maxOutputTokens" to request.maxOutputTokens))
+        return try {
+            val result=executeUnmeasured(request,timeoutMs,decode)
+            val status=when(result){is AiOutcome.Completed->"completed";is AiOutcome.Unavailable->"unavailable";is AiOutcome.Invalid->"invalid";AiOutcome.TimedOut->"timed_out"}
+            com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.end(stamp,status)
+            result
+        } catch(ex:Throwable) {
+            com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.end(stamp,if(ex is CancellationException) "cancelled" else "exception")
+            throw ex
+        }
+    }
+    private suspend fun <T> executeUnmeasured(request:LocalModelRequest,timeoutMs:Long,decode:(LocalModelResponse)->T):AiOutcome<T> {
         require(timeoutMs in 1..120_000)
         if (request.messages.isEmpty() || request.messages.sumOf { it.content.length.toLong() } > 1_000_000 ||
             request.maxOutputTokens !in 1..4096) return AiOutcome.Invalid("The AI request exceeds its supported limits.")

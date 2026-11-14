@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "status": "not-demonstrated",
+  "goal": "A controlled source reproduces an ordinary field event through Vixen's normal product behavior.",
+  "previousEvidenceScope": "The button test proved live BLE transport and components of a separate harness pipeline. It did not prove normal field event processing or warning delivery.",
+  "requiredPath": [
+    "Controlled source and real detector adapters emit the same canonical observation schema.",
+    "Source provenance/quarantine affects storage and admission only, not matching, model selection, analysis or presentation.",
+    "Normal preservation, triage and signature processing receive the observations.",
+    "Normal model availability and qualification behavior applies; no direct development-provider bypass.",
+    "The event, progress, explanation and warning appear through ordinary Events/Ops/notification surfaces.",
+    "The operator starts the source with its button; no app instrumentation, UI automation or injected phone-side answers during the run.",
+    "Preserved source and phone records verify timing, identity, sequence completeness and the actual result."
+  ],
+  "knownGaps": [
+    "HarnessProtocol 0xE0 currently routes to LiveHarness rather than the ordinary event processing path.",
+    "LiveHarness uses provider.generate directly after checking that AiCoordinator would reject the model.",
+    "Ordinary AiCoordinator rejects the currently cached unqualified model.",
+    "The normal field protocol has no defined native Wi-Fi/BLE-outage or drone-signature observation at present.",
+    "The ordinary event list and DetectionAlerts do not receive the harness classification."
+  ],
+  "immediateChange": "Remove the harness-only modal and LIVE HUNTER TEST control. Retain all earlier evidence and mark it as component-level verification.",
+  "passCriteria": [
+    "No harness-specific presentation or alternate analysis branch.",
+    "Both the expected field result and unavailable/error states are shown honestly through the normal product workflow.",
+    "Controlled-source success is repeatable and supported by retained source/phone evidence."
+  ],
+  "modelFixStatus": "SIG-001 remains open. A computed finding and schema constraint are containment, not general model qualification."
+}

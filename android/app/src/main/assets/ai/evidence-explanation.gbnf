@@ -1,0 +1,4 @@
+root ::= "{" ws "\"schemaVersion\"" ws ":" ws "1" ws "," ws "\"headline\"" ws ":" ws string ws "," ws "\"significance\"" ws ":" ws string ws "," ws "\"limitations\"" ws ":" ws string ws "," ws "\"passiveNextStep\"" ws ":" ws string ws "," ws "\"factReferences\"" ws ":" ws "[" ws "\"capture_summary\"" ws "," ws "\"capture_context\"" ws "," ws "\"review_policy\"" ws "]" ws "}" ws
+string ::= "\"" char* "\""
+char ::= [^"\\\x00-\x1F] | "\\" (["\\/bfnrt] | "u" [0-9a-fA-F]{4})
+ws ::= [ \t\n\r]*

@@ -1,0 +1,17 @@
+package com.projectrevivesolutions.layertime.controller.signatures
+object HarnessProtocol {
+    const val CAPABILITY=0x8000
+    const val TYPE=0xe0
+    data class Sample(val run:Long,val elapsedMs:Long,val sequence:Int,val stage:Int,val flags:Int,val wifi:Int,val ble:Int,val drone:Int)
+    fun decode(b:ByteArray):Sample? {
+        if(b.size!=20)return null
+        fun u8(i:Int)=b[i].toInt() and 255
+        fun u16(i:Int)=u8(i) or (u8(i+1) shl 8)
+        fun u32(i:Int)=(0..3).sumOf {u8(i+it).toLong() shl (8*it)}
+        if(u8(0)!=TYPE || u8(1)!=1)return null
+        val s=Sample(u32(4),u32(8),u16(12),u8(2),u8(3),u16(14),u16(16),u16(18))
+        val stage=when {s.elapsedMs<10000->1;s.elapsedMs<20000->2;s.elapsedMs<50000->3;s.elapsedMs<60000->4;else->5}
+        return s.takeIf {it.run>0 && it.sequence>0 && it.elapsedMs<=65000 && it.flags and 3==3 && it.flags and 240==0 && it.stage==stage &&
+            it.wifi==(if(stage==1)120 else 0) && it.ble==(if(stage==1)80 else 0) && it.drone==(if(stage>=4)1 else 0)}
+    }
+}

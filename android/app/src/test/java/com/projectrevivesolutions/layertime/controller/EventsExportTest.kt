@@ -41,14 +41,14 @@ class EventsExportTest {
 
     @Test fun csvCarriesTriageColumn() {
         val csv = EventsExport.csv(listOf(row(confidence = 0, count = 1)))
-        assertTrue(csv.contains("NOISE,\"low confidence, no dwell\""))
+        assertTrue(csv.contains("NOISE,low confidence; no fresh repeat-report span established"))
     }
 
     @Test fun jsonHasCountsAndTotal() {
         val rows = listOf(
             row(confidence = 0, count = 1),
             row(confidence = 2),
-            row(detector = 10, confidence = 0, count = 1, history = listOf(RssiSample(0L, -70), RssiSample(EventTriage.DWELL_MILLIS, -65))),
+            row(detector = 10, confidence = 0, count = 1, history = listOf(RssiSample(0L, -70, 0L, 1L, 1, 0), RssiSample(EventTriage.DWELL_MILLIS, -65, EventTriage.DWELL_MILLIS, 1L, 2, 0))),
         )
         val json = EventsExport.json(rows, nowMs = 0L)
         assertTrue(json.contains("\"total\": 3"))
