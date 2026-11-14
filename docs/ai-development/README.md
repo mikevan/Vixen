@@ -1,5 +1,9 @@
 # AI development documentation
 
+[How we use and train AI](how-we-use-ai.md) · [Iteration history: successes and mistakes](iteration-history.md)
+
+For Notella tutorials, start with [environment setup](https://github.com/mikevan/Notella/blob/main/docs/setup.md) and [the tutorial index](https://github.com/mikevan/Notella/blob/main/docs/index.md).
+
 The purpose of this research is to help people understand developing danger using tools they can carry and control. We teach evidence-grounded interpretation and test it while keeping failures visible. The records below distinguish that purpose from what has actually been demonstrated.
 
 Start with [CURRENT-AI-STATUS.md](CURRENT-AI-STATUS.md) for the latest training outcome and phone measurements. [CHECKIN-NOTES.md](CHECKIN-NOTES.md) preserves the earlier checkpoint.

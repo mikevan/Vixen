@@ -16,6 +16,12 @@ Vixen is the flagship Android analysis product in the LayerTime ecosystem. It br
 
 **Current limits:** the AI remains experimental. Reliable end-to-end outage/drone warning through the ordinary field workflow has not yet been demonstrated. This repository describes an MVP under validation, not a qualified protection system. See [current AI status](docs/ai-development/CURRENT-AI-STATUS.md) and [the MVP objectives](docs/mvp-okrs.md).
 
+## Follow the AI work
+
+[How we use and train AI](docs/ai-development/how-we-use-ai.md) explains procedural capture, selected evidence analysis, training, and qualification. [The iteration history](docs/ai-development/iteration-history.md) records improvements, failed approaches, and what remains unproven.
+
+For the Notella tutorials, begin with [Tutorial 0: environment setup](https://github.com/mikevan/Notella/blob/main/docs/setup.md), then follow [the tutorial index](https://github.com/mikevan/Notella/blob/main/docs/index.md).
+
 ## Build and contribute
 
 Formerly LayerScope. Android installation IDs and Kotlin package names are preserved for update compatibility.
