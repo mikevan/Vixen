@@ -1,5 +1,7 @@
 # Fields needed for expanded deauth analysis vs. LayerTime Link 0.1
 
+A useful explanation must not claim facts the evidence cannot supply. These gaps identify what must be preserved before Vixen can give people a more accountable interpretation of possible disruption.
+
 This note identifies the data the owner's expanded deauth use cases need that
 **contract 0.1 does not supply**. Nothing here is implemented: adding any of it
 is a contract change, reviewed before any binding changes, per

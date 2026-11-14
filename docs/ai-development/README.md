@@ -1,5 +1,7 @@
 # AI development documentation
 
+The purpose of this research is to help people understand developing danger using tools they can carry and control. We teach evidence-grounded interpretation and test it while keeping failures visible. The records below distinguish that purpose from what has actually been demonstrated.
+
 Start with [CURRENT-AI-STATUS.md](CURRENT-AI-STATUS.md) for the latest training outcome and phone measurements. [CHECKIN-NOTES.md](CHECKIN-NOTES.md) preserves the earlier checkpoint.
 The current source/data checkpoint is described in [CHECKIN-BUILD122.md](CHECKIN-BUILD122.md).
 The first trained candidate and the completed correction candidate each passed 2/12 overall development acceptance cases. Build 122 retains the first candidate with the faster runtime. No domain adapter or Android deployment is qualified.

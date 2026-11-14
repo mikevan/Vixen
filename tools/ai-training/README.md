@@ -1,5 +1,7 @@
 # LayerTime local AI training
 
+This training work serves Vixen's purpose: help people understand developing danger through evidence they can inspect and tools they can control locally. We teach explicit evidence distinctions and preserve failed interpretations so progress means better supported understanding, not merely completed training. The dated experiment descriptions below retain their original scope; use the current status index for present qualification.
+
 The central documentation index and comprehensive check-in note are in [docs/ai-development](../../docs/ai-development/README.md). Reference copies preserve historical context; current acceptance results and check-in ownership are summarized there.
 
 Current work is the frozen development acceptance loop in `acceptance/v2`; dataset expansion is paused. See `../../docs/ai-development-checkpoint-and-acceptance-2026-11-10.md`. Checkpoint `3ec4e41` predates the user's instruction that they will run all further check-ins and pushes. Leave subsequent work uncommitted. `checkpoint-and-push.ps1 -Acceptance` previews the selected changes; the user can add `-Execute` to commit and push them. No domain training or Android qualification is implied by the checkpoint.

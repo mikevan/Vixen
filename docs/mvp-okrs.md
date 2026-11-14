@@ -1,5 +1,7 @@
 # Vixen MVP objectives and key results
 
+People need warning they can use, evidence they can verify, and tools that remain dependable without internet access. These objectives measure whether Vixen helps people understand developing danger and make informed decisions. Activity counts and successful builds do not establish that outcome.
+
 The first beta must demonstrate Vixen's ordinary field workflow. Trends are computed from preserved observations and independent post-run review, with the same released APK and model used for both controlled tests and field operation.
 
 ## Objective 1: Give operators useful warning of a developing event

@@ -1,4 +1,8 @@
-# LayerTime Controller (Android)
+# Vixen for Android
+
+Vixen helps people recognize developing danger, preserve evidence, and make informed decisions. On a phone, that means preserving Hunter's observations, making supporting evidence inspectable, and developing local interpretation that can work without internet access.
+
+The intended outcome is useful warning of a developing event. The implementation notes below describe the earlier controller foundation; their build/device references are historical, not the current release specification. See the [product README](../README.md) and [current AI status](../docs/ai-development/CURRENT-AI-STATUS.md) for present scope and limits.
 
 An Android client for the LayerTime ecosystem. It is a LayerTime Link 0.1
 **interface** (a "controller"), the same role the Garmin tactix plays: it

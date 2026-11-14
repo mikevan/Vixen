@@ -1,5 +1,7 @@
 # Current AI development status
 
+Our aim is to give people useful, evidence-grounded warning through their ordinary field tools. That requires evidence of the complete workflow under evaluation. This status keeps the intended outcome separate from the measured results and remaining gaps.
+
 ## Field-fidelity correction
 
 The separate live-test interface did not prove Vixen's normal field response. The button test proved BLE transport and a separate harness processing chain: LiveHarness used a custom modal and a direct development-model invocation while the normal AiCoordinator remained unavailable. The ordinary event list and alert service did not receive its result. Earlier passes remain valid only at that component scope.

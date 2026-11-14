@@ -1,5 +1,7 @@
 # Vixen Play candidate
 
+The purpose of distribution is to make local evidence analysis accessible on phones people already have. Reaching an app store makes the tools easier to obtain; it does not qualify the model or establish a dependable warning system.
+
 Status: build preparation, not an approved or published Play release.
 
 GitHub Actions builds the existing `playRelease` variant as an APK and Android

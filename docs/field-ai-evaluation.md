@@ -1,5 +1,7 @@
 # Saved field collection AI evaluation
 
+People must be able to challenge an AI explanation against the evidence it used. This evaluation compares local model answers with preserved records and retains errors for review, keeping the grounds for each finding open to inspection.
+
 The debug instrumentation can evaluate private saved Hunter observations with
 the actual cached on-device model. It does not promote a model, retrain weights,
 change detector verdicts, or authorize tools. The normal qualification gate and
