@@ -125,3 +125,49 @@ Back is now drawn by the content housing as a return in its upper-left border.
 The inner return joins the existing top and left rails; there is no nested
 Back housing. The click target occupies that border inset and the existing
 heading leaves room beside it. No additional page frame or control row is added.
+
+
+## T2 selection failure and repair (build 150 preview)
+
+The original operator T2 run on frozen build 149 failed: all five source records
+and four packet windows arrived, but no AI assessment was invoked. Selecting
+the newest disconnect first chose unrelated network B; since B had no matching
+handshake, the selector stopped before considering network A's valid pair.
+That failure is retained in Hunter-TestHarness's incremental field-test record
+and the private saved journal/capture ledger. It is not converted into a pass.
+
+Build 150 ranks complete same-network disconnect/handshake pairs within each
+producer/session. Unmatched newer traffic cannot hide a complete older pair.
+Pair selection still preserves negative order and outside-window evidence; it
+does not filter candidates by the model's desired answer. Source-clock timing,
+model input schema, model weights, prompt, grammar, inference settings and the
+harness scenario are unchanged. The model still must interpret the selected
+facts. This fixes candidate selection before inference, not model training.
+
+Regression checks derived from the failed run cover the 62-second A sequence,
+unrelated B/C traffic, repeated/reordered summaries, missing A evidence, and
+negative temporal order. Passing these checks qualifies input preparation only;
+a new physical T2 run is required for end-to-end acceptance on build 150.
+
+
+### Physical T2 rerun on build 150
+
+The operator-run T2 rerun passed: network A's events 1/2 and drone event 5 were
+selected despite newer unmatched B/C traffic. The report's 62-second relation
+matched source timestamps; AI completion was 7,509 ms after the first drone
+summary reached Vixen. One accepted result and notification were recorded.
+All five records and 48/24/48/24 native packet windows were preserved and verified;
+monitoring continued. The same harness firmware and model were used. The original
+build-149 failure remains a separate failed result. No assistant device control
+was used to run or evaluate the complete rerun. Evidence and detailed comparison
+are retained in the local T2 rerun ledger and Hunter-TestHarness's field-test notes.
+
+
+### Outstanding MVP report requirement
+
+Following the T2 rerun, the operator identified that the AI report gives the
+matched sequence but no action recommendation. The T2 pass above is for the
+stated correlation, preservation, notification and timing criteria; it is not
+acceptance of the complete MVP report. Actionable recommendation behavior is
+not implemented in build 150. The proposed recommendation discussed with the
+operator has not been added to the app or qualified by this test.

@@ -14,8 +14,19 @@ object LiveSignatureInput {
         val scopes=relevant.groupBy {it.producerAddress to it.sessionId}
         // One source/session per assessment. No borrowed corroboration.
         for((scope,group) in scopes) {
-            val deauth=group.filter {it.detector==5 && it.sourceId!=null}.maxByOrNull {it.firstSeenMillis} ?: continue
-            val exchange=group.filter {it.detector==18 && it.sourceId.equals(deauth.sourceId,true)}.maxByOrNull {it.firstSeenMillis} ?: continue
+            // Rank complete same-network pairs, not disconnects alone. An unmatched
+            // newer network must not hide another network's complete evidence.
+            // Timing remains evidence for the model: do not filter negative order
+            // or outside-window cases merely to manufacture a positive candidate.
+            val pair=group.asSequence()
+                .filter {it.detector==5 && !it.sourceId.isNullOrBlank()}
+                .sortedWith(compareByDescending<EventRow> {it.firstSeenMillis}.thenByDescending {it.eventId})
+                .mapNotNull {disconnect ->
+                    group.filter {it.detector==18 && it.sourceId.equals(disconnect.sourceId,true)}
+                        .maxWithOrNull(compareBy<EventRow> {it.firstSeenMillis}.thenBy {it.eventId})
+                        ?.let {disconnect to it}
+                }.firstOrNull() ?: continue
+            val (deauth,exchange)=pair
             val remote=group.filter {it.detector==19 && validRemoteId(it.detail)}.maxByOrNull {it.firstSeenMillis} ?: continue
             val selected=listOf(deauth,exchange,remote)
             val clock=selected.all {it.sourceFirstUptimeMs!=null}

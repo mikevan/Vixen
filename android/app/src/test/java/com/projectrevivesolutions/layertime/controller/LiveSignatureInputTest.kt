@@ -38,4 +38,39 @@ class LiveSignatureInputTest {
         assertEquals(0x4000L,input.gapMs)
     }
     @Test fun incomplete_sequence_does_not_invoke_model() {assertNull(LiveSignatureInput.prepare(rows().take(2)))}
+    // Regression derived from the preserved failed T2 session. Acceptance only;
+    // these observations are not added to model training or a phone collection.
+    private fun t2()=listOf(
+        row(1,5,57372,source="02:00:00:00:01:01").copy(count=8),
+        row(2,18,74372,source="02:00:00:00:01:01").copy(count=4),
+        row(3,5,92372,source="02:00:00:00:01:03").copy(count=8),
+        row(4,18,102372,source="02:00:00:00:01:04").copy(count=4),
+        row(5,19,119372,source="02:00:00:00:01:02").copy(count=4))
+    @Test fun unrelated_newer_networks_do_not_hide_the_valid_pair_from_failed_t2() {
+        val input=requireNotNull(LiveSignatureInput.prepare(t2()))
+        assertEquals(listOf(1L,2L,5L),input.records.map {it.eventId})
+        assertEquals(listOf(8,4,4),input.records.map {it.count})
+        assertEquals(62000L,input.gapMs)
+        val relations=(FlowJson.parse(input.json) as Map<*,*>)["relations"] as Map<*,*>
+        assertEquals(true,relations["sameNetworkDisconnectExchange"])
+        assertEquals(true,relations["withinWindow"])
+    }
+    @Test fun repeated_delivery_and_list_order_do_not_change_t2_selection() {
+        val original=requireNotNull(LiveSignatureInput.prepare(t2()))
+        val repeated=requireNotNull(LiveSignatureInput.prepare((t2()+t2()).reversed()))
+        assertEquals(original.key,repeated.key);assertEquals(original.json,repeated.json)
+    }
+    @Test fun unrelated_networks_cannot_create_a_pair_when_a_is_missing() {
+        assertNull(LiveSignatureInput.prepare(t2().filter {it.eventId !in setOf(1L,2L)}))
+        assertNull(LiveSignatureInput.prepare(t2().filter {it.eventId!=2L}))
+    }
+    @Test fun matched_pairs_still_preserve_negative_temporal_evidence() {
+        val b=listOf(row(6,5,100000,source="B"),row(7,18,110000,source="b"),row(8,19,90000))
+        val input=requireNotNull(LiveSignatureInput.prepare(b+row(9,5,120000,source="unmatched")))
+        assertEquals(listOf(6L,7L,8L),input.records.map {it.eventId})
+        assertEquals(-10000L,input.gapMs)
+        val relations=(FlowJson.parse(input.json) as Map<*,*>)["relations"] as Map<*,*>
+        assertEquals(false,relations["remoteIdAfterExchange"])
+    }
+
 }
