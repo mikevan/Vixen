@@ -2076,7 +2076,7 @@ Introduced the ordinary foreground-service bounded signature workflow and a sepa
 
 *Editorial synthesis of the cited evidence; not a verbatim quotation:*
 
-The first operator attempt had Remote ID disabled: deauth and EAPOL arrived, no model report was triggered, and waiting beyond 120 seconds was not an inference timeout. After the operator enabled Remote ID and ran again, Hunter delivered 8 deauth, 4 EAPOL and 4 Remote ID sightings; the model selected disconnect_sequence_then_remote_id with a 30-second source-clock gap. The report completed 5.645 seconds after Remote ID receipt, Android accepted the notification, and monitoring continued. Forty-eight deauth packet payloads and their hash were verified, but the EAPOL packet window was missing. Interpretation passed; complete evidence parity did not. Independent source-SD readback and real RF/outage/drone intent were not established.
+The first operator attempt had Remote ID disabled: deauth and EAPOL arrived, no model report was triggered, and waiting beyond 120 seconds was not an inference timeout. After the operator enabled Remote ID and ran again, Hunter delivered 8 deauth, 4 EAPOL and 4 Remote ID sightings; the model selected disconnect_sequence_then_remote_id with a 30-second source-clock gap. The report completed 5.645 seconds after Remote ID receipt, Android accepted the notification, and monitoring continued. Forty-eight deauth packet payloads and their hash were verified, but the EAPOL packet window was missing. Interpretation passed; complete evidence parity did not. Independent source-SD readback and real RF/outage/drone intent were not established. The public comparison receipt covers the completed second attempt. The first-attempt account is supported by the retained private journal and the read-only sensor-selection inspection in the operator conversation; its journal hash is listed in the local audit ledger.
 
 ### Build 141
 
@@ -2426,6 +2426,7 @@ These records were inspected in the retained development workspace. Their raw co
 | `field-ai-evaluation-20261114T052030Z/build125-validation.json` | `772f922cf279aaac601917fde37d62cdb11a261408ec2344a89cd3a7e8b58b44` | Retained locally; not a public Git attachment |
 | `field-ai-evaluation-20261114T052030Z/build126-validation.json` | `8ff39959c83cdff08e30d6a2096817ed6d2a6adeaaf3312367aadab53163e17e` | Retained locally; not a public Git attachment |
 | `field-ai-evaluation-20261114T052030Z/build127-validation.json` | `489acdc8e923936ea4ac947e9c17d01772f781cb89dc464bfbff395071c7abe7` | Retained locally; not a public Git attachment |
+| `live-signature-v3-phone/first-operator-run.jsonl` | `8a8a671edc0bb6a2c7af4d5e8be08e6d11b061c2fd8b23244f10356de85e24ba` | Retained locally; not a public Git attachment |
 
 ## Current stopping point
 
