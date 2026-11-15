@@ -27,6 +27,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.IntOffset
@@ -90,6 +92,7 @@ fun OpsTelemetryHousing(modifier: Modifier, compact: Boolean = false, borderBack
             for (y in 0..2) for(x in 0..2) drawImage(image,
                 srcOffset=IntOffset(sx[x],sy[y]),srcSize=IntSize(sx[x+1]-sx[x],sy[y+1]-sy[y]),
                 dstOffset=IntOffset(dx[x],dy[y]),dstSize=IntSize(dx[x+1]-dx[x],dy[y+1]-dy[y]))
+            if(borderBack!=null)drawHousingBackReturn(image,sx,sy)
         }
         content()
         borderBack?.let {HousingBorderBack(it)}
@@ -110,29 +113,40 @@ fun OpsConnectionHousing(modifier: Modifier, compact: Boolean = false, borderBac
             for(y in 0..2) for(x in 0..2) drawImage(image,
                 srcOffset=IntOffset(sx[x],sy[y]),srcSize=IntSize(sx[x+1]-sx[x],sy[y+1]-sy[y]),
                 dstOffset=IntOffset(dx[x],dy[y]),dstSize=IntSize(dx[x+1]-dx[x],dy[y+1]-dy[y]))
+            if(borderBack!=null)drawHousingBackReturn(image,sx,sy)
         }
         content()
         borderBack?.let {HousingBorderBack(it)}
     }
 }
 
-/** A return inset formed from the housing's top and left rails, not a nested box. */
-@Composable private fun BoxScope.HousingBorderBack(onBack:()->Unit) {
-    Canvas(Modifier.align(Alignment.TopStart).width(110.dp).height(40.dp)) {
-        val inset=Path().apply {
-            moveTo(14.dp.toPx(),5.dp.toPx());lineTo(104.dp.toPx(),5.dp.toPx())
-            lineTo(104.dp.toPx(),27.dp.toPx());lineTo(94.dp.toPx(),37.dp.toPx())
-            lineTo(14.dp.toPx(),37.dp.toPx());close()
-        }
-        drawPath(inset,Color(0xFF071923))
-        // Only the inner return is new: its endpoints join the existing frame rails.
-        val returnRail=Path().apply {
-            moveTo(104.dp.toPx(),5.dp.toPx());lineTo(104.dp.toPx(),27.dp.toPx())
-            lineTo(94.dp.toPx(),37.dp.toPx());lineTo(14.dp.toPx(),37.dp.toPx())
-        }
-        drawPath(returnRail,Color(0xFF324D58),style=Stroke(3.dp.toPx()))
-        drawPath(returnRail,Color(0xFF77DDEB).copy(alpha=.65f),style=Stroke(.7.dp.toPx()))
+/** Extend the original frame using its own glass, bevel and rail pixels.
+ * Top and left are the original housing: only the inner right/lower return is new. */
+private fun DrawScope.drawHousingBackReturn(image:ImageBitmap,sx:IntArray,sy:IntArray) {
+    val right=110.dp.toPx().toInt();val bottom=44.dp.toPx().toInt();val rail=14.dp.toPx().toInt()
+    val dx=intArrayOf(0,rail,right-rail,right)
+    val dy=intArrayOf(0,rail,bottom-rail,bottom)
+    val glass=Path().apply {
+        moveTo(29.dp.toPx(),12.dp.toPx());lineTo((right-rail).toFloat(),12.dp.toPx())
+        lineTo((right-rail).toFloat(),(bottom-rail).toFloat());lineTo(14.dp.toPx(),(bottom-rail).toFloat())
+        lineTo(14.dp.toPx(),27.dp.toPx());close()
     }
+    clipPath(glass) {
+        drawImage(image,srcOffset=IntOffset(sx[1],sy[1]),
+            srcSize=IntSize(sx[2]-sx[1],sy[2]-sy[1]),
+            dstOffset=IntOffset(0,0),dstSize=IntSize(right,bottom))
+    }
+    // Return rail: right edge and bottom edge, including their shared bevelled corner.
+    // Omit the original top/left edges rather than painting over their corner.
+    for(y in 0..2)for(x in 0..2) {
+        if(x!=2 && y!=2)continue
+        drawImage(image,srcOffset=IntOffset(sx[x],sy[y]),
+            srcSize=IntSize(sx[x+1]-sx[x],sy[y+1]-sy[y]),
+            dstOffset=IntOffset(dx[x],dy[y]),dstSize=IntSize(dx[x+1]-dx[x],dy[y+1]-dy[y]))
+    }
+}
+
+@Composable private fun BoxScope.HousingBorderBack(onBack:()->Unit) {
     Box(Modifier.align(Alignment.TopStart).padding(start=18.dp,top=5.dp).width(80.dp).height(32.dp)
         .clickable(role=Role.Button,onClickLabel="Back",onClick=onBack),contentAlignment=Alignment.Center) {
         Text("‹ BACK",color=Color(0xFFB7F5FF),fontWeight=FontWeight.Bold,fontSize=11.sp)

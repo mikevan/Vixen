@@ -244,8 +244,7 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
     Box(Modifier.fillMaxSize().onGloballyPositioned {screenOrigin=it.positionInRoot()}) {
     if(showResult && lastRun?.workflow==draft?.workflow && lastRun?.finding!=null) {
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(6.dp)) {
-            BuilderTextButton("Back to blocks",true){showResult=false}
-            FindingCard(lastRun!!.finding!!,onWireshark)
+            FindingCard(lastRun!!.finding!!,onWireshark,onBack={showResult=false})
         }
     } else Column(Modifier.fillMaxSize()) {
     OpsTelemetryHousing(Modifier.fillMaxWidth().weight(1f),borderBack=LocalPageBack.current) {
@@ -696,13 +695,8 @@ private fun BuilderStepDetail(d:Draft,step:com.projectrevivesolutions.layertime.
 private fun WiresharkCheckMenu(current:String?,onHold:(String)->Unit,onDismiss:()->Unit) {
     Box(Modifier.fillMaxSize().background(Color(0xCC01080F)).pointerInput(Unit){detectTapGestures{onDismiss()}},
         contentAlignment=Alignment.Center) {
-        val shape=RoundedCornerShape(8.dp)
-        Column(Modifier.fillMaxWidth(.9f).fillMaxHeight(.72f)
-            .background(Brush.verticalGradient(listOf(Color(0xFF0C2636),Color(0xFF05121D))),shape)
-            .border(1.dp,BuilderCyan.copy(alpha=.5f),shape).clip(shape)
-            .pointerInput(Unit){detectTapGestures{}}
-            .padding(16.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
-            FrameBackControl(onBack={onDismiss()})
+        OpsTelemetryHousing(Modifier.fillMaxWidth(.9f).fillMaxHeight(.72f).pointerInput(Unit){detectTapGestures{}},borderBack=onDismiss) {
+            Column(Modifier.fillMaxSize().padding(start=18.dp,end=18.dp,top=50.dp,bottom=20.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
             Text("WIRESHARK CHECKS",color=BuilderInk,style=BuilderType.copy(fontSize=13.sp,lineHeight=16.sp,letterSpacing=.6.sp))
             Text("Tap a check to choose it. Drag to scroll. Tap outside this box to close it.",
                 color=BuilderMuted,style=BuilderType.copy(fontSize=12.sp,lineHeight=15.sp))
@@ -725,7 +719,8 @@ private fun WiresharkCheckMenu(current:String?,onHold:(String)->Unit,onDismiss:(
                     }
                 }
             }
-            FrameBackControl(bottom=true,onBack={onDismiss()})
+
+            }
         }
     }
 }
@@ -736,16 +731,15 @@ private fun WiresharkConfirm(type:String,onYes:()->Unit,onNo:()->Unit) {
     val spec=StepRegistry.spec(type)!!
     Box(Modifier.fillMaxSize().background(Color(0xCC01080F)).pointerInput(Unit){detectTapGestures{onNo()}},
         contentAlignment=Alignment.Center) {
-        val shape=RoundedCornerShape(8.dp)
-        Column(Modifier.fillMaxWidth(.82f).background(Brush.verticalGradient(listOf(Color(0xFF0C2636),Color(0xFF05121D))),shape)
-            .border(1.dp,BuilderGreen.copy(alpha=.6f),shape).clip(shape).pointerInput(Unit){detectTapGestures{}}
-            .padding(18.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
-            FrameBackControl(onBack={onNo()})
+        OpsTelemetryHousing(Modifier.fillMaxWidth(.82f).pointerInput(Unit){detectTapGestures{}},borderBack=onNo) {
+            Column(Modifier.fillMaxWidth().padding(start=18.dp,end=18.dp,top=50.dp,bottom=20.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
             Text("Use \"${spec.title}\"?",color=BuilderInk,style=BuilderType.copy(fontSize=14.sp,lineHeight=18.sp))
             Text(wiresharkFieldHint(type),color=BuilderMuted,style=BuilderType.copy(fontSize=12.sp,lineHeight=15.sp))
             Row(horizontalArrangement=Arrangement.spacedBy(10.dp)) {
                 BuilderTextButton("Yes, use it",true){onYes()}
                 BuilderTextButton("No",true){onNo()}
+            }
+
             }
         }
     }

@@ -363,13 +363,11 @@ private fun ControllerScreen() {
     }
     confirmClear?.let { h ->
         androidx.compose.ui.window.Dialog(onDismissRequest={confirmClear=null}) {
-            OpsConnectionHousing(Modifier.fillMaxWidth()) {
-                Column(Modifier.fillMaxWidth().padding(18.dp).verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(12.dp)) {
-                    FrameBackControl(onBack={confirmClear=null})
+            OpsConnectionHousing(Modifier.fillMaxWidth(),borderBack={confirmClear=null}) {
+                Column(Modifier.fillMaxWidth().padding(start=18.dp,end=18.dp,top=50.dp,bottom=20.dp).verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(12.dp)) {
                     Text("Clear Card",color=LtColors.Cyan,fontSize=18.sp)
                     Text(CardClear.confirmText(h.name),color=LtColors.Ivory,fontSize=15.sp)
                     SciFiPrimary("Erase",true){confirmClear=null;eraseCard(h)}
-                    FrameBackControl(bottom=true,onBack={confirmClear=null})
                 }
             }
         }
@@ -957,7 +955,7 @@ private fun ControllerScreen() {
     BoxWithConstraints(Modifier.fillMaxSize()) {
         if (huntOpen) {
             // HUNT v1 takes the whole screen until STOP HUNT.
-            SectionWindow(framed=!DeviceKind.isLokmatWatch,onBack={goBack()}) {
+            BackContentFrame(onBack={goBack()},headerSlot=false) {
             HuntScreen(
                 onStop = { LinkForegroundService.active?.huntStop(); HuntSession.end() },
                 onAgain = {

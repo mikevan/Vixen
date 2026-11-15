@@ -59,11 +59,12 @@ fun AttackTimelineScreen(onBack: () -> Unit, onOpenWireshark: () -> Unit = {}) {
     val reports = remember(done) {
         TargetBehavior.analyze(done?.result?.observations.orEmpty())
     }
+    BackContentFrame(onBack) {
     LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                if(com.projectrevivesolutions.layertime.controller.DeviceKind.isLokmatWatch) SciFiOutline("‹ BACK", enabled = true) { onBack() }
+                PageBackControl()
                 Text("BEHAVIOR TIMELINE", color = LtColors.ConsoleEdge,
                     fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 1.sp, style = glowText())
             }
@@ -110,6 +111,7 @@ fun AttackTimelineScreen(onBack: () -> Unit, onOpenWireshark: () -> Unit = {}) {
             item { Text("TRANSMITTER STATISTICS", color = LtColors.Cyan, fontSize = 14.sp) }
             items(stats, key = { it.transmitter }) { s -> TransmitterCard(s) }
         }
+    }
     }
 }
 

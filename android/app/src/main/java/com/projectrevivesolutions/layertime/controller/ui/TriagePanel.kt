@@ -140,7 +140,7 @@ fun TriageSection(e: EventRow, onOpenWireshark: () -> Unit) {
 }
 
 @Composable
-fun FindingCard(f: Finding, onOpenWireshark: () -> Unit) {
+fun FindingCard(f: Finding, onOpenWireshark: () -> Unit, onBack:(()->Unit)?=null) {
     val color=verdictColor(f.verdict)
     var details by remember(f) {mutableStateOf(false)}
     val reports=(f.features+f.couldNotRun).flatMap {it.targetReports}
@@ -148,8 +148,8 @@ fun FindingCard(f: Finding, onOpenWireshark: () -> Unit) {
     val lead=readings.firstOrNull {it.setup.isNotEmpty()} ?: readings.firstOrNull()
     var observations by remember(f) {mutableStateOf(false)}
     androidx.activity.compose.BackHandler(enabled=details || observations){if(details)details=false else observations=false}
-    OpsConnectionHousing(Modifier.fillMaxWidth()) {
-    Column(Modifier.fillMaxWidth().padding(18.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
+    OpsConnectionHousing(Modifier.fillMaxWidth(),borderBack=onBack) {
+    Column(Modifier.fillMaxWidth().padding(start=18.dp,end=18.dp,top=if(onBack!=null)50.dp else 18.dp,bottom=18.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
         if(f.coverage?.training==true)Text("PRACTICE - not a live warning",color=LtColors.Amber,fontSize=13.sp)
         Text(lead?.action ?: f.assessmentLabel,color=LtColors.Amber,fontWeight=FontWeight.Bold,fontSize=23.sp)
         Text(lead?.briefReason ?: f.summary,color=LtColors.Ivory,fontSize=17.sp)
