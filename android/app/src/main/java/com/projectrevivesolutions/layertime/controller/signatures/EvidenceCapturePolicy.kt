@@ -2,6 +2,11 @@ package com.projectrevivesolutions.layertime.controller.signatures
 
 /** Procedural packet preservation policy; not an attack or flood classifier. */
 class EvidenceCapturePolicy {
+    /** Only Wi-Fi detectors with native packet windows. BLE evidence is retained
+     * as its original structured observation, never fabricated as a Wi-Fi PCAP. */
+    fun supportsPacketWindow(detector:Int,sourceKind:Int):Boolean =
+        sourceKind==1 && (detector==5 || detector==18)
+
     private data class Seen(val count:Int,val confidence:Int,val requestedAt:Long?)
     private val seen=linkedMapOf<String,Seen>()
     fun shouldCapture(peer:String,session:Int,event:Long,count:Int,confidence:Int,ageSeconds:Int,nowMs:Long):Boolean {

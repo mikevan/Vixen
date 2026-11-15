@@ -3,6 +3,18 @@ import com.projectrevivesolutions.layertime.controller.signatures.EvidenceCaptur
 import org.junit.Assert.*
 import org.junit.Test
 class EvidenceCapturePolicyTest {
+    @Test fun deauth_and_eapol_both_preserve_native_wifi_windows() {
+        val p=EvidenceCapturePolicy()
+        assertTrue(p.supportsPacketWindow(5,1))
+        assertTrue(p.supportsPacketWindow(18,1))
+        assertFalse(p.supportsPacketWindow(19,2))
+        assertFalse(p.supportsPacketWindow(18,2))
+        assertFalse(p.supportsPacketWindow(99,1))
+        assertTrue(p.shouldCapture("hunter",1,1,1,1,0,1000))
+        assertTrue(p.shouldCapture("hunter",1,2,1,1,0,13000))
+        assertFalse(p.shouldCapture("hunter",1,2,1,1,0,24000))
+    }
+
     @Test fun repeated_summary_does_not_retrieve_the_same_window_forever() {
         val p=EvidenceCapturePolicy()
         assertTrue(p.shouldCapture("a",1,7,1,1,0,0))

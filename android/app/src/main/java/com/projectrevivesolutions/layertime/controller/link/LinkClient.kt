@@ -37,7 +37,7 @@ import java.util.UUID
  * pulls detection events with GET_CHANGED whenever the Node's changeSeq moves.
  *
  * It honours the contract's rules: one outstanding Control request at a time,
- * ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤20-byte frames, pull-not-push. All wire encode/decode goes through
+ * ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤20-byte frames, pull-not-push. All wire encode/decode goes through
  * [LinkCodec], which is verified against contracts/vectors/link_frames.json.
  *
  * All queue manipulation and GATT calls are marshalled onto a single Handler so
@@ -940,7 +940,7 @@ class LinkClient(private val appContext: Context) {
     // duration, hold setting or sensor selection. Identity is rechecked on execution.
     private val automaticEvidencePolicy=com.projectrevivesolutions.layertime.controller.signatures.EvidenceCapturePolicy()
     private fun preserveInterestingEvidence(f:Frame.EventSummary) {
-        if(!handshakeDone || !rawCapture || f.detector!=5 || f.confidence !in 1..2 || f.ageSeconds !in 0..3)return
+        if(!handshakeDone || !rawCapture || !automaticEvidencePolicy.supportsPacketWindow(f.detector,f.sourceKind) || f.confidence !in 1..2 || f.ageSeconds !in 0..3)return
         val peer=currentAddress ?: return
         val session=repo.server.value?.sessionId ?: return
         if(!automaticEvidencePolicy.shouldCapture(peer,session,f.eventId,f.count,f.confidence,f.ageSeconds,
