@@ -35,3 +35,28 @@ Compare the normal field journal, saved assessment and source SD/PCAP evidence. 
 Vixen 141 extends the ordinary native-window filter from Wi-Fi deauth alone to Wi-Fi deauth and EAPOL. The model and interpretation workflow are unchanged. Unit checks cover both detectors, reject BLE/unsupported packet types and retain per-event duplicate suppression. The repaired baseline must be rerun before packet preservation is declared physically verified.
 
 The [three incremental test definitions](https://github.com/mikevan/Hunter-TestHarness/blob/main/docs/incremental-field-tests.md) add timing/duplicate delivery, unrelated streams, and interrupted delivery with an outside-window negative control. Keep one frozen application across them. These are plans, not completed passes.
+
+
+## Saved reports and plain language (build 142)
+
+The normal AI panel opens **AI reports**. Saved assessments display the original
+analysis completion date and time (phone local time), a stable report ID and
+Hunter session. UI refreshes and file modification times do not create a new
+report time. Legacy records without that field show "Creation time unavailable".
+Pending or failed assessments remain visible with their actual status.
+
+Open a report to **Archive report**, **Restore from archive**, or **Export report**.
+Export uses Android's save-file picker and preserves the original JSON, including
+model identity, input, source references, raw output and result. Packet files
+are separate and are not included in this export. Archive markers live separately
+from the assessment files. Repeating Archive or Restore does not edit or delete
+reports, rerun inference, reset notification suppression or change capture.
+Archived reports still participate in the existing assessment cache.
+
+The user-facing detector and report wording says **drone identification
+broadcast**, explaining that the signal's identity and intent are unverified.
+Technical evidence retains Remote ID terminology and original bytes. Older saved
+reports use the clearer wording when displayed; exported originals stay intact.
+
+This is a normal product feature. The completed T1 result belongs to frozen
+build 141; future tests must record the actual new build number.

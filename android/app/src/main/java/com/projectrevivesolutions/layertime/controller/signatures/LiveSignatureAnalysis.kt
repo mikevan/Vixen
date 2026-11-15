@@ -79,8 +79,8 @@ class LiveSignatureAnalysis(private val context:Context) {
                 }
                 val supported=pattern==null || pattern==expected
                 val finding=if(pattern!=null && supported) when(pattern) {
-                    "disconnect_sequence_then_remote_id" -> "Deauthentication and EAPOL observations were followed by an unverified Remote ID broadcast after ${input.gapMs?.div(1000)} seconds. This is a candidate sequence for review; it does not prove an outage, a coordinated attack, or hostile drone intent."
-                    "reverse_order" -> "Remote ID preceded the disconnect sequence; the expected follow-on order is not supported."
+                    "disconnect_sequence_then_remote_id" -> "Wi-Fi disconnect messages and connection-handshake traffic were followed by an unverified drone identification broadcast after ${input.gapMs?.div(1000)} seconds. This is a candidate sequence for review; it does not prove an outage, a coordinated attack, or hostile drone intent."
+                    "reverse_order" -> "A drone identification broadcast preceded the disconnect sequence; the expected follow-on order is not supported."
                     "outside_window" -> "The observations fall outside the configured 90-second interval."
                     "insufficient_timing" -> "The evidence does not establish the required event timing."
                     else -> "The recorded observations do not establish the complete expected sequence. Missing evidence is not an all-clear."
