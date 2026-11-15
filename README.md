@@ -1,5 +1,7 @@
 # Vixen
 
+**Development record:** [Builds 1–141: original notes, evidence, failures and gaps](DEVELOPMENT_HISTORY.md).
+
 Flagship Android analysis product, formerly LayerScope. Android installation IDs and Kotlin package names are preserved for update compatibility.
 
 ## Learn about the AI work
