@@ -248,7 +248,7 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
             FindingCard(lastRun!!.finding!!,onWireshark)
         }
     } else Column(Modifier.fillMaxSize()) {
-    OpsTelemetryHousing(Modifier.fillMaxWidth().weight(1f)) {
+    OpsTelemetryHousing(Modifier.fillMaxWidth().weight(1f),borderBack=LocalPageBack.current) {
         Column(Modifier.fillMaxSize().padding(start=18.dp,end=18.dp,top=20.dp,bottom=20.dp),
             verticalArrangement=Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(4.dp)) {

@@ -36,7 +36,7 @@ private val ToolType=TextStyle(fontFamily=FontFamily.SansSerif,fontSize=11.sp,li
 /** Existing capture import and analysis routes. Link measurements live in System. */
 @Composable
 fun ToolsScreen(onWireshark:()->Unit,onTimeline:()->Unit) {
-    OpsTelemetryHousing(Modifier.fillMaxSize()) {
+    OpsTelemetryHousing(Modifier.fillMaxSize(),borderBack=LocalPageBack.current) {
         LazyColumn(Modifier.fillMaxSize().padding(start=16.dp,end=16.dp,top=18.dp,bottom=24.dp),
             verticalArrangement=Arrangement.spacedBy(0.dp)) {
             item {PageBackControl()}

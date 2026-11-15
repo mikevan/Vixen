@@ -117,3 +117,11 @@ The upper-left Back control sits inside a small recessed housing that reuses
 the content frame's artwork. It occupies the existing header row; no outer page
 frame or lower navigation band is added. Report and evidence retention are
 unchanged.
+
+
+## Border-integrated Back (build 147)
+
+Back is now drawn by the content housing as a return in its upper-left border.
+The inner return joins the existing top and left rails; there is no nested
+Back housing. The click target occupies that border inset and the existing
+heading leaves room beside it. No additional page frame or control row is added.

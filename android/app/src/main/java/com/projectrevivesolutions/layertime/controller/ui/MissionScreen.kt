@@ -68,7 +68,7 @@ fun MissionScreen(selected:Set<Int>,link:MissionLink,onSelectionChange:(Set<Int>
                   evidenceHold:Int=EvidenceHold.DEFAULT_SEC,evidenceLink:EvidenceHold.Link=EvidenceHold.Link.OFFLINE,
                   onEvidenceHoldChange:(Int)->Unit={}) {
     fun toggle(id:Int) {onSelectionChange(if(id in selected)selected-id else selected+id)}
-    OpsTelemetryHousing(Modifier.fillMaxSize()) {
+    OpsTelemetryHousing(Modifier.fillMaxSize(),borderBack=LocalPageBack.current) {
         Column(Modifier.fillMaxSize().padding(start=18.dp,end=18.dp,top=20.dp,bottom=24.dp),
             verticalArrangement=Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {

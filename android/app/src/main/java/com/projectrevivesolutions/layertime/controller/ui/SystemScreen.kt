@@ -50,7 +50,7 @@ private val SysType=TextStyle(fontFamily=FontFamily.SansSerif,fontSize=11.sp,lin
 
 @Composable
 fun SystemModule(title:String,icon:ImageVector=Icons.Outlined.Settings,status:Color?=null,content:@Composable ColumnScope.()->Unit) {
-    OpsConnectionHousing(Modifier.fillMaxWidth()) {
+    OpsConnectionHousing(Modifier.fillMaxWidth(),borderBack=if(title=="POSITION")LocalPageBack.current else null) {
         ProvideTextStyle(SysType) {
             Column(Modifier.fillMaxWidth().padding(start=18.dp,end=18.dp,top=18.dp,bottom=22.dp),
                 verticalArrangement=Arrangement.spacedBy(7.dp)) {

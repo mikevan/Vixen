@@ -2,6 +2,16 @@ package com.projectrevivesolutions.layertime.controller.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxScope
@@ -66,7 +76,7 @@ fun OpsWatchAssembly(modifier: Modifier, face: @Composable (Modifier) -> Unit) {
 
 /** Nine-slice housing: corners retain proportions as live telemetry changes panel height. */
 @Composable
-fun OpsTelemetryHousing(modifier: Modifier, compact: Boolean = false, content: @Composable BoxScope.() -> Unit) {
+fun OpsTelemetryHousing(modifier: Modifier, compact: Boolean = false, borderBack:(()->Unit)?=null, content: @Composable BoxScope.() -> Unit) {
     val image = ImageBitmap.imageResource(R.drawable.ops_telemetry_housing_v2)
     Box(modifier) {
         // A decorative background follows the content's measured size; it must not
@@ -82,12 +92,13 @@ fun OpsTelemetryHousing(modifier: Modifier, compact: Boolean = false, content: @
                 dstOffset=IntOffset(dx[x],dy[y]),dstSize=IntSize(dx[x+1]-dx[x],dy[y+1]-dy[y]))
         }
         content()
+        borderBack?.let {HousingBorderBack(it)}
     }
 }
 
 /** Landscape material with constant-size corners and proportional illuminated rail sections. */
 @Composable
-fun OpsConnectionHousing(modifier: Modifier, compact: Boolean = false, content: @Composable BoxScope.() -> Unit) {
+fun OpsConnectionHousing(modifier: Modifier, compact: Boolean = false, borderBack:(()->Unit)?=null, content: @Composable BoxScope.() -> Unit) {
     val image=ImageBitmap.imageResource(R.drawable.ops_connection_housing_v1)
     Box(modifier) {
         Canvas(Modifier.matchParentSize()) {
@@ -101,5 +112,29 @@ fun OpsConnectionHousing(modifier: Modifier, compact: Boolean = false, content: 
                 dstOffset=IntOffset(dx[x],dy[y]),dstSize=IntSize(dx[x+1]-dx[x],dy[y+1]-dy[y]))
         }
         content()
+        borderBack?.let {HousingBorderBack(it)}
+    }
+}
+
+/** A return inset formed from the housing's top and left rails, not a nested box. */
+@Composable private fun BoxScope.HousingBorderBack(onBack:()->Unit) {
+    Canvas(Modifier.align(Alignment.TopStart).width(110.dp).height(40.dp)) {
+        val inset=Path().apply {
+            moveTo(14.dp.toPx(),5.dp.toPx());lineTo(104.dp.toPx(),5.dp.toPx())
+            lineTo(104.dp.toPx(),27.dp.toPx());lineTo(94.dp.toPx(),37.dp.toPx())
+            lineTo(14.dp.toPx(),37.dp.toPx());close()
+        }
+        drawPath(inset,Color(0xFF071923))
+        // Only the inner return is new: its endpoints join the existing frame rails.
+        val returnRail=Path().apply {
+            moveTo(104.dp.toPx(),5.dp.toPx());lineTo(104.dp.toPx(),27.dp.toPx())
+            lineTo(94.dp.toPx(),37.dp.toPx());lineTo(14.dp.toPx(),37.dp.toPx())
+        }
+        drawPath(returnRail,Color(0xFF324D58),style=Stroke(3.dp.toPx()))
+        drawPath(returnRail,Color(0xFF77DDEB).copy(alpha=.65f),style=Stroke(.7.dp.toPx()))
+    }
+    Box(Modifier.align(Alignment.TopStart).padding(start=18.dp,top=5.dp).width(80.dp).height(32.dp)
+        .clickable(role=Role.Button,onClickLabel="Back",onClick=onBack),contentAlignment=Alignment.Center) {
+        Text("‹ BACK",color=Color(0xFFB7F5FF),fontWeight=FontWeight.Bold,fontSize=11.sp)
     }
 }

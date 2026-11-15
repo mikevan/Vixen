@@ -34,7 +34,7 @@ import kotlinx.coroutines.withContext
             Toast.makeText(context,if(result.isSuccess)"Report exported" else "Could not export report",Toast.LENGTH_LONG).show()
         }
     }
-    OpsTelemetryHousing(Modifier.fillMaxSize()) {
+    OpsTelemetryHousing(Modifier.fillMaxSize(),borderBack=LocalPageBack.current) {
     Column(Modifier.fillMaxSize().padding(start=18.dp,end=18.dp,top=20.dp,bottom=24.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
         Row(horizontalArrangement=Arrangement.spacedBy(8.dp),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically) {
             PageBackControl()

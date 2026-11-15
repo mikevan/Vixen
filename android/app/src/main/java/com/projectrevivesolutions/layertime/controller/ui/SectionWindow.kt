@@ -70,12 +70,7 @@ internal fun FrameBackControl(bottom:Boolean=false,compact:Boolean=false,onBack:
 internal val LocalPageBack=staticCompositionLocalOf<(() -> Unit)?> {null}
 
 @Composable internal fun PageBackControl() {
-    LocalPageBack.current?.let {onBack->
-        // Reuse the frame artwork for a small inset housing in the content header.
-        OpsTelemetryHousing(Modifier.width(84.dp).height(44.dp),compact=true) {
-            Box(Modifier.align(Alignment.Center)) {FrameBackControl(compact=true,onBack=onBack)}
-        }
-    }
+    if(LocalPageBack.current!=null)Spacer(Modifier.width(88.dp).height(20.dp))
 }
 
 @Composable
