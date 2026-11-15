@@ -1,0 +1,103 @@
+{
+  "condition": "base",
+  "results": [
+    {
+      "id": "positive-a",
+      "output": "```json\n{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"r1\", \"r2\", \"r3\"]\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 2.6560000000026776,
+      "promptSha256": "d14c7412c09be824f66ea8be48f7650e384c365759140ec89fbb78145556e327"
+    },
+    {
+      "id": "positive-b",
+      "output": "```json\n{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"a\", \"b\", \"c\"]\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 1.7809999999990396,
+      "promptSha256": "13ec466293caeab85cabbf262d6c57516846ec22eac22062db8743f1b10aa56b"
+    },
+    {
+      "id": "no-follow-on",
+      "output": "```json\n{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"d\", \"e\"]\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 1.5159999999996217,
+      "promptSha256": "db8d2f1f09be951414b6f2ac87776e38f640d6361ba776cd0bc6a370e69799f4"
+    },
+    {
+      "id": "remote-only",
+      "output": "```json\n{\n  \"pattern\": \"no_relevant_pattern\",\n  \"evidenceIds\": [\"u\"]\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 1.264999999999418,
+      "promptSha256": "057b86db2075caa06c50c0ed6d2f8359a8e9620409579db358cb00d848da135f"
+    },
+    {
+      "id": "before-sequence",
+      "output": "```json\n{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"w\", \"x\", \"y\"]\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 1.6409999999996217,
+      "promptSha256": "9a9d3a5b14c0fd06c97ccf14f79ce28083c30fc03aa063b7938300e327a79890"
+    },
+    {
+      "id": "late-remote",
+      "output": "```json\n{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"j\", \"k\", \"l\"]\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 1.6720000000022992,
+      "promptSha256": "51c08c80c138eb0b04cef98dc4c2d1118d6a096dbdf35ab4931fd7e7bdba5161"
+    },
+    {
+      "id": "unknown-clock",
+      "output": "```json\n{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"s1\", \"s2\", \"s3\"]\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 1.8119999999980791,
+      "promptSha256": "de2137d9462ba33cde81f49dd8e5678a5766388d08af8d60592be98037507495"
+    },
+    {
+      "id": "empty",
+      "output": "```json\n{\n  \"pattern\": \"no_relevant_pattern\",\n  \"evidenceIds\": []\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 1.1720000000022992,
+      "promptSha256": "7c67a8d8468e3f1f0849f317c9373156dc702fc6639512cfd47918354df9fb94"
+    },
+    {
+      "id": "deauth-only",
+      "output": "```json\n{\n  \"pattern\": \"no_relevant_pattern\",\n  \"evidenceIds\": [\"n\"]\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 1.2809999999990396,
+      "promptSha256": "be116dda5d99066c1e9a40cadb08532a05ef7fec7d279ec87f388676a441c61e"
+    },
+    {
+      "id": "different-network",
+      "output": "```json\n{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"p\", \"q\", \"r\"]\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 1.7659999999996217,
+      "promptSha256": "ce2a2db0c9f6d33931fed76aa1bacbe01dad09186748dd2223a691badcd446d7"
+    },
+    {
+      "id": "reversed-exchange",
+      "output": "```json\n{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"s\", \"t\", \"v\"]\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 1.6559999999990396,
+      "promptSha256": "0ee99e5a62167a478fa79c712782795934164ac4bd0e52b5dac794df438341bc"
+    },
+    {
+      "id": "window-boundary",
+      "output": "```json\n{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"m1\", \"m2\", \"m3\"]\n}\n```",
+      "schemaValid": false,
+      "correct": false,
+      "seconds": 1.75,
+      "promptSha256": "d6394511f70d4be31862d2496fa224394099162b829cd485218ec51b401fa933"
+    }
+  ],
+  "fieldQualified": false,
+  "finalQuantizedModel": false
+}
