@@ -8,7 +8,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.projectrevivesolutions.layertime.controller.signatures.SignatureReportStore
@@ -31,33 +34,32 @@ import kotlinx.coroutines.withContext
         }
     }
     Column(Modifier.fillMaxSize().padding(12.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
-        Text("AI Reports",style=MaterialTheme.typography.titleLarge)
-        Row {
-            TextButton(onClick={archived=false}){Text(if(!archived)"Active · selected" else "Active")}
-            TextButton(onClick={archived=true}){Text(if(archived)"Archived · selected" else "Archived")}
+        AiReportHeading("AI REPORTS")
+        Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+            AiReportAction(if(!archived)"Active •" else "Active"){archived=false}
+            AiReportAction(if(archived)"Archived •" else "Archived"){archived=true}
         }
         val visible=reports.filter {it.archived==archived}
         if(visible.isEmpty())Text(if(archived)"No archived reports" else "No active reports")
         LazyColumn(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(8.dp)) {
-            items(visible,key={it.id}){report->Card(onClick={selectedId=report.id},modifier=Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(12.dp),verticalArrangement=Arrangement.spacedBy(4.dp)) {
+            items(visible,key={it.id}){report->AiReportWindow(Modifier.fillMaxWidth()) {
                     Text(reportTime(report.completedEpochMs),style=MaterialTheme.typography.titleSmall)
                     Text("Report ${report.id.take(8)} · Hunter session ${report.sessions}",style=MaterialTheme.typography.labelSmall)
-                    Text(report.status,style=MaterialTheme.typography.labelSmall)
+                    Text(report.status,color=ReportCyan,style=MaterialTheme.typography.labelSmall)
                     Text(reportWording(report.finding ?: "No accepted finding saved."),style=MaterialTheme.typography.bodySmall)
-                }
+                    AiReportAction("Open report"){selectedId=report.id}
             }}
         }
     }
-    reports.find {it.id==selectedId}?.let {report->AlertDialog(onDismissRequest={selectedId=null},title={Text("Report ${report.id.take(8)}")},text={LazyColumn {item {
+    reports.find {it.id==selectedId}?.let {report->AlertDialog(containerColor=Color(0xFF071E2A),titleContentColor=ReportCyan,textContentColor=ReportInk,shape=CutCornerShape(12.dp),modifier=Modifier.border(.8.dp,ReportCyan.copy(alpha=.5f),CutCornerShape(12.dp)),onDismissRequest={selectedId=null},title={Text("Report ${report.id.take(8)}")},text={LazyColumn {item {
         Text(reportTime(report.completedEpochMs));Text("Hunter session ${report.sessions}")
         Text(report.status);Text(reportWording(report.finding ?: "No accepted AI finding was saved."))
-        TextButton(onClick={exporting=report;export.launch("vixen-ai-report-${report.id.take(12)}.json")}){Text("Export report")}
-        if(report.archived)TextButton(onClick={scope.launch {
+        AiReportAction("Export report"){exporting=report;export.launch("vixen-ai-report-${report.id.take(12)}.json")}
+        if(report.archived)AiReportAction("Restore from archive",onClick={scope.launch {
             val result=withContext(Dispatchers.IO){runCatching {SignatureReportStore(context.filesDir).archive(report.id,false)}}
             if(result.isSuccess)selectedId=null else Toast.makeText(context,"Could not restore report",Toast.LENGTH_LONG).show()
-        }}){Text("Restore from archive")}
-        else TextButton(onClick={confirming=report}){Text("Archive report")}
-    }}},confirmButton={TextButton(onClick={selectedId=null}){Text("Close")}})}
+        }})
+        else AiReportAction("Archive report"){confirming=report}
+    }}},confirmButton={AiReportAction("Close"){selectedId=null}})}
     confirming?.let {ArchiveReportConfirmation(it){confirming=null;selectedId=null}}
 }

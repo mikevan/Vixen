@@ -4,7 +4,10 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.projectrevivesolutions.layertime.controller.signatures.LiveSignatureAnalysis
@@ -30,14 +33,14 @@ internal fun reportTime(time:Long?)=time?.let {DateFormat.getDateTimeInstance(Da
 @Composable internal fun ArchiveReportConfirmation(report:SignatureReportStore.Report,onDismiss:()->Unit) {
     val context=LocalContext.current;val scope=rememberCoroutineScope()
     var saving by remember {mutableStateOf(false)}
-    AlertDialog(onDismissRequest={if(!saving)onDismiss()},title={Text("Archive this report?")},
+    AlertDialog(containerColor=Color(0xFF071E2A),titleContentColor=ReportCyan,textContentColor=ReportInk,shape=CutCornerShape(12.dp),modifier=Modifier.border(.8.dp,ReportCyan.copy(alpha=.5f),CutCornerShape(12.dp)),onDismissRequest={if(!saving)onDismiss()},title={Text("Archive this report?")},
         text={Text("It will leave OPS and remain available in AI Reports. The report and its evidence will be kept.")},
-        dismissButton={TextButton(enabled=!saving,onClick=onDismiss){Text("Cancel")}},
-        confirmButton={TextButton(enabled=!saving,onClick={saving=true;scope.launch {
+        dismissButton={AiReportAction("Cancel",!saving,onDismiss)},
+        confirmButton={AiReportAction("Archive",!saving,onClick={saving=true;scope.launch {
             val result=withContext(Dispatchers.IO){runCatching {SignatureReportStore(context.filesDir).archive(report.id,true)}}
             saving=false
             if(result.isSuccess)onDismiss()else Toast.makeText(context,"Could not archive report",Toast.LENGTH_LONG).show()
-        }}){Text("Archive")}})
+        }})})
 }
 
 @Composable fun LiveSignaturePanel() {
@@ -46,18 +49,16 @@ internal fun reportTime(time:Long?)=time?.let {DateFormat.getDateTimeInstance(Da
     val store=SignatureReportStore(LocalContext.current.filesDir)
     val current=store.current(reports,state.key)
     var confirming by remember {mutableStateOf<SignatureReportStore.Report?>(null)}
-    Card(Modifier.fillMaxWidth().padding(horizontal=10.dp,vertical=6.dp)) {
-        Column(Modifier.padding(12.dp),verticalArrangement=Arrangement.spacedBy(4.dp)) {
-            Text("Current AI report",style=MaterialTheme.typography.titleSmall)
+    AiReportWindow(Modifier.fillMaxWidth().padding(horizontal=10.dp,vertical=6.dp)) {
+            AiReportHeading("CURRENT AI REPORT")
             if(current==null)Text(if(state.status.startsWith("Analyzing"))state.status else "No current report",style=MaterialTheme.typography.bodySmall)
             else {
                 Text(reportTime(current.completedEpochMs),style=MaterialTheme.typography.labelSmall)
                 Text("Report ${current.id.take(8)} · Hunter session ${current.sessions}",style=MaterialTheme.typography.labelSmall)
                 Text(reportWording(current.finding ?: current.status),style=MaterialTheme.typography.bodySmall)
                 if(state.status.startsWith("Analyzing"))Text(state.status,style=MaterialTheme.typography.labelSmall)
-                TextButton(onClick={confirming=current}){Text("Archive")}
+                AiReportAction("Archive"){confirming=current}
             }
-        }
     }
     confirming?.let {ArchiveReportConfirmation(it){confirming=null}}
 }

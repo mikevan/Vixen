@@ -19,10 +19,10 @@ internal fun BuilderModal(onDismiss:()->Unit,content:@Composable ()->Unit) {
     val height=(LocalConfiguration.current.screenHeightDp*.78f).coerceAtMost(650f).dp
     Dialog(onDismissRequest=onDismiss) {
         OpsTelemetryHousing(Modifier.fillMaxWidth().height(height),compact=true) {
-            Column(Modifier.fillMaxSize().padding(start=14.dp,end=14.dp,top=38.dp,bottom=38.dp).verticalScroll(rememberScrollState()),
+            Column(Modifier.fillMaxSize().padding(start=14.dp,end=14.dp,top=58.dp,bottom=58.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement=Arrangement.spacedBy(10.dp)){content()}
-            Box(Modifier.align(Alignment.TopStart)){FrameBackControl(onBack=onDismiss)}
-            Box(Modifier.align(Alignment.BottomStart)){FrameBackControl(bottom=true,onBack=onDismiss)}
+            Box(Modifier.align(Alignment.TopStart).padding(start=18.dp,top=12.dp)){FrameBackControl(onBack=onDismiss)}
+            Box(Modifier.align(Alignment.BottomStart).padding(start=18.dp,bottom=12.dp)){FrameBackControl(bottom=true,onBack=onDismiss)}
         }
     }
 }

@@ -90,3 +90,13 @@ first/last timestamps. These support later comparison with preserved captures
 and journals. Existing reports are not rewritten to invent missing metadata.
 This metadata is written by the existing background analysis worker, not BLE
 callbacks. The model input, prompt and inference settings are unchanged.
+
+
+## Report window styling (build 144)
+
+The OPS report and report-history entries reuse Vixen's instrument housings,
+cyan headings, dark glass and recessed action controls. Report dialogs use the
+same colors and enclosed edges. Shared page and Builder-modal back controls are
+inset inside the housing, with content kept clear of them; the controls have a
+closed outline rather than extending into the outer rail. Navigation, archive
+confirmation, inference and stored evidence behavior are unchanged.

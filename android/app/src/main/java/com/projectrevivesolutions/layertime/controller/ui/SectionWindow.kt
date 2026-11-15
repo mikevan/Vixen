@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 
 private object FrameRailFeedback {var pressedAt by mutableLongStateOf(0L)}
 
-/** A touchable notch in the housing rail; no inset button box. */
+/** Recessed, fully enclosed back key inside its parent housing. */
 @Composable
 internal fun FrameBackControl(bottom:Boolean=false,onBack:()->Unit) {
     val pulse=remember {Animatable(0f)}
@@ -47,13 +47,11 @@ internal fun FrameBackControl(bottom:Boolean=false,onBack:()->Unit) {
         Canvas(Modifier.fillMaxSize()) {
             val p=pulse.value
             val rail=Path().apply {
-                if(!bottom) {
-                    moveTo(0f,10.dp.toPx());lineTo(10.dp.toPx(),0f);lineTo(size.width,0f)
-                    lineTo(size.width-9.dp.toPx(),size.height);lineTo(0f,size.height);close()
-                } else {
-                    moveTo(0f,0f);lineTo(size.width-9.dp.toPx(),0f);lineTo(size.width,size.height)
-                    lineTo(10.dp.toPx(),size.height);lineTo(0f,size.height-10.dp.toPx());close()
-                }
+                val cut=5.dp.toPx()
+                moveTo(cut,1.dp.toPx());lineTo(size.width-cut,1.dp.toPx())
+                lineTo(size.width-1.dp.toPx(),cut);lineTo(size.width-1.dp.toPx(),size.height-cut)
+                lineTo(size.width-cut,size.height-1.dp.toPx());lineTo(cut,size.height-1.dp.toPx())
+                lineTo(1.dp.toPx(),size.height-cut);lineTo(1.dp.toPx(),cut);close()
             }
             drawPath(rail,Color(0xFF071E2A))
             drawPath(rail,Color(0xFF66E6FA).copy(alpha=.38f+.62f*p),style=Stroke((.8f+p)*density))
@@ -73,8 +71,8 @@ internal fun FrameBackControl(bottom:Boolean=false,onBack:()->Unit) {
 internal fun SectionWindow(framed:Boolean,onBack:()->Unit,content:@Composable ()->Unit) {
     if(!framed){content();return}
     OpsTelemetryHousing(Modifier.fillMaxSize(),compact=true) {
-        Box(Modifier.fillMaxSize().padding(start=12.dp,end=12.dp,top=34.dp,bottom=34.dp)){content()}
-        Box(Modifier.align(Alignment.TopStart)){FrameBackControl(onBack=onBack)}
-        Box(Modifier.align(Alignment.BottomStart)){FrameBackControl(bottom=true,onBack=onBack)}
+        Box(Modifier.fillMaxSize().padding(start=12.dp,end=12.dp,top=58.dp,bottom=58.dp)){content()}
+        Box(Modifier.align(Alignment.TopStart).padding(start=18.dp,top=12.dp)){FrameBackControl(onBack=onBack)}
+        Box(Modifier.align(Alignment.BottomStart).padding(start=18.dp,bottom=12.dp)){FrameBackControl(bottom=true,onBack=onBack)}
     }
 }
