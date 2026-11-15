@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Date
 
-private fun reportWording(text:String)=text.replace("Deauthentication and EAPOL observations", "Wi-Fi disconnect messages and connection-handshake traffic").replace("Remote ID broadcast","drone identification broadcast").replace("Remote ID preceded","A drone identification broadcast preceded")
+private fun reportWording(text:String)=text.replace("Deauthentication and EAPOL observations", "Wi-Fi disconnect messages and connection-handshake traffic").replace("Remote ID broadcast","drone identification broadcast").replace("Remote ID preceded","A drone identification broadcast preceded").replace("an unverified drone identification broadcast","a drone identification broadcast").replace(" This is a candidate sequence for review; it does not prove an outage, a coordinated attack, or hostile drone intent.", "")
 
 private fun reportTime(time:Long?)=time?.let {DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(Date(it))} ?: "Creation time unavailable"
 
@@ -70,7 +70,6 @@ private fun reportTime(time:Long?)=time?.let {DateFormat.getDateTimeInstance(Dat
     selected?.let {report->AlertDialog(onDismissRequest={selected=null},title={Text("Report ${report.id.take(8)}")},text={LazyColumn {item {
         Text(reportTime(report.completedEpochMs));Text("Hunter session ${report.sessions}")
         Text(report.status);Text(reportWording(report.finding ?: "No accepted AI finding was saved."))
-        Text("A drone identification broadcast is a message claiming to identify a drone. Its identity and intent have not been verified.")
         TextButton(onClick={exporting=report;export.launch("vixen-ai-report-${report.id.take(12)}.json")}){Text("Export report")}
         TextButton(onClick={scope.launch {
             val result=withContext(Dispatchers.IO){runCatching {store.archive(report.id,!report.archived)}}

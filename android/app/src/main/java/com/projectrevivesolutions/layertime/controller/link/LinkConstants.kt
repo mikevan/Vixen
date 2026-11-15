@@ -148,7 +148,7 @@ object LinkConstants {
             4 to "COUNTER-INTRUSION", 5 to "DEAUTH", 6 to "PWNAGOTCHI", 7 to "MULTISSID",
             8 to "FLOCK", 9 to "PINEAPPLE", 10 to "AIRTAG", 11 to "FLIPPER", 12 to "META",
             13 to "AXON", 14 to "TILE", 15 to "SMARTTAG", 16 to "GOOGLE TAG", 17 to "EARLY WARNING",
-            18 to "EAPOL", 19 to "DRONE IDENTIFICATION BROADCAST (UNVERIFIED)"
+            18 to "EAPOL", 19 to "Drone"
         )
         fun name(v: Int) = display[v] ?: "TARGET($v)"
     }

@@ -53,8 +53,10 @@ from the assessment files. Repeating Archive or Restore does not edit or delete
 reports, rerun inference, reset notification suppression or change capture.
 Archived reports still participate in the existing assessment cache.
 
-The user-facing detector and report wording says **drone identification
-broadcast**, explaining that the signal's identity and intent are unverified.
+The user-facing sensor label is **Drone**. Reports describe the drone
+identification broadcast and the detected sequence in plain language. Specific
+evidence gaps or conflicting timing remain explicit; generic warnings are not
+repeated in every report.
 Technical evidence retains Remote ID terminology and original bytes. Older saved
 reports use the clearer wording when displayed; exported originals stay intact.
 
