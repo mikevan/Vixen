@@ -165,7 +165,7 @@ fun MissionScreen(selected:Set<Int>,link:MissionLink,onSelectionChange:(Set<Int>
                             .padding(horizontal=9.dp,vertical=5.dp),verticalAlignment=Alignment.CenterVertically,
                             horizontalArrangement=Arrangement.spacedBy(10.dp)) {
                             MissionCheck(if(checked)SensorSelection.PresetState.ALL else SensorSelection.PresetState.NONE)
-                            Text(LinkConstants.ReconTarget.name(id),color=if(checked)MissionGreen else MissionInk,
+                            Text(if(id==19) "Drone" else LinkConstants.ReconTarget.name(id),color=if(checked)MissionGreen else MissionInk,
                                 style=MissionType.copy(fontSize=10.sp,lineHeight=13.sp,letterSpacing=.5.sp))
                         }
                     }
