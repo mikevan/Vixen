@@ -55,6 +55,7 @@ fun SystemModule(title:String,icon:ImageVector=Icons.Outlined.Settings,status:Co
             Column(Modifier.fillMaxWidth().padding(start=18.dp,end=18.dp,top=18.dp,bottom=22.dp),
                 verticalArrangement=Arrangement.spacedBy(7.dp)) {
                 Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(7.dp)) {
+                    if(title=="POSITION")PageBackControl()
                     if(status!=null) Box(Modifier.size(6.dp).background(status,CircleShape))
                     else Icon(icon,null,tint=SysCyan,modifier=Modifier.size(15.dp))
                     Text(title,color=SysInk,style=SysType.copy(fontSize=12.sp,lineHeight=15.sp,letterSpacing=.7.sp),modifier=Modifier.weight(1f))

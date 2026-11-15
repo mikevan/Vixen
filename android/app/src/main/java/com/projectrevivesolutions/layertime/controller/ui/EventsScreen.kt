@@ -50,6 +50,7 @@ fun EventsScreen(events:List<EventRow>,emptyMessage:String,onImport:()->Unit,onO
         Column(Modifier.fillMaxSize().padding(start=18.dp,end=18.dp,top=20.dp,bottom=24.dp),
             verticalArrangement=Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
+                PageBackControl()
                 Text("DETECTIONS  /",color=EventsInk,style=EventsType.copy(fontSize=12.sp,lineHeight=15.sp,letterSpacing=.6.sp))
                 Text("  ${events.size}",color=EventsGold,style=EventsType.copy(fontSize=12.sp,lineHeight=15.sp,fontWeight=FontWeight.Medium))
                 Spacer(Modifier.weight(1f))

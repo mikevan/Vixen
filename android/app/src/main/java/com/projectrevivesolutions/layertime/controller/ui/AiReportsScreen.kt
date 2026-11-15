@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.projectrevivesolutions.layertime.controller.signatures.SignatureReportStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,8 +34,12 @@ import kotlinx.coroutines.withContext
             Toast.makeText(context,if(result.isSuccess)"Report exported" else "Could not export report",Toast.LENGTH_LONG).show()
         }
     }
-    Column(Modifier.fillMaxSize().padding(12.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
-        AiReportHeading("AI REPORTS")
+    OpsTelemetryHousing(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().padding(start=18.dp,end=18.dp,top=20.dp,bottom=24.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
+        Row(horizontalArrangement=Arrangement.spacedBy(8.dp),verticalAlignment=androidx.compose.ui.Alignment.CenterVertically) {
+            PageBackControl()
+            Text("AI REPORTS",color=ReportCyan,style=ReportType.copy(letterSpacing=.8.sp))
+        }
         Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
             AiReportAction(if(!archived)"Active •" else "Active"){archived=false}
             AiReportAction(if(archived)"Archived •" else "Archived"){archived=true}
@@ -42,14 +47,16 @@ import kotlinx.coroutines.withContext
         val visible=reports.filter {it.archived==archived}
         if(visible.isEmpty())Text(if(archived)"No archived reports" else "No active reports")
         LazyColumn(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(8.dp)) {
-            items(visible,key={it.id}){report->AiReportWindow(Modifier.fillMaxWidth()) {
+            items(visible,key={it.id}){report->Column(Modifier.fillMaxWidth().padding(vertical=8.dp),verticalArrangement=Arrangement.spacedBy(4.dp)) {
                     Text(reportTime(report.completedEpochMs),style=MaterialTheme.typography.titleSmall)
                     Text("Report ${report.id.take(8)} · Hunter session ${report.sessions}",style=MaterialTheme.typography.labelSmall)
                     Text(report.status,color=ReportCyan,style=MaterialTheme.typography.labelSmall)
                     Text(reportWording(report.finding ?: "No accepted finding saved."),style=MaterialTheme.typography.bodySmall)
                     AiReportAction("Open report"){selectedId=report.id}
+                    HorizontalDivider(color=ReportCyan.copy(alpha=.22f),thickness=.5.dp)
             }}
         }
+    }
     }
     reports.find {it.id==selectedId}?.let {report->AlertDialog(containerColor=Color(0xFF071E2A),titleContentColor=ReportCyan,textContentColor=ReportInk,shape=CutCornerShape(12.dp),modifier=Modifier.border(.8.dp,ReportCyan.copy(alpha=.5f),CutCornerShape(12.dp)),onDismissRequest={selectedId=null},title={Text("Report ${report.id.take(8)}")},text={LazyColumn {item {
         Text(reportTime(report.completedEpochMs));Text("Hunter session ${report.sessions}")

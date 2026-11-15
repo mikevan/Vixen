@@ -252,6 +252,7 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
         Column(Modifier.fillMaxSize().padding(start=18.dp,end=18.dp,top=20.dp,bottom=20.dp),
             verticalArrangement=Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(4.dp)) {
+                PageBackControl()
                 Text("WORKSPACE",color=BuilderInk,style=BuilderType.copy(letterSpacing=.5.sp),modifier=Modifier.weight(1f))
                 BuilderControl("Zoom out",Icons.Outlined.Remove,zoom>BuilderViewport.MIN_ZOOM) {
                     if(vw>0f)update(current().transform(1f/1.25f,vw/2f,vh/2f,0f,0f,vw,vh,worldWidth,worldHeight))}

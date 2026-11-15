@@ -72,6 +72,7 @@ fun MissionScreen(selected:Set<Int>,link:MissionLink,onSelectionChange:(Set<Int>
         Column(Modifier.fillMaxSize().padding(start=18.dp,end=18.dp,top=20.dp,bottom=24.dp),
             verticalArrangement=Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
+                PageBackControl()
                 Text("MISSION CONFIGURATION",color=MissionInk,style=MissionType.copy(fontSize=12.sp,lineHeight=15.sp,letterSpacing=.5.sp),modifier=Modifier.weight(1f))
                 Text("///",color=MissionCyan.copy(alpha=.6f),style=MissionType.copy(letterSpacing=1.sp))
             }

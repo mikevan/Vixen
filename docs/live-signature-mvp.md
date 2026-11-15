@@ -100,3 +100,12 @@ same colors and enclosed edges. Shared page and Builder-modal back controls are
 inset inside the housing, with content kept clear of them; the controls have a
 closed outline rather than extending into the outer rail. Navigation, archive
 confirmation, inference and stored evidence behavior are unchanged.
+
+
+## Single-frame pages (build 145)
+
+The added outer route housing and its top/bottom control bands were removed.
+Back is part of the existing content frame on Mission, Events, Tools, Builder,
+System and AI Reports. AI Reports uses one frame with divided history entries,
+not a second set of framed cards inside another housing. The OPS current report
+retains its single housing. Navigation and data retention are unchanged.

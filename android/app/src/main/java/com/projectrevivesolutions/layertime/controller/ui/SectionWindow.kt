@@ -26,7 +26,7 @@ private object FrameRailFeedback {var pressedAt by mutableLongStateOf(0L)}
 
 /** Recessed, fully enclosed back key inside its parent housing. */
 @Composable
-internal fun FrameBackControl(bottom:Boolean=false,onBack:()->Unit) {
+internal fun FrameBackControl(bottom:Boolean=false,compact:Boolean=false,onBack:()->Unit) {
     val pulse=remember {Animatable(0f)}
     val view=LocalView.current
     val tone=remember {runCatching {ToneGenerator(AudioManager.STREAM_SYSTEM,20)}.getOrNull()}
@@ -37,7 +37,7 @@ internal fun FrameBackControl(bottom:Boolean=false,onBack:()->Unit) {
             pulse.snapTo(1f);pulse.animateTo(.15f,tween(55));pulse.animateTo(1f,tween(55));pulse.animateTo(0f,tween(240))
         }
     }
-    Box(Modifier.width(96.dp).height(32.dp).clickable(role=Role.Button,onClickLabel="Back") {
+    Box(Modifier.width(if(compact)64.dp else 96.dp).height(32.dp).clickable(role=Role.Button,onClickLabel="Back") {
         FrameRailFeedback.pressedAt=android.os.SystemClock.uptimeMillis()
         view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         if(Settings.System.getInt(view.context.contentResolver,Settings.System.SOUND_EFFECTS_ENABLED,1)==1)
@@ -66,13 +66,14 @@ internal fun FrameBackControl(bottom:Boolean=false,onBack:()->Unit) {
     }
 }
 
-/** Shared housing and rail controls around every phone/tablet route. */
+/** Routes supply navigation; the existing content housing owns its back key. */
+internal val LocalPageBack=staticCompositionLocalOf<(() -> Unit)?> {null}
+
+@Composable internal fun PageBackControl() {
+    LocalPageBack.current?.let {FrameBackControl(compact=true,onBack=it)}
+}
+
 @Composable
 internal fun SectionWindow(framed:Boolean,onBack:()->Unit,content:@Composable ()->Unit) {
-    if(!framed){content();return}
-    OpsTelemetryHousing(Modifier.fillMaxSize(),compact=true) {
-        Box(Modifier.fillMaxSize().padding(start=12.dp,end=12.dp,top=58.dp,bottom=58.dp)){content()}
-        Box(Modifier.align(Alignment.TopStart).padding(start=18.dp,top=12.dp)){FrameBackControl(onBack=onBack)}
-        Box(Modifier.align(Alignment.BottomStart).padding(start=18.dp,bottom=12.dp)){FrameBackControl(bottom=true,onBack=onBack)}
-    }
+    CompositionLocalProvider(LocalPageBack provides if(framed)onBack else null) {content()}
 }

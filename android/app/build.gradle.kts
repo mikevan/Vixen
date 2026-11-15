@@ -26,10 +26,10 @@ android {
         targetSdk = 36
         // Build 111: Android-compatible summary placeholders, on-device practice regression.
         // Build 110: visual report rules and a reproducible, labeled Builder practice capture.
-        versionCode = 144
+        versionCode = 145
         buildConfigField("boolean", "LT_ARM_DOTPROD_EXPERIMENT", "false")
         buildConfigField("boolean", "LT_ARM_I8MM_EXPERIMENT", "false")
-        versionName = "0.1.144-beta.1"
+        versionName = "0.1.145-beta.1"
         // build 88: analytic pipeline slice 1 - workflow wiring files (deauth triage shipped), engine, seven checks + verdict, frame fabricator fixtures, read-only Builder viewer, TRIAGE on event detail
         // build 87: MISSION wired to the Hunter (SetSensors allow-list), presets check their sensors, sensors grouped, EAPOL listed; OPS "Select Sensors" (All Sensors / Only Deauth) is a shortcut into MISSION
         // build 86: watch to cool steel, teal ground, toward the OPS comp; six destinations (OPS, EVENTS, TOOLS, BUILDER, MISSION, SYSTEM)
