@@ -31,4 +31,20 @@ class SignatureReportStoreTest {
             assertNull(report.completedEpochMs);assertNull(report.finding)
         }finally {root.deleteRecursively()}
     }
+    @Test fun archived_current_never_falls_back_to_older_report_after_restart() {
+        val root=Files.createTempDirectory("reports").toFile()
+        try {
+            val store=SignatureReportStore(root)
+            val dir=File(root,"signature-assessments").apply {mkdirs()}
+            val older=SignatureReportStore.idForKey("older");val newest=SignatureReportStore.idForKey("newest")
+            File(dir,"$older.json").writeText("""{"completedEpochMs":100,"finding":"old"}""")
+            File(dir,"$newest.json").writeText("""{"completedEpochMs":200,"finding":"new"}""")
+            assertEquals(newest,store.current(store.list(),null)!!.id)
+            store.archive(newest,true)
+            assertNull(store.current(store.list(),"newest"));assertNull(SignatureReportStore(root).current(store.list(),null))
+            assertEquals(2,store.list().size)
+            store.archive(newest,false);assertEquals(newest,store.current(store.list(),null)!!.id)
+        } finally {root.deleteRecursively()}
+    }
+
 }

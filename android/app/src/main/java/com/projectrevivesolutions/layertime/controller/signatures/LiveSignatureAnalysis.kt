@@ -47,13 +47,20 @@ class LiveSignatureAnalysis(private val context:Context) {
                     return@collect
                 }
                 val identity=coordinator.availability().manifest
-                val inputRecord=mapOf("schema" to "vixen-live-signature/1","input" to FlowJson.parse(input.json),
-                    "source" to input.records.map {mapOf("producer" to it.producerAddress,"sessionId" to it.sessionId,
-                        "eventId" to it.eventId,"detail" to it.detail,"firstUptimeMs" to it.sourceFirstUptimeMs)},
-                    "timeBasis" to "same-producer-session-uptime","modelSha256" to identity?.sha256,"modelVersion" to identity?.version,"status" to "pending")
-                save(inputRecord)
                 val system=context.assets.open("ai/production/signature-system.txt").bufferedReader().use {it.readText()}
                 val schema=context.assets.open("ai/production/signature-schema.json").bufferedReader().use {it.readText()}
+                val grammar=context.assets.open("ai/production/signature.gbnf").bufferedReader().use {it.readText()}
+                val inputRecord=mapOf("schema" to "vixen-live-signature/1","input" to FlowJson.parse(input.json),
+                    "source" to input.records.map {mapOf("producer" to it.producerAddress,"sessionId" to it.sessionId,
+                        "eventId" to it.eventId,"detail" to it.detail,"firstUptimeMs" to it.sourceFirstUptimeMs,
+                        "lastUptimeMs" to it.sourceLastUptimeMs,"sourceId" to it.sourceId,"detector" to it.detector,
+                        "sourceKind" to it.sourceKind,"count" to it.count)},
+                    "analysisContext" to mapOf("appVersionCode" to com.projectrevivesolutions.layertime.controller.BuildConfig.VERSION_CODE,
+                        "appVersionName" to com.projectrevivesolutions.layertime.controller.BuildConfig.VERSION_NAME,
+                        "systemPrompt" to system,"outputSchema" to schema,"grammar" to grammar,
+                        "maxOutputTokens" to 64,"timeoutMs" to 120000),
+                    "timeBasis" to "same-producer-session-uptime","modelSha256" to identity?.sha256,"modelVersion" to identity?.version,"status" to "pending")
+                save(inputRecord)
                 val request=LocalModelRequest(AiTask.INTERPRET_SIGNATURE,listOf(PromptMessage(PromptMessage.Role.SYSTEM,system),
                     PromptMessage(PromptMessage.Role.USER,input.json)),schema,64)
                 var rawOutput:String?=null

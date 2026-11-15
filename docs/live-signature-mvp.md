@@ -62,3 +62,31 @@ reports use the clearer wording when displayed; exported originals stay intact.
 
 This is a normal product feature. The completed T1 result belongs to frozen
 build 141; future tests must record the actual new build number.
+
+
+## OPS current report and AI Reports page (build 143)
+
+OPS has one dedicated current-report panel. Archive opens a confirmation with
+Cancel and Archive. Confirming removes that report from OPS; an older report is
+not promoted into its place, including after restarting the application. A new
+assessment can populate the panel. Restore makes a report active again, but an
+older restored report does not replace the newest assessment.
+
+The navigation's Reports tab opens the AI Reports page, with Active and Archived
+history, newest first. Each assessment retains its completion time, stable ID,
+Hunter session and original status. Report details provide Export and Restore;
+archiving from history requires the same confirmation as OPS.
+
+Archive changes only separate presentation metadata. It never deletes reports,
+packet captures, field journals, card imports or source records, and does not
+trigger inference or change notification deduplication. The original reports and
+raw outputs stay byte-identical. JSON export includes the report; packet files
+and journals remain separate on the phone and in the preserved test backups.
+
+New assessments also retain application version, the system prompt, output
+schema and grammar, output budget and timeout, model hash/version, prepared
+model input, raw model response, source identifiers, counts and source-clock
+first/last timestamps. These support later comparison with preserved captures
+and journals. Existing reports are not rewritten to invent missing metadata.
+This metadata is written by the existing background analysis worker, not BLE
+callbacks. The model input, prompt and inference settings are unchanged.

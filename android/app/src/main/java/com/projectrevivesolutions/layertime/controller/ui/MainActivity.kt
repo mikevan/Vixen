@@ -689,6 +689,8 @@ private fun ControllerScreen() {
                         }
                     }
 
+                    "ai-reports" -> AiReportsScreen()
+
                     "builder" -> BuilderScreen(onWireshark = { page = "wireshark" }, onTimeline = { page = "timeline" })
 
                     "capture" -> CaptureOnlyScreen(onBack = { goBack() }, onOpenWireshark = { page = "wireshark" })
@@ -1247,6 +1249,7 @@ private fun SlashAccent(edge: Color) {
 /** The console page that a destination opens. */
 private fun pageFor(d: Destination): String = when (d) {
     Destination.OPS -> "main"
+    Destination.REPORTS -> "ai-reports"
     Destination.EVENTS -> "attacks"
     Destination.TOOLS -> "tools"
     Destination.BUILDER -> "builder"
@@ -1262,6 +1265,7 @@ private fun destForPage(page: String): Destination = when (page) {
     "builder" -> Destination.BUILDER
     "config" -> Destination.MISSION
     "system" -> Destination.SYSTEM
+    "ai-reports" -> Destination.REPORTS
     else -> Destination.OPS
 }
 
