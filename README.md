@@ -35,3 +35,5 @@ Source ancestry is recorded in `EXTRACTION.json`; original Git history remains i
 GitHub Actions builds the diagnostic APK and unsigned Play APK/AAB from source, runs both unit-test variants, and retains results for 14 days. See [Play candidate preparation](docs/play-candidate.md) for device testing, signing and submission requirements.
 
 MVP objectives, KPI definitions, passive instrumentation and non-interference requirements: [MVP OKRs](docs/mvp-okrs.md).
+
+The [live signature MVP workflow and qualification record](docs/live-signature-mvp.md) describes the current bounded offline model, normal operation and remaining field limits.

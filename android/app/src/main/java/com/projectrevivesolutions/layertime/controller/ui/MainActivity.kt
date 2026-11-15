@@ -306,7 +306,7 @@ private fun ControllerScreen() {
     val is24 = DateFormat.is24HourFormat(context)
     val hourText = remember(nowMs, is24) { SimpleDateFormat(if (is24) "HH" else "hh", Locale.US).format(Date(nowMs)) }
     val minText = remember(nowMs) { SimpleDateFormat("mm", Locale.US).format(Date(nowMs)) }
-    val dateText = remember(nowMs) { SimpleDateFormat("EEE '•' MMM dd", Locale.US).format(Date(nowMs)).uppercase() }
+    val dateText = remember(nowMs) { SimpleDateFormat("EEE 'â€¢' MMM dd", Locale.US).format(Date(nowMs)).uppercase() }
 
     val permLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -483,9 +483,9 @@ private fun ControllerScreen() {
     }
     val fahrenheit = remember { RingData.useFahrenheit() }
     // N/A only when the device has no sensor; "--" while a sensor has not reported yet.
-    val tempValue = ambientC?.let { c -> "%.0f°".format(if (fahrenheit) c * 9f / 5f + 32f else c) }
+    val tempValue = ambientC?.let { c -> "%.0fÂ°".format(if (fahrenheit) c * 9f / 5f + 32f else c) }
         ?: if (hasTempSensor && !tempSilent) "--" else null
-    val tempUnit = if (ambientC != null) (if (fahrenheit) "°F" else "°C") else null
+    val tempUnit = if (ambientC != null) (if (fahrenheit) "Â°F" else "Â°C") else null
     // Position for the SUN ring: a GPS fix or a grid the operator entered, whichever is newer.
     // A fresh GPS fix takes over from an older manual entry; entering a grid after the last
     // fix means the operator knows better where they are now.
@@ -561,7 +561,7 @@ private fun ControllerScreen() {
                             item {
                                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                    SciFiOutline("‹ BACK", enabled = true) { page = "main" }
+                                    SciFiOutline("â€¹ BACK", enabled = true) { page = "main" }
                                     Text("MISSION CONFIGURATION", color = LtColors.ConsoleEdge, fontWeight = FontWeight.Bold,
                                         fontSize = 16.sp, letterSpacing = 2.sp, style = glowText())
                                 }
@@ -658,7 +658,7 @@ private fun ControllerScreen() {
                             item {
                                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                    SciFiOutline("‹ BACK", enabled = true) { page = "main" }
+                                    SciFiOutline("â€¹ BACK", enabled = true) { page = "main" }
                                     Text("DETECTED ATTACKS  //  ${events.size}", color = LtColors.ConsoleEdge,
                                         fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 2.sp, style = glowText())
                                 }
@@ -680,7 +680,7 @@ private fun ControllerScreen() {
                                     Column {
                                         Text("#${e.eventId}  ${e.detectorName}", color = LtColors.Amber,
                                             fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 1.sp)
-                                        Text("${LinkConstants.SourceKind.name(e.sourceKind)} · ${LinkConstants.Band.name(e.band)} · ch ${e.channel} · ${e.rssi} dBm · x${e.count}   → TAP FOR DETAIL",
+                                        Text("${LinkConstants.SourceKind.name(e.sourceKind)} Â· ${LinkConstants.Band.name(e.band)} Â· ch ${e.channel} Â· ${e.rssi} dBm Â· x${e.count}   â†’ TAP FOR DETAIL",
                                             color = LtColors.Ivory, fontSize = 12.sp, fontFamily = ConsoleFonts.mono)
                                     }
                                 }
@@ -847,7 +847,7 @@ private fun ControllerScreen() {
                                         Text("Server 0.${server!!.serverMinor}   |   Session ${server!!.sessionId}   |   Max frames ${server!!.maxFrame}",
                                             color = LtColors.Ivory, fontSize = 12.sp, fontFamily = ConsoleFonts.mono)
                                     }
-                                    SciFiPrimary(if (scanBusy) "Scanning…" else "Scan", enabled = !scanBusy, large = true) { scanHunters() }
+                                    SciFiPrimary(if (scanBusy) "Scanningâ€¦" else "Scan", enabled = !scanBusy, large = true) { scanHunters() }
                                     HunterRoster.sentence(rosterScan)?.let { Text(it, color = LtColors.Cyan, fontSize = 12.sp) }
                                     // Why the link is where it is, and what to tap next (ConnNotice).
                                     val notice = locationNotice?.let { ConnNotice.Notice(it, ConnNotice.Tone.PROBLEM) }
@@ -1078,6 +1078,7 @@ private fun ControllerScreen() {
                                 OpsWatchAssembly(Modifier.size(diameter * 1.10f).zIndex(1f)) { face(it, false) }
                             }
                         }
+                        LiveSignaturePanel()
                     } else {
                         NavHeaderStrip(dest.label, active, events.size, linkStale)
                     }
@@ -1335,7 +1336,7 @@ private fun HudStatusStrip(active: Boolean, connecting: Boolean, events: Int, st
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text("LT ◆ CONSOLE", color = edge, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 2.sp,
+        Text("LT â—† CONSOLE", color = edge, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 2.sp,
             style = glowText(), modifier = Modifier.weight(1f))
         HudLed(linkColor, 8.dp)
         Text(linkText, color = linkColor, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.sp,
@@ -1467,8 +1468,8 @@ private fun EventRowCard(e: EventRow, onOpen: () -> Unit) {
             Column(Modifier.padding(19.dp)) {
                 Text("#${e.eventId}  ${e.detectorName}", color = LtColors.Amber,
                     fontWeight = FontWeight.Bold, fontSize = 14.sp, letterSpacing = 1.sp)
-                Text("${LinkConstants.SourceKind.name(e.sourceKind)} · ${LinkConstants.Band.name(e.band)} · " +
-                    "ch ${e.channel} · ${e.rssi} dBm · x${e.count} · ${e.ageSeconds}s · " +
+                Text("${LinkConstants.SourceKind.name(e.sourceKind)} Â· ${LinkConstants.Band.name(e.band)} Â· " +
+                    "ch ${e.channel} Â· ${e.rssi} dBm Â· x${e.count} Â· ${e.ageSeconds}s Â· " +
                     LinkConstants.Confidence.name(e.confidence), color = LtColors.Ivory, fontSize = 12.sp,
                     fontFamily = ConsoleFonts.mono)
                 e.sourceId?.let { Text("id: $it", color = LtColors.Grey, fontSize = 12.sp, fontFamily = ConsoleFonts.mono) }

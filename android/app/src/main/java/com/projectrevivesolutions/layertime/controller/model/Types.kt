@@ -44,6 +44,8 @@ data class EventRow(
     /** The Hunter event ids folded into this row, lowest first; empty for a raw record. */
     val mergedEventIds: List<Long> = emptyList(),
     val producerAddress: String? = null,
+    val sourceFirstUptimeMs: Long? = null,
+    val sourceLastUptimeMs: Long? = null,
 )
 
 /** One signal reading for an event, as the phone received it. */

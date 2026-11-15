@@ -1,0 +1,10 @@
+{
+  "modelSha256": "3d529dd89436601669d6d92f9c67793f35d7ba3a71bfe15cb44ae9547e7f194c",
+  "casesSha256": "e226d35a0ea0c498d64c2172e6dfd118d48bdbc6d8cb4cfab0c8c5d36ed415d6",
+  "systemSha256": "600281fece5da3236bf6ec9d5dddbf2bba819da0b291d2632945dabb2f5c542e",
+  "schemaSha256": "d7040ab009995ee38f72e4a6195f6325acd4b896e464d290e40cb4cc57257654",
+  "maxOutputTokens": 64,
+  "contextTokens": 2048,
+  "allRequired": true,
+  "syntheticNotIndependent": true
+}

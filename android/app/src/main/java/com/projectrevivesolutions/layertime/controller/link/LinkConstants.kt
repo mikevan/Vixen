@@ -97,6 +97,8 @@ object LinkConstants {
         // Bit 7: the Node takes COMMAND SetSensors, the sensor allow-list (2026-11-04).
         const val SENSOR_SET = 0x80
         // Bit 8: the Node takes COMMAND SetEvidenceHold (2026-11-04). Only a Hunter that keeps frames sets it.
+        const val REMOTE_ID = 0x800
+        const val OBSERVATION_TIME = 0x1000
         const val EVIDENCE_HOLD = 0x100
         fun describe(mask: Int): List<String> = buildList {
             if (mask and LOCAL_WIFI_MONITOR != 0) add("wifi")
@@ -146,7 +148,7 @@ object LinkConstants {
             4 to "COUNTER-INTRUSION", 5 to "DEAUTH", 6 to "PWNAGOTCHI", 7 to "MULTISSID",
             8 to "FLOCK", 9 to "PINEAPPLE", 10 to "AIRTAG", 11 to "FLIPPER", 12 to "META",
             13 to "AXON", 14 to "TILE", 15 to "SMARTTAG", 16 to "GOOGLE TAG", 17 to "EARLY WARNING",
-            18 to "EAPOL"
+            18 to "EAPOL", 19 to "REMOTE ID (UNVERIFIED)"
         )
         fun name(v: Int) = display[v] ?: "TARGET($v)"
     }
@@ -170,5 +172,6 @@ object LinkConstants {
     object TextField {
         const val SOURCE_ID = 0
         const val DETAIL = 1
+        const val OBSERVATION_TIME = 2
     }
 }

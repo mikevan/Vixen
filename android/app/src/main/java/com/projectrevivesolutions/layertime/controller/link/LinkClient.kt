@@ -37,7 +37,7 @@ import java.util.UUID
  * pulls detection events with GET_CHANGED whenever the Node's changeSeq moves.
  *
  * It honours the contract's rules: one outstanding Control request at a time,
- * ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°Ãƒâ€šÃ‚Â¤20-byte frames, pull-not-push. All wire encode/decode goes through
+ * ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤20-byte frames, pull-not-push. All wire encode/decode goes through
  * [LinkCodec], which is verified against contracts/vectors/link_frames.json.
  *
  * All queue manipulation and GATT calls are marshalled onto a single Handler so
@@ -679,7 +679,9 @@ class LinkClient(private val appContext: Context) {
 
     /** Sends the saved MISSION list. Only a Hunter with Capability.SENSOR_SET takes it. */
     private fun sendSensors() {
-        val mask = SensorSelection.mask(MissionPrefs.readSensors(appContext))
+        val requested = SensorSelection.mask(MissionPrefs.readSensors(appContext))
+        val remoteIdSupported=(repo.server.value?.capabilities ?: 0) and LinkConstants.Capability.REMOTE_ID != 0
+        val mask=if(remoteIdSupported)requested else requested and (1L shl 19).inv()
         sentSensorMask = mask
         val id = nextReqId(); submit(LinkConstants.Op.COMMAND, LinkCodec.setSensors(id, mask))
         repo.log(LogEntry.Category.COMMAND, "SetSensors 0x%05X #$id".format(mask))
@@ -853,6 +855,8 @@ class LinkClient(private val appContext: Context) {
                 // Fetch human-readable identifiers the first time we see them.
                 if (newOne && f.hasSourceId) getTextQueued(f.eventId, LinkConstants.TextField.SOURCE_ID)
                 if (newOne && f.hasDetail) getTextQueued(f.eventId, LinkConstants.TextField.DETAIL)
+                if (newOne && (repo.server.value?.capabilities ?: 0) and LinkConstants.Capability.OBSERVATION_TIME != 0)
+                    getTextQueued(f.eventId, LinkConstants.TextField.OBSERVATION_TIME)
             }
             is Frame.Text -> textFrags.add(f)
             is Frame.End -> if (pending?.kind == LinkCard.OP_CARD_CLEAR) {

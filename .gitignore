@@ -15,3 +15,6 @@ third_party/llama.cpp/
 
 # Locally staged diagnostic model package, excluded from source and CI.
 /android/app/src/debug/assets/ai/development/
+
+# Offline release weights are delivered as release artifacts, not Git source.
+*.gguf

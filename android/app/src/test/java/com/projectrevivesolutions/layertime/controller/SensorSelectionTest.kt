@@ -14,18 +14,18 @@ class SensorSelectionTest {
     private val deauth = 5; private val pwnagotchi = 6; private val multiSsid = 7; private val flock = 8
     private val pineapple = 9; private val airTag = 10; private val flipper = 11; private val meta = 12
     private val axon = 13; private val tile = 14; private val smartTag = 15; private val googleTag = 16
-    private val eapol = 18
+    private val eapol = 18; private val remoteId = 19
 
     @Test fun groupsMatchTheHunterGroupTableInOrder() {
         // src/core/logic/ReconSelection.cpp, kTrackerMembers and the two after it.
         assertEquals(listOf(airTag, tile, smartTag, googleTag), SensorSelection.group(2)!!.members)
-        assertEquals(listOf(flock, axon, meta), SensorSelection.group(3)!!.members)
+        assertEquals(listOf(flock, axon, meta, remoteId), SensorSelection.group(3)!!.members)
         assertEquals(listOf(deauth, pwnagotchi, multiSsid, pineapple, flipper, eapol), SensorSelection.group(4)!!.members)
-        assertEquals(13, SensorSelection.ALL_SENSORS.toSet().size) // every sensor once, EAPOL included
+        assertEquals(14, SensorSelection.ALL_SENSORS.toSet().size) // every sensor once, EAPOL included
     }
 
     @Test fun allMaskIsTheHuntersAllSensorsMask() {
-        assertEquals(0x5FFE0L, SensorSelection.mask(SensorSelection.ALL_SENSORS.toSet()))
+        assertEquals(0xDFFE0L, SensorSelection.mask(SensorSelection.ALL_SENSORS.toSet()))
         assertEquals(SensorSelection.ALL_MASK, SensorSelection.mask(SensorSelection.ALL_SENSORS.toSet()))
     }
 
@@ -41,7 +41,7 @@ class SensorSelectionTest {
     @Test fun aPartialPresetShowsPartialAndATapFillsIt() {
         val some = setOf(flock)
         assertEquals(PresetState.PARTIAL, SensorSelection.presetState(3, some))
-        assertEquals(setOf(flock, axon, meta), SensorSelection.togglePreset(3, some))
+        assertEquals(setOf(flock, axon, meta, remoteId), SensorSelection.togglePreset(3, some))
     }
 
     @Test fun uncheckingOneSensorBreaksTheFullPreset() {
@@ -60,12 +60,12 @@ class SensorSelectionTest {
         assertEquals(start, SensorSelection.migrate(null))
         assertEquals(start, SensorSelection.migrate(emptySet()))
         assertEquals(start, SensorSelection.migrate(setOf(1, 17))) // nothing real in it
-        assertEquals(setOf(flock, axon, meta, deauth), SensorSelection.migrate(setOf(3, deauth)))
+        assertEquals(setOf(flock, axon, meta, remoteId, deauth), SensorSelection.migrate(setOf(3, deauth)))
     }
 
     @Test fun maskForNoTrackersMatchesTheFirmwareTest() {
         val noTrackers = SensorSelection.ALL_SENSORS.toSet() - SensorSelection.group(2)!!.members.toSet()
-        assertEquals(0x43BE0L, SensorSelection.mask(noTrackers)) // test_link_server, set_sensors_...
+        assertEquals(0xC3BE0L, SensorSelection.mask(noTrackers)) // test_link_server, set_sensors_...
         assertEquals(0L, SensorSelection.mask(emptySet()))
     }
 
@@ -78,17 +78,17 @@ class SensorSelectionTest {
     @Test fun trackersStartOff() {
         val trackers = SensorSelection.group(SensorSelection.TRACKERS)!!.members.toSet()
         assertEquals(setOf(10, 14, 15, 16), trackers) // AirTag, Tile, SmartTag, Google Tag
-        assertEquals(9, SensorSelection.DEFAULT_SENSORS.size)
+        assertEquals(10, SensorSelection.DEFAULT_SENSORS.size)
         assertTrue(SensorSelection.DEFAULT_SENSORS.none { it in trackers })
         assertEquals(SensorSelection.ALL_SENSORS.toSet() - trackers, SensorSelection.DEFAULT_SENSORS)
         // The same set the Hunter boots with (kHunterDefaultSensorMask in BringUpLogic.h).
-        assertEquals(0x43BE0L, SensorSelection.mask(SensorSelection.DEFAULT_SENSORS))
+        assertEquals(0xC3BE0L, SensorSelection.mask(SensorSelection.DEFAULT_SENSORS))
     }
 
     @Test fun theOneTimeSwitchOffUnchecksOnlyTheTrackers() {
         val all = SensorSelection.ALL_SENSORS.toSet()
         assertEquals(SensorSelection.DEFAULT_SENSORS, SensorSelection.withoutTrackers(all))
-        assertEquals(0x43BE0L, SensorSelection.mask(SensorSelection.withoutTrackers(all)))
+        assertEquals(0xC3BE0L, SensorSelection.mask(SensorSelection.withoutTrackers(all)))
         // A hand-picked list keeps everything but the trackers.
         assertEquals(setOf(deauth, flock), SensorSelection.withoutTrackers(setOf(deauth, flock, airTag, tile)))
         // A stored preset id expands first, so "Trackers" alone becomes nothing.

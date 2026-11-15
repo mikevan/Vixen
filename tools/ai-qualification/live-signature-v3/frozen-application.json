@@ -1,0 +1,13 @@
+{
+  "versionCode": 140,
+  "versionName": "0.1.140-beta.1-diag",
+  "apkSha256": "8e968a5f27811182e98ae71ece6777a01803fa3658e7fe9da3c4e441de50850f",
+  "modelSha256": "3d529dd89436601669d6d92f9c67793f35d7ba3a71bfe15cb44ae9547e7f194c",
+  "harnessFirmwareSha256": "607374c4e6a9b638ad5a4d7fd6105b5f8fb840880b9b6d119388eb3ee02f089e",
+  "phoneProductionCases": 53,
+  "phoneProductionCorrect": 53,
+  "qualificationPackageRemoved": true,
+  "physicalOperatorRunStarted": false,
+  "phoneMedianSeconds": 2.918964999,
+  "phoneMaxSeconds": 15.400919629
+}

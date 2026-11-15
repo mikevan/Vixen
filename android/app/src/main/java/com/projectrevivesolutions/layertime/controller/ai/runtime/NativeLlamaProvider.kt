@@ -16,15 +16,16 @@ class NativeLlamaProvider(
     private val developmentOnly: Boolean = false,
     private val promptFormat: String = LocalPromptFormat.ID,
     private val explanationGrammar: ByteArray? = null,
+    private val signatureGrammar: ByteArray? = null,
 ) : LocalModelProvider, AutoCloseable {
-    private val worker=Executors.newSingleThreadExecutor {task->Thread(task,"LayerTime-local-model").apply {isDaemon=true}}
+    private val worker=Executors.newSingleThreadExecutor {task->Thread({runCatching {android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND)};task.run()},"LayerTime-local-model").apply {isDaemon=true}}
     private val requests=AtomicLong(1)
     @Volatile private var handle=0L
     @Volatile private var closed=false
 
     override fun availability(): ModelAvailability = when {
         closed -> ModelAvailability(ModelState.INCOMPATIBLE,reason="The local model has been closed.")
-        !manifest.blueTeamTrained && !developmentOnly -> ModelAvailability(ModelState.INCOMPATIBLE,
+        !manifest.blueTeamTrained && manifest.qualifiedTasks.isEmpty() && !developmentOnly -> ModelAvailability(ModelState.INCOMPATIBLE,
             reason="This model package is a development candidate and is not enabled for product assessments.")
         else -> ModelAvailability(ModelState.READY,manifest)
     }
@@ -49,7 +50,7 @@ class NativeLlamaProvider(
         return queued(onCancel={val h=handle;if(h!=0L)NativeLlama.cancel(h,id)}) {active->
             val loaded=readyHandle()
             check(active()) {"Local inference was cancelled during loading."}
-            val selectedGrammar=if(request.outputSchema==FieldShadowTasks.schema) explanationGrammar ?: grammar else grammar
+            val selectedGrammar=if(request.task==AiTask.INTERPRET_SIGNATURE) requireNotNull(signatureGrammar) else if(request.outputSchema==FieldShadowTasks.schema) explanationGrammar ?: grammar else grammar
             val out=NativeLlama.generate(loaded,id,input,selectedGrammar,request.maxOutputTokens,
                 manifest.contextTokens,Runtime.getRuntime().availableProcessors().coerceIn(1,6))
             LocalModelResponse(out.toString(Charsets.UTF_8),manifest.id,manifest.version)

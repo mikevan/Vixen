@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "modelId": "vixen-signature-qwen3-0.6b",
+  "modelVersion": "signature-v3-480-q8",
+  "sha256": "3d529dd89436601669d6d92f9c67793f35d7ba3a71bfe15cb44ae9547e7f194c",
+  "weightsFile": "weights.gguf",
+  "promptFormat": "qwen3-compact-no-thinking-v1",
+  "contextTokens": 2048,
+  "tasks": [
+    "INTERPRET_SIGNATURE"
+  ],
+  "blueTeamTrained": false,
+  "releaseEligible": false
+}

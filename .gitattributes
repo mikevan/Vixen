@@ -33,3 +33,7 @@ tools/ai-training/domain-data/v2-duplicate-key-draft/train.jsonl filter=lfs diff
 tools/ai-training/domain-data/v2/candidates.jsonl filter=lfs diff=lfs merge=lfs -text
 
 tools/ai-training/domain-data/v2/train.jsonl filter=lfs diff=lfs merge=lfs -text
+
+# Preserve qualification-bound asset hashes across platforms.
+android/app/src/main/assets/ai/production/* -text
+android/app/src/androidTest/assets/model-evaluations/live-signature-v3.json -text

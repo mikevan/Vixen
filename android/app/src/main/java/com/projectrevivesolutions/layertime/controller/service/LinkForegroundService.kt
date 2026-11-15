@@ -41,6 +41,7 @@ class LinkForegroundService : LifecycleService() {
         super.onCreate()
         com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.start(applicationContext)
         com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.start(applicationContext)
+        lifecycleScope.launch {com.projectrevivesolutions.layertime.controller.signatures.LiveSignatureAnalysis(applicationContext).run()}
         client = LinkClient(applicationContext)
         active = client
         createChannel()

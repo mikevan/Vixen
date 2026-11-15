@@ -9,6 +9,7 @@ import com.projectrevivesolutions.layertime.controller.wireshark.WiresharkDecode
 
 /** No test framework dependency: exercise the actual Android regex and native decoder. */
 class BuilderSmokeInstrumentation:Instrumentation() {
+    private var signatureQualification:String?=null
     private var runtimeCacheLabel="build128"
     private var runtimeCacheChecks=false
     private var liveSliceChecks=false
@@ -23,12 +24,13 @@ class BuilderSmokeInstrumentation:Instrumentation() {
     private var groundedAi=false
     private var intentPractice=false
     private var domainAiCase:String?=null
-    override fun onCreate(arguments:Bundle?) {evacuationProofOnly=arguments?.getString("evacuationProofOnly")=="true";evacuationPolicyChecks=arguments?.getString("evacuationPolicyChecks")=="true";signatureAiSimulation=arguments?.getString("signatureAiSimulation")=="true";historicalSliceReplay=arguments?.getString("historicalSliceReplay")=="true";liveSliceChecks=arguments?.getString("liveSliceChecks")=="true";runtimeCacheLabel=arguments?.getString("runtimeCacheLabel") ?: "build128";runtimeCacheChecks=arguments?.getString("runtimeCacheChecks")=="true";fieldAiEvaluation=arguments?.getString("fieldAiEvaluation");fieldCapture=arguments?.getString("fieldCapture");aiRuntime=arguments?.getString("aiRuntime")=="true";
+    override fun onCreate(arguments:Bundle?) {signatureQualification=arguments?.getString("signatureQualification");evacuationProofOnly=arguments?.getString("evacuationProofOnly")=="true";evacuationPolicyChecks=arguments?.getString("evacuationPolicyChecks")=="true";signatureAiSimulation=arguments?.getString("signatureAiSimulation")=="true";historicalSliceReplay=arguments?.getString("historicalSliceReplay")=="true";liveSliceChecks=arguments?.getString("liveSliceChecks")=="true";runtimeCacheLabel=arguments?.getString("runtimeCacheLabel") ?: "build128";runtimeCacheChecks=arguments?.getString("runtimeCacheChecks")=="true";fieldAiEvaluation=arguments?.getString("fieldAiEvaluation");fieldCapture=arguments?.getString("fieldCapture");aiRuntime=arguments?.getString("aiRuntime")=="true";
         groundedPack=arguments?.getString("groundedPack")=="true";groundedAi=arguments?.getString("groundedAi")=="true";
         intentPractice=arguments?.getString("intentPractice")=="true";domainAiCase=arguments?.getString("domainAiCase");super.onCreate(arguments);start()}
     override fun onStart() {
         val result=Bundle()
         try {
+            signatureQualification?.let {runLiveSignatureQualification(targetContext,context,result,it=="production");finish(Activity.RESULT_OK,result);return}
             if(evacuationProofOnly){runSignatureAiSimulation(targetContext,context,result,"evacuation-policy-v1",true);finish(Activity.RESULT_OK,result);return}
             if(evacuationPolicyChecks){runSignatureAiSimulation(targetContext,context,result,"evacuation-policy-v1");finish(Activity.RESULT_OK,result);return}
             if(signatureAiSimulation){runSignatureAiSimulation(targetContext,context,result);finish(Activity.RESULT_OK,result);return}

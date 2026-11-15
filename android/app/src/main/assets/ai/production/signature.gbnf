@@ -1,0 +1,3 @@
+root ::= "{\"pattern\":" ws pattern ws "}" ws
+pattern ::= "\"disconnect_sequence_then_remote_id\"" | "\"disconnect_sequence_only\"" | "\"remote_id_only\"" | "\"reverse_order\"" | "\"outside_window\"" | "\"insufficient_timing\"" | "\"no_relevant_pattern\""
+ws ::= [ \t\n\r]*

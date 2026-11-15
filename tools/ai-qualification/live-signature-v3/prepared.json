@@ -1,0 +1,10 @@
+{
+  "ontologyId": "0613877d873658f568579d3a8724b9de8f877737113e4d9dfabf9e810637f4b3",
+  "curriculumId": "8c142fb73b0d9efb7e062d25454d6c9f1363da04a360ecd71d9e378a3ca670ed",
+  "planId": "41bb20e41e68f27a79b37262bfe1a2491637db5505e20e619cac88e70a357024",
+  "trainingRows": 300,
+  "validationRows": 30,
+  "testRows": 50,
+  "independentReview": false,
+  "releaseEligible": false
+}

@@ -18,6 +18,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 @Composable fun FieldJournalPanel() {
+    val signature by com.projectrevivesolutions.layertime.controller.signatures.LiveSignatureAnalysis.state.collectAsState()
     val health by FieldObservationJournal.health.collectAsState()
     val latest by com.projectrevivesolutions.layertime.controller.state.ControllerRepository.latestFieldAnalysis.collectAsState()
     val connected by com.projectrevivesolutions.layertime.controller.state.ControllerRepository.conn.collectAsState()
@@ -26,6 +27,8 @@ import java.io.File
     var exporting by remember {mutableStateOf(false)}
     var notice by remember {mutableStateOf<String?>(null)}
     Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(4.dp)) {
+        Text(signature.status,color=LtColors.Cyan,fontSize=12.sp)
+        signature.finding?.let {Text(it,color=LtColors.Grey,fontSize=12.sp)}
         Text("FIELD RECORD",color=LtColors.Cyan,fontSize=12.sp)
         Text(if(health.runId.isBlank()) "Starts with the Hunter connection service."
             else "${health.written} saved, ${health.pending} waiting, ${health.dropped+health.failed} not saved",

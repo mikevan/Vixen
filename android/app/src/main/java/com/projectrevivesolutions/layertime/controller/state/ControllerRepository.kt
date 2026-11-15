@@ -53,6 +53,8 @@ object ControllerRepository {
 
     private val _events = MutableStateFlow<List<EventRow>>(emptyList())
     val events: StateFlow<List<EventRow>> = _events.asStateFlow()
+    private val _signatureRecords=MutableStateFlow<List<EventRow>>(emptyList())
+    val signatureRecords=_signatureRecords.asStateFlow()
 
     const val LOG_HISTORY_LIMIT = 2_000
 
@@ -116,7 +118,7 @@ object ControllerRepository {
             _hunterAddress.value=address
             _status.value=null;_server.value=null
             currentSession=-1
-            _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null
+            _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null;_signatureRecords.value=emptyList()
             synchronized(mirrorLock) {mirror.clear()}
             publishEvents()
         }
@@ -132,7 +134,7 @@ object ControllerRepository {
             if (currentSession != -1) log(LogEntry.Category.LINK,
                 "new session ${ack.sessionId} from HELLO_ACK (was $currentSession): clearing event mirror")
             currentSession = ack.sessionId
-            _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null
+            _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null;_signatureRecords.value=emptyList()
             synchronized(mirrorLock) { mirror.clear() }
             publishEvents()
         }
@@ -151,7 +153,7 @@ object ControllerRepository {
             if (currentSession != -1) log(LogEntry.Category.LINK,
                 "new session ${s.sessionId} (was $currentSession): clearing event mirror")
             currentSession = s.sessionId
-            _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null
+            _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null;_signatureRecords.value=emptyList()
             synchronized(mirrorLock) { mirror.clear() }
             publishEvents()
         }
@@ -207,6 +209,9 @@ object ControllerRepository {
                 lastUpdatedMillis = t,
                 rssiHistory = ((existing?.rssiHistory ?: emptyList()) + RssiSample(t, e.rssi, System.nanoTime()/1_000_000L, e.eventId, e.count, e.ageSeconds)).takeLast(RssiSample.KEEP),
             )
+            val priorTiming=_signatureRecords.value.firstOrNull {it.eventId==row.eventId}
+            _signatureRecords.value=(_signatureRecords.value.filterNot {it.eventId==row.eventId}+
+                row.copy(sourceFirstUptimeMs=priorTiming?.sourceFirstUptimeMs,sourceLastUptimeMs=priorTiming?.sourceLastUptimeMs)).takeLast(256)
             _latestFieldSnapshot.value=if(inputReceipt?.queued==true && row.producerAddress!=null && currentSession in 1..65535)
                 com.projectrevivesolutions.layertime.controller.ai.FieldShadowTasks.Snapshot(inputReceipt.runId,inputReceipt.sequence,
                     row.producerAddress,currentSession,e.eventId,t,linkedMapOf(
@@ -232,6 +237,20 @@ object ControllerRepository {
     fun onEventText(eventId: Long, field: Int, text: String) {
         fieldRecord("event_text",mapOf("eventId" to eventId,"field" to field,"text" to text))
         onMirrorChange(synchronized(mirrorLock) { mirror.onText(eventId, field, text, now()) })
+        _signatureRecords.update { rows -> rows.map {row ->
+            if(row.eventId!=eventId)row else when(field) {
+                LinkConstants.TextField.SOURCE_ID -> row.copy(sourceId=text)
+                LinkConstants.TextField.DETAIL -> row.copy(detail=text)
+                LinkConstants.TextField.OBSERVATION_TIME -> {
+                    val match=Regex("uptime-ms:([0-9]{1,10}):([0-9]{1,10})").matchEntire(text)
+                    val first=match?.groupValues?.get(1)?.toLongOrNull()
+                    val last=match?.groupValues?.get(2)?.toLongOrNull()
+                    if(first!=null && last!=null && first in 0..0xffffffffL && last in 0..0xffffffffL &&
+                        ((last-first) and 0xffffffffL)<0x80000000L)row.copy(sourceFirstUptimeMs=first,sourceLastUptimeMs=last) else row
+                }
+                else -> row
+            }
+        }}
         val current=_latestFieldSnapshot.value
         if(current!=null && current.sessionId==currentSession && current.eventId==eventId && current.hunterAddress==_hunterAddress.value) {
             val key=when(field){LinkConstants.TextField.SOURCE_ID->"observedIdentifier";LinkConstants.TextField.DETAIL->"reportedDetail";else->null}
@@ -288,13 +307,13 @@ object ControllerRepository {
     /** The Hunter cleared its detections (ReconClearEvents answered OK): the same session, an empty list. */
     fun clearEventList() {
         fieldRecord("events_cleared",emptyMap())
-        _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null
+        _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null;_signatureRecords.value=emptyList()
         synchronized(mirrorLock) { mirror.clear() }
         _events.value = emptyList()
     }
 
     fun reset() {
-        synchronized(mirrorLock) { mirror.clear() }; currentSession = -1; _hunterAddress.value=null; _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null
+        synchronized(mirrorLock) { mirror.clear() }; currentSession = -1; _hunterAddress.value=null; _latestFieldAnalysis.value=null;_latestFieldSnapshot.value=null;_signatureRecords.value=emptyList()
         _events.value = emptyList(); _status.value = null; _server.value = null
         _background.value = null
     }
