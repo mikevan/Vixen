@@ -109,3 +109,11 @@ Back is part of the existing content frame on Mission, Events, Tools, Builder,
 System and AI Reports. AI Reports uses one frame with divided history entries,
 not a second set of framed cards inside another housing. The OPS current report
 retains its single housing. Navigation and data retention are unchanged.
+
+
+## Inset Back housing (build 146)
+
+The upper-left Back control sits inside a small recessed housing that reuses
+the content frame's artwork. It occupies the existing header row; no outer page
+frame or lower navigation band is added. Report and evidence retention are
+unchanged.
