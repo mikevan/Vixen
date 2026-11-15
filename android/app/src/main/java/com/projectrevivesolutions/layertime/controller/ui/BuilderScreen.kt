@@ -131,8 +131,6 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
     var showReview by remember {mutableStateOf(false)}
     var showResult by remember {mutableStateOf(BuilderEditingSession.showResult)}
     val captureState by com.projectrevivesolutions.layertime.controller.wireshark.PcapImport.state.collectAsState()
-    var showPractice by remember {mutableStateOf(false)}
-    var showDomainAiPractice by remember {mutableStateOf(false)}
     var selected by remember {mutableStateOf<String?>(null)}
     val lastRun by TriageSession.run.collectAsState()
     val analysisRunning by TriageSession.running.collectAsState()
@@ -173,8 +171,8 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
     var menuFor by remember {mutableStateOf<String?>(null)}
     var confirmType by remember {mutableStateOf<String?>(null)}
     var suppressTap by remember {mutableStateOf(false)}
-    androidx.activity.compose.BackHandler(enabled=confirmType!=null || menuFor!=null || selected!=null || showLoad || showMore || showPractice || showDomainAiPractice || showResult) {
-        when {showDomainAiPractice->showDomainAiPractice=false;confirmType!=null->confirmType=null;menuFor!=null->menuFor=null;showLoad->showLoad=false;showMore->showMore=false;selected!=null->selected=null;showPractice->showPractice=false;showResult->showResult=false}
+    androidx.activity.compose.BackHandler(enabled=confirmType!=null || menuFor!=null || selected!=null || showLoad || showMore || showResult) {
+        when {confirmType!=null->confirmType=null;menuFor!=null->menuFor=null;showLoad->showLoad=false;showMore->showMore=false;selected!=null->selected=null;showResult->showResult=false}
     }
     val textMeasurer=rememberTextMeasurer()
     val timelinePainter=rememberVectorPainter(Icons.Outlined.Layers)
@@ -424,16 +422,7 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
         WorkflowStore.open(context,entry)?.let {opened->
             edit(if(opened.shipped)DraftEdits.copyOf(opened) else opened);showLoad=false;selected=null;check=null;showResult=false;fit()
         } ?: say("Could not load this analytic.",true)
-    },onImport={showLoad=false;importFlow.launch(arrayOf("application/json","text/plain","application/octet-stream"))},onPractice={
-        runCatching {
-            check(!com.projectrevivesolutions.layertime.controller.wireshark.PcapImport.running){"A recording is still loading."}
-            edit(DraftEdits.copyOf(DraftEdits.open(com.projectrevivesolutions.layertime.controller.flow.BuilderPractice.workflow(),null,true)))
-            val file=java.io.File(context.cacheDir,com.projectrevivesolutions.layertime.controller.flow.BuilderPractice.FILE_NAME)
-            file.writeBytes(com.projectrevivesolutions.layertime.controller.flow.BuilderPractice.fixture().pcap())
-            com.projectrevivesolutions.layertime.controller.wireshark.PcapImport.start(context,android.net.Uri.fromFile(file),training=true)
-            showLoad=false;showResult=false;fit();say("Practice blocks and recording loaded. Tap Run to test them.")
-        }.onFailure {say("Could not load practice: ${it.message}",true)}
-    })
+    },onImport={showLoad=false;importFlow.launch(arrayOf("application/json","text/plain","application/octet-stream"))})
     if(showMore) BuilderModal(onDismiss={showMore=false}) {
         Text("ANALYTIC",color=BuilderCyan,style=BuilderType)
         draft?.let {d->
@@ -450,15 +439,7 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
                 }.onFailure {say("Could not share: ${it.message}",true)}
             }
             if(d.authoring!=null)Text("Sharing includes the original authoring prompt and model version. Review the prompt for private context before sharing.",color=BuilderMuted,style=BuilderType.copy(fontSize=12.sp))
-            BuilderTextButton("Test deauth examples",DraftEdits.sentences(d.workflow).isEmpty()){check=DraftEdits.checkScenarios(d.workflow);say(check!!.sentence,check!!.failures.isNotEmpty());showMore=false}
         }
-        BuilderTextButton("Practice guide",true){showMore=false;showPractice=true}
-        if(com.projectrevivesolutions.layertime.controller.BuildConfig.DEBUG)
-            BuilderTextButton("Test trained AI",true){showMore=false;showDomainAiPractice=true}
-    }
-    if(showDomainAiPractice) BuilderModal(onDismiss={showDomainAiPractice=false}) {DomainAiPracticePanel()}
-    if(showPractice) BuilderModal(onDismiss={showPractice=false}) {
-        BuilderPracticePanel(onOpen={w->edit(DraftEdits.copyOf(DraftEdits.open(w,null,true)));showPractice=false;fit()},onWireshark=onWireshark)
     }
     if(showReview) BuilderReviewPanel(onDismiss={showReview=false},onWireshark=onWireshark,
         onDraft={edit(it);selected=null;check=null;showResult=false;fit()})

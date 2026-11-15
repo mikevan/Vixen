@@ -100,7 +100,6 @@ import com.projectrevivesolutions.layertime.controller.mission.EvidenceHold
 import com.projectrevivesolutions.layertime.controller.mission.MissionPrefs
 import com.projectrevivesolutions.layertime.controller.mission.SensorSelection
 import com.projectrevivesolutions.layertime.controller.link.LinkConstants
-import com.projectrevivesolutions.layertime.controller.link.LinkMeasure
 import com.projectrevivesolutions.layertime.controller.link.ConnNotice
 import com.projectrevivesolutions.layertime.controller.link.CardClear
 import com.projectrevivesolutions.layertime.controller.link.HunterRoster
@@ -108,7 +107,6 @@ import com.projectrevivesolutions.layertime.controller.link.HunterScanner
 import com.projectrevivesolutions.layertime.controller.DeviceKind
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
-import com.projectrevivesolutions.layertime.controller.BuildConfig
 import com.projectrevivesolutions.layertime.controller.model.ConnState
 import com.projectrevivesolutions.layertime.controller.model.EventRow
 import com.projectrevivesolutions.layertime.controller.model.LogEntry
@@ -263,7 +261,6 @@ private fun ControllerScreen() {
     val server by repo.server.collectAsState()
     val events by repo.events.collectAsState()
     val log by repo.log.collectAsState()
-    val background by repo.background.collectAsState()
     val linkStale by repo.linkStale.collectAsState()
     val reconnecting by repo.reconnecting.collectAsState()
     val connDetail by repo.connDetail.collectAsState()
@@ -729,7 +726,7 @@ private fun ControllerScreen() {
                                         color = LtColors.Amber, fontSize = 12.sp)
                                 }
                             }
-                            if (BuildConfig.DEBUG) item { LinkMeasurePanel(active) }
+
                         }
                         }
                     }
@@ -765,25 +762,7 @@ private fun ControllerScreen() {
                                         color = LtColors.Grey, fontSize = 12.sp)
                                 }
                             }
-                            if (BuildConfig.DEBUG && !onHull) item { LinkMeasurePanel(active) }
-                            item {
-                                SciFiPanel("SCREEN-OFF RECEPTION TEST") {
-                                    Text("Start, turn the screen off for a while, turn it on, then stop.", color = LtColors.Ivory, fontSize = 12.sp)
-                                    background?.let { bt ->
-                                        FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                            HudReadout("RECEIVED", "${bt.eventsReceivedDuring}", LtColors.Amber)
-                                            HudReadout("DISCONNECTS", "${bt.disconnectsDuring}", LtColors.Amber)
-                                            HudReadout("TEST", if (bt.running) "RUNNING" else "ENDED", if (bt.running) LtColors.Green else LtColors.Grey)
-                                        }
-                                    }
-                                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                        SciFiPrimary("START TEST", enabled = active && background?.running != true, large = true) {
-                                            repo.startBackgroundTest("screen-off reception")
-                                        }
-                                        SciFiOutline("STOP TEST", enabled = background?.running == true, large = true) { repo.stopBackgroundTest() }
-                                    }
-                                }
-                            }
+
                             item {
                                 SciFiPanel("DISPLAY") {
                                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -1159,36 +1138,6 @@ internal fun emptyEventsMessage(connected: Boolean, status: com.projectrevivesol
     !connected -> "No detections yet. Connect a Hunter and start detection."
     status?.monitoring == true -> "No detections yet. Detection is running."
     else -> "No detections yet. Tap START to begin detection."
-}
-
-/**
- * LINK MEASURE: the watch side of Link 0.2 Phase 0 (claude/link_0_2_phase0_plan.md,
- * M5). A PING burst for the round trip that limits HUNT polling, and BULK runs for
- * throughput at 20 bytes and at a larger MTU. BULK needs the Hunter measurement
- * firmware; a release Hunter answers UnknownOp, and the panel says so.
- */
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun LinkMeasurePanel(connected: Boolean) {
-    val st by LinkMeasure.state.collectAsState()
-    val idle = connected && st.running == null
-    val client = LinkForegroundService.active
-    SciFiPanel("LINK MEASURE  //  TEST") {
-        Text("Link 0.2 Phase 0. Run in order: PING, BULK at 20 bytes, MTU 247, then BULK at 244 bytes. " +
-            "BULK needs the Hunter measurement firmware. The larger MTU lasts until this connection drops.",
-            color = LtColors.Ivory, fontSize = 12.sp)
-        HudReadout("MTU", "${st.mtu}", if (st.mtu > 23) LtColors.Green else LtColors.Cyan)
-        if (!connected) Text("Connect to a Hunter first.", color = LtColors.Grey, fontSize = 12.sp)
-        st.running?.let { Text(it, color = LtColors.Green, fontSize = 12.sp, fontFamily = ConsoleFonts.mono) }
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            SciFiOutline("PING x100", enabled = idle) { client?.measurePingBurst(100) }
-            SciFiOutline("BULK 200 x 20", enabled = idle) { client?.measureBulk(200, 20) }
-            SciFiOutline("MTU 247", enabled = idle && st.mtu <= 23) { client?.measureRequestMtu() }
-            SciFiOutline("BULK 200 x 244", enabled = idle) { client?.measureBulk(200, 244) }
-            SciFiOutline("CLEAR", enabled = st.lines.isNotEmpty() && st.running == null) { LinkMeasure.clear() }
-        }
-        st.lines.forEach { Text(it, color = LtColors.Ivory, fontSize = 12.sp, fontFamily = ConsoleFonts.mono) }
-    }
 }
 
 @Composable

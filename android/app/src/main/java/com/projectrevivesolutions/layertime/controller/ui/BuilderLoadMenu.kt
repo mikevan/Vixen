@@ -28,11 +28,10 @@ internal fun BuilderModal(onDismiss:()->Unit,content:@Composable ()->Unit) {
 }
 
 @Composable
-internal fun BuilderLoadMenu(flows:List<WorkflowStore.Entry>,onDismiss:()->Unit,onLoad:(WorkflowStore.Entry)->Unit,onImport:()->Unit,onPractice:()->Unit) {
+internal fun BuilderLoadMenu(flows:List<WorkflowStore.Entry>,onDismiss:()->Unit,onLoad:(WorkflowStore.Entry)->Unit,onImport:()->Unit) {
     BuilderModal(onDismiss) {
         Text("LOAD ANALYTIC",color=LtColors.Cyan,fontSize=18.sp)
         SciFiOutline("LOAD FROM FILE",true,onClick=onImport)
-        SciFiOutline("LOAD PRACTICE ANALYTIC",true,onClick=onPractice)
         val latest=flows.groupBy {it.name to it.shipped}.values.mapNotNull {it.maxByOrNull {entry->entry.version}}
         for(shipped in listOf(false,true)) {
             Text(if(shipped)"INCLUDED ANALYTICS" else "YOUR SAVED ANALYTICS",color=LtColors.Cyan,fontSize=14.sp)

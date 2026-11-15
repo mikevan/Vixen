@@ -8,10 +8,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.projectrevivesolutions.layertime.controller.ui.theme.LtColors
 
-internal enum class BuilderPurpose { USE, BUILD, PRACTICE }
+internal enum class BuilderPurpose { USE, BUILD }
 
 @Composable
-internal fun BuilderQuestionStart(onChoose:()->Unit,onPractice:()->Unit,onCustom:()->Unit) {
+internal fun BuilderQuestionStart(onChoose:()->Unit,onCustom:()->Unit) {
     OpsConnectionHousing(Modifier.fillMaxWidth()) {
         Column(Modifier.fillMaxWidth().padding(18.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
             Text("WHAT WOULD YOU LIKE TO DO?",color=LtColors.Cyan,fontSize=18.sp)
@@ -21,9 +21,7 @@ internal fun BuilderQuestionStart(onChoose:()->Unit,onPractice:()->Unit,onCustom
             Text("Build an analysis",color=LtColors.Ivory,fontSize=19.sp)
             Text("Combine tools and write your own report.",color=LtColors.Grey,fontSize=15.sp)
             SciFiOutline("BUILD AN ANALYSIS",true,large=true,onClick=onCustom)
-            Text("Practice",color=LtColors.Ivory,fontSize=19.sp)
-            Text("Try a generated recording with a known result. No Hunter is needed.",color=LtColors.Grey,fontSize=15.sp)
-            SciFiOutline("TRY THE PRACTICE EXAMPLE",true,large=true,onClick=onPractice)
+
         }
     }
 }

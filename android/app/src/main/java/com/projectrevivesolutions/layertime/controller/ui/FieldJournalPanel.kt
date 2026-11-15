@@ -19,15 +19,12 @@ import java.io.File
 
 @Composable fun FieldJournalPanel() {
     val health by FieldObservationJournal.health.collectAsState()
-    val snapshot by com.projectrevivesolutions.layertime.controller.state.ControllerRepository.latestFieldSnapshot.collectAsState()
-    var shadowInput by remember {mutableStateOf<com.projectrevivesolutions.layertime.controller.ai.FieldShadowTasks.Snapshot?>(null)}
     val latest by com.projectrevivesolutions.layertime.controller.state.ControllerRepository.latestFieldAnalysis.collectAsState()
     val connected by com.projectrevivesolutions.layertime.controller.state.ControllerRepository.conn.collectAsState()
     val stale by com.projectrevivesolutions.layertime.controller.state.ControllerRepository.linkStale.collectAsState()
     val context=LocalContext.current;val scope=rememberCoroutineScope()
     var exporting by remember {mutableStateOf(false)}
     var notice by remember {mutableStateOf<String?>(null)}
-    shadowInput?.let {FieldShadowPanel(it){shadowInput=null}}
     Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(4.dp)) {
         Text("FIELD RECORD",color=LtColors.Cyan,fontSize=12.sp)
         Text(if(health.runId.isBlank()) "Starts with the Hunter connection service."
@@ -39,8 +36,6 @@ import java.io.File
         health.problem?.let {Text(it,color=LtColors.Amber,fontSize=12.sp)}
         Text("Individual Hunter records, before display grouping. This is what Vixen received; it does not prove Hunter captured or saved everything.",
             color=LtColors.Grey,fontSize=12.sp)
-        if(com.projectrevivesolutions.layertime.controller.BuildConfig.DEBUG)
-            SciFiOutline("EXPERIMENTAL AI FOR LATEST OBSERVATION",snapshot!=null){shadowInput=snapshot}
         SciFiOutline("EXPORT FIELD RECORD",health.written>0 && !exporting) {
             exporting=true;notice=null
             scope.launch {

@@ -36,7 +36,7 @@ class BuilderSmokeInstrumentation:Instrumentation() {
             if(liveSliceChecks){runLiveSliceChecks(targetContext,result);finish(Activity.RESULT_OK,result);return}
             if(runtimeCacheChecks){runRuntimeCacheChecks(targetContext,result,runtimeCacheLabel);finish(Activity.RESULT_OK,result);return}
             fieldAiEvaluation?.let {runFieldCollectionEvaluation(targetContext,result,it);finish(Activity.RESULT_OK,result);return}
-            domainAiCase?.let {runDomainAiAcceptance(targetContext,result,it);finish(Activity.RESULT_OK,result);return}
+            domainAiCase?.let {runDomainAiAcceptance(targetContext,context,result,it);finish(Activity.RESULT_OK,result);return}
             if(intentPractice){runIntentPracticeChecks(targetContext,context,result);finish(Activity.RESULT_OK,result);return}
             if(groundedPack || groundedAi){runGroundedCaptureChecks(targetContext,context,result,groundedAi);finish(Activity.RESULT_OK,result);return}
             if(aiRuntime){runLocalAiBenchmark(targetContext,result);finish(Activity.RESULT_OK,result);return}

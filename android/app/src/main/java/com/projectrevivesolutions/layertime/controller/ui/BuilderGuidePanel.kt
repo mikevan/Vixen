@@ -14,7 +14,7 @@ import com.projectrevivesolutions.layertime.controller.ui.theme.LtColors
 
 @Composable
 internal fun BuilderGuidePanel(draft:Draft?,capture:PcapImport.State,running:Boolean,showWiring:Boolean,
-    onNew:()->Unit,onCopy:()->Unit,onSave:()->Unit,onRun:()->Unit,onPractice:()->Unit,onWiring:()->Unit,
+    onNew:()->Unit,onCopy:()->Unit,onSave:()->Unit,onRun:()->Unit,onWiring:()->Unit,
     onRename:(String)->Unit,onSelect:(String)->Unit,onAdd:(String)->Unit,onPick:()->Unit) {
     OpsConnectionHousing(Modifier.fillMaxWidth()) {
         Column(Modifier.fillMaxWidth().padding(18.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
@@ -23,7 +23,6 @@ internal fun BuilderGuidePanel(draft:Draft?,capture:PcapImport.State,running:Boo
             Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
                 SciFiOutline("NEW",true,onClick=onNew)
                 SciFiOutline(if(draft?.shipped==true)"MAKE MY COPY" else "SAVE",draft!=null) {if(draft?.shipped==true)onCopy() else onSave()}
-                SciFiOutline("PRACTICE",true,onClick=onPractice)
             }
             if(draft!=null)OutlinedTextField(value=draft.workflow.name,onValueChange=onRename,enabled=draft.editable,
                 label={Text("Analysis name")},modifier=Modifier.fillMaxWidth(),textStyle=TextStyle(color=LtColors.Ivory,fontSize=15.sp))
