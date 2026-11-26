@@ -1,0 +1,103 @@
+{
+  "condition": "4b-instruct-nf4",
+  "results": [
+    {
+      "id": "positive-a",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\",\"evidenceIds\":[\"r1\",\"r2\",\"r3\"]}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 2.4530000000013388,
+      "promptSha256": "861310e69bdc50b4b131272f59c74ceb3a68a5f307891bed132e85b6f0018ba9"
+    },
+    {
+      "id": "positive-b",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\",\"evidenceIds\":[\"a\",\"b\",\"c\"]}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.5469999999986612,
+      "promptSha256": "f2fb1f8f24be27e19fb13c4d9d61007a25653ba4dccfecdd222ccc7cf34e5498"
+    },
+    {
+      "id": "no-follow-on",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\",\"evidenceIds\":[\"d\",\"e\"]}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.4059999999990396,
+      "promptSha256": "a63c03be8352c548c5d0b381b388804b621ddcc046f63b26451bd23ff2127aa6"
+    },
+    {
+      "id": "remote-only",
+      "output": "{\"pattern\":\"remote_id_only\",\"evidenceIds\":[\"u\"]}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.125,
+      "promptSha256": "76547abb77c23fe385b6cf52865747a1517dcac44667856633319282b6cbfd7d"
+    },
+    {
+      "id": "before-sequence",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\",\"evidenceIds\":[\"x\",\"y\",\"w\"]}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.4840000000003783,
+      "promptSha256": "0c01b6a180e4054bc2df3ee2c96d9bc4b186c0b2f678ddb730ac690e434b50a1"
+    },
+    {
+      "id": "late-remote",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\",\"evidenceIds\":[\"j\",\"k\",\"l\"]}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.5159999999996217,
+      "promptSha256": "e1a1c812b507f7db344981eac40d13bd8ee60701a9ae15347afaf1e7bbeed5a5"
+    },
+    {
+      "id": "unknown-clock",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\",\"evidenceIds\":[\"s1\",\"s2\",\"s3\"]}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.735000000000582,
+      "promptSha256": "5fa210b7113d62fdcd16b00c82fed2f6aeee8265069bb10e4715668eea2bfca9"
+    },
+    {
+      "id": "empty",
+      "output": "{\"pattern\":\"no_relevant_pattern\",\"evidenceIds\":[]}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.0620000000017171,
+      "promptSha256": "75558c7d67fade8678ce45fa2f1842b67317f01b075199e4697ab65cf9980842"
+    },
+    {
+      "id": "deauth-only",
+      "output": "{\"pattern\":\"no_relevant_pattern\",\"evidenceIds\":[\"n\"]}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.1879999999982829,
+      "promptSha256": "99b04db0f55ca90b5c3bc20efc40d44b301bace0d40de79fc4e79cc07cb5e3e4"
+    },
+    {
+      "id": "different-network",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\",\"evidenceIds\":[\"p\",\"q\",\"r\"]}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.5310000000026776,
+      "promptSha256": "3a09549bb3e220b4b87518ed2878f8994ca0c9a33e4f4849e1cecf591117c68a"
+    },
+    {
+      "id": "reversed-exchange",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\",\"evidenceIds\":[\"s\",\"t\",\"v\"]}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.5309999999990396,
+      "promptSha256": "aafe4183ccdea62fb33ed19bccdb8d34d0436a5acfde1ce193c65ebc6a6a0f3f"
+    },
+    {
+      "id": "window-boundary",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\",\"evidenceIds\":[\"m1\",\"m2\",\"m3\"]}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.7809999999990396,
+      "promptSha256": "1e04e074aacf20bb8fa14c78d8b4008406da249452d1fb016d4eeded828d7c27"
+    }
+  ],
+  "fieldQualified": false,
+  "finalQuantizedModel": false
+}

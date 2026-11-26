@@ -59,11 +59,12 @@ fun WiresharkScreen(onBack: () -> Unit) {
             WiresharkFilter.matches(f.title, f.addresses, f.fields.map { "${it.name} ${it.shown}" }, filter)
         }
     }
+    BackContentFrame(onBack) {
     LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                if(com.projectrevivesolutions.layertime.controller.DeviceKind.isLokmatWatch) SciFiOutline("‹ BACK", enabled = true) { onBack() }
+                PageBackControl()
                 Text("WIRESHARK  //  CAPTURE DECODE", color = LtColors.ConsoleEdge,
                     fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 1.sp, style = glowText())
             }
@@ -132,5 +133,6 @@ fun WiresharkScreen(onBack: () -> Unit) {
                 }
             }
         }
+    }
     }
 }

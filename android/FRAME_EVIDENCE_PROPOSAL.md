@@ -1,5 +1,7 @@
 # Wi-Fi frame evidence on Android: finding and proposal
 
+People need evidence they can inspect, alongside a device's interpretation. Preserving source frames would make findings more accountable by allowing the supporting observations to be examined independently.
+
 Status: investigation complete, proposal for review. No contract or Hunter
 change is implemented. This gates the Wireshark-grade attack-detail screen.
 

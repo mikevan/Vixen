@@ -7,6 +7,11 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -71,9 +76,9 @@ fun FaceView(
     drawLighting: Boolean = true,
     refined: Boolean = false,
 ) {
-    // The Vixen aperture replaced the owl in build 69: the owl is the Layers and
-    // PRS logo, and Vixen carries its own mark (rendered from the launcher vector).
-    val owl = ImageBitmap.imageResource(R.drawable.layerscope_aperture)
+    // Shared Vixen fox vector; render once for the existing Canvas dial.
+    val context=LocalContext.current
+    val owl=remember(context) {requireNotNull(ContextCompat.getDrawable(context,R.drawable.vixen_mark)).toBitmap(512,512).asImageBitmap()}
     BoxWithConstraints(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         val side = maxWidth.coerceAtMost(maxHeight)
         Canvas(
@@ -194,7 +199,7 @@ private fun DrawScope.drawRefinedDial(
     for (i in 0 until 30) drawArc(if (battery >= 0 && i < battery * .3f) gold else Color(0xFF273038),
         210f + i*4f, 2.8f, false, c-Offset(r,r), Size(r*2,r*2), style=Stroke(g.k(8f)))
     text("BAT ${if (battery < 0) "—" else "$battery%"}",227f,57f,18f,gold)
-    text("—  LAYERSCOPE  —",227f,85f,18f,Color.White,285f)
+    text("—  VIXEN  —",227f,85f,18f,Color.White,285f)
     val markSize=g.k(67f)
     drawImage(mark,dstOffset=IntOffset((g.cx-markSize/2).toInt(),(g.y(130f)-markSize/2).toInt()),dstSize=IntSize(markSize.toInt(),markSize.toInt()))
     drawBle(g.x(162f),g.y(121f),g.k(13f),if(bt)green else LtColors.Grey,g::k)
@@ -589,9 +594,9 @@ private fun DrawScope.drawRingTag(x: Float, y: Float, text: String, color: Color
     ink(text, x, y + cap / 2f, cap, color)
 }
 
-/** LAYERSCOPE (the app's name since build 68) with capitals on rows 68..86 and the amber dashes either side. */
+/** VIXEN (the app's name since build 68) with capitals on rows 68..86 and the amber dashes either side. */
 private fun DrawScope.drawTitle(g: FaceGeom) {
-    val tw = ink("LAYERSCOPE", g.cx, g.y(86f), g.k(19f), LtColors.Ivory)
+    val tw = ink("VIXEN", g.cx, g.y(86f), g.k(19f), LtColors.Ivory)
     val y = g.y(78f)
     val rnd = Lcg(13)
     val pen = g.k(2f * PEN)

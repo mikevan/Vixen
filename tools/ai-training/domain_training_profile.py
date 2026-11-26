@@ -19,7 +19,7 @@ def prompt_hash(r):return hashlib.sha256(canonical(r['messages'][:-1]).encode())
 
 def verify(folder):
     manifest=json.loads((folder/'manifest.json').read_text())
-    if manifest.get('profile') not in ('blue-team-domain-development-v1','blue-team-domain-development-v2') or manifest.get('releaseEligible') is not False:
+    if manifest.get('profile') not in ('blue-team-domain-development-v1','blue-team-domain-development-v2','blue-team-domain-development-v3-instruction-views') or manifest.get('releaseEligible') is not False:
         raise ValueError('Wrong development training profile')
     blocked=set(json.loads((folder/'acceptance-exclusions.json').read_text())['promptSha256'])
     if digest(folder/'acceptance-exclusions.json')!=manifest['acceptanceExclusionsSha256']:raise ValueError('Acceptance exclusions changed')

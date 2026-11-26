@@ -104,7 +104,7 @@ ltws_init_result ltws_init(const char *base_dir) {
          * evidence pull). prefs_apply_all() alone does not help: it only runs
          * apply callbacks for modules whose preferences changed. */
         ws_log_init("ltws", NULL);
-        init_report_message("LayerScope", &g_report);
+        init_report_message("Vixen", &g_report);
         init_process_policies();
         ltws_set_dirs(base_dir);
         char *cfg_err = configuration_init("/system/bin/app_process64", "Wireshark");

@@ -1,0 +1,247 @@
+{
+  "condition": "direct-adapter",
+  "results": [
+    {
+      "id": "validation-positive-0",
+      "output": "{\"evidenceIds\":[\"validation-positive-0-a\",\"validation-positive-0-b\",\"validation-positive-0-c\"],\"pattern\":\"disconnect_sequence_then_remote_id\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 2.3590000000003783,
+      "promptSha256": "c62f2dd8bd25da6affa1b28efe99516237ec93df44acb3cbc0f2f34685bdac1d"
+    },
+    {
+      "id": "validation-positive-1",
+      "output": "{\"evidenceIds\":[\"validation-positive-1-c\"],\"pattern\":\"remote_id_only\"}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.0469999999986612,
+      "promptSha256": "1924119a3c12b5bc6008a8d8f071270b70cdb78c3c18231d81bce37a7ca9c20f"
+    },
+    {
+      "id": "validation-positive-2",
+      "output": "{\"evidenceIds\":[\"validation-positive-2-a\",\"validation-positive-2-b\",\"validation-positive-2-c\"],\"pattern\":\"disconnect_sequence_then_remote_id\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.8130000000019209,
+      "promptSha256": "4e8c42b2b4b4403f1653ea6ac4d4d148f9d4344fb6fc5d0795a6dfa5f9a7941c"
+    },
+    {
+      "id": "validation-pair-only-0",
+      "output": "{\"evidenceIds\":[\"validation-pair-only-0-a\",\"validation-pair-only-0-b\"],\"pattern\":\"disconnect_sequence_only\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.625,
+      "promptSha256": "c6993dc07aa2f187d1c719685b34ac0426330b55e7859de8da06ac06f9f15f7a"
+    },
+    {
+      "id": "validation-pair-only-1",
+      "output": "{\"evidenceIds\":[\"validation-pair-only-1-a\",\"validation-pair-only-1-b\"],\"pattern\":\"disconnect_sequence_only\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.7969999999986612,
+      "promptSha256": "79ef7df9b07f3ca6d4db6010df4b0d2e19727c835cbb9ed3a47d57c550408efa"
+    },
+    {
+      "id": "validation-pair-only-2",
+      "output": "{\"evidenceIds\":[\"validation-pair-only-2-a\",\"validation-pair-only-2-b\"],\"pattern\":\"disconnect_sequence_only\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.9840000000003783,
+      "promptSha256": "c5905798a00dd5dcf77b1354ea100d42f40fb8762ae6fe553359a218aa861322"
+    },
+    {
+      "id": "validation-rid-only-0",
+      "output": "{\"evidenceIds\":[\"validation-rid-only-0-c\"],\"pattern\":\"remote_id_only\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.1869999999980791,
+      "promptSha256": "d09b9408a9b3cf60abd2ce0a3fd81b0c3fa201d1f8874df3dc3b793264817085"
+    },
+    {
+      "id": "validation-rid-only-1",
+      "output": "{\"evidenceIds\":[\"validation-rid-only-1-c\"],\"pattern\":\"remote_id_only\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.2190000000009604,
+      "promptSha256": "797fdecd745175aafc75d81d06a2ebea6e092c0cb5a9157605e853984263022a"
+    },
+    {
+      "id": "validation-rid-only-2",
+      "output": "{\"evidenceIds\":[\"validation-rid-only-2-c\"],\"pattern\":\"remote_id_only\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.2190000000009604,
+      "promptSha256": "3aa8cb6c5f391e2bad8bb24d26bd56d545d4f214860529eb3bbebacc4576240e"
+    },
+    {
+      "id": "validation-reversed-0",
+      "output": "{\"evidenceIds\":[\"validation-reversed-0-c\"],\"pattern\":\"reverse_order\"}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.014999999999418,
+      "promptSha256": "e2c1a9f3ad1f1ec66d17dbe1f71437a05a8c432b8ae69e0aede4f59ac8c467df"
+    },
+    {
+      "id": "validation-reversed-1",
+      "output": "{\"evidenceIds\":[\"validation-reversed-1-a\",\"validation-reversed-1-b\",\"validation-reversed-1-c\"],\"pattern\":\"reverse_order\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 2.1409999999996217,
+      "promptSha256": "21e918a64520166ac4f86d55f986121f12459da7f903f45fb07b95120fea3c9a"
+    },
+    {
+      "id": "validation-reversed-2",
+      "output": "{\"evidenceIds\":[\"validation-reversed-2-a\",\"validation-reversed-2-b\",\"validation-reversed-2-c\"],\"pattern\":\"reverse_order\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.9370000000017171,
+      "promptSha256": "0abdb1a1f66637b66c1eb0fb11761199842ba62a05ef7f82b1855c740e5daaf3"
+    },
+    {
+      "id": "validation-late-0",
+      "output": "{\"evidenceIds\":[\"validation-late-0-a\",\"validation-late-0-b\",\"validation-late-0-c\"],\"pattern\":\"outside_window\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.7659999999996217,
+      "promptSha256": "f69f7bf505fa758bebd4d3890563fadaad567fa50ae3348ba66f1a95d30ef9d1"
+    },
+    {
+      "id": "validation-late-1",
+      "output": "{\"evidenceIds\":[\"validation-late-1-a\",\"validation-late-1-b\",\"validation-late-1-c\"],\"pattern\":\"outside_window\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.7340000000003783,
+      "promptSha256": "c2925c298a4f584100d996507cacac5dd61542c38983a1132ee95444e0134ac7"
+    },
+    {
+      "id": "validation-late-2",
+      "output": "{\"evidenceIds\":[\"validation-late-2-a\",\"validation-late-2-b\",\"validation-late-2-c\"],\"pattern\":\"outside_window\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.8279999999977008,
+      "promptSha256": "fea3e7f877f4fd3aeb2db2714c489b89833365b9e737f07579f81a6b73e0a388"
+    },
+    {
+      "id": "validation-unaligned-0",
+      "output": "{\"evidenceIds\":[\"validation-unaligned-0-a\",\"validation-unaligned-0-b\",\"validation-unaligned-0-c\"],\"pattern\":\"insufficient_timing\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.860000000000582,
+      "promptSha256": "299dea83884ff9caa430be46884150e208153139c85a21e40eaba2da0dfeb58e"
+    },
+    {
+      "id": "validation-unaligned-1",
+      "output": "{\"evidenceIds\":[\"validation-unaligned-1-a\",\"validation-unaligned-1-b\",\"validation-unaligned-1-c\"],\"pattern\":\"insufficient_timing\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.8440000000009604,
+      "promptSha256": "b61da67df0c5ad119f0b8b4e091d8558cb68ac8097a80718333214bfa87d9966"
+    },
+    {
+      "id": "validation-unaligned-2",
+      "output": "{\"evidenceIds\":[\"validation-unaligned-2-a\",\"validation-unaligned-2-b\",\"validation-unaligned-2-c\"],\"pattern\":\"insufficient_timing\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.8120000000017171,
+      "promptSha256": "dd3b58491546b14c08d115f511a397160ba51f8b30b80332d9d7176edff3cb43"
+    },
+    {
+      "id": "validation-deauth-only-0",
+      "output": "{\"evidenceIds\":[\"validation-deauth-only-0-a\"],\"pattern\":\"validation-deauth-only-0-a\"}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.3129999999982829,
+      "promptSha256": "f168b141a057770e9b23afb11b461e879fd0b86db65552ec872e383d8bc17ff0"
+    },
+    {
+      "id": "validation-deauth-only-1",
+      "output": "{\"evidenceIds\":[\"validation-deauth-only-1-a\"],\"pattern\":\"validation-deauth-only-1-a\"}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.3120000000017171,
+      "promptSha256": "e0bfc11bc87d3e381a0806ba371fc471e08e2c366204eb5de5d9636b0c730e93"
+    },
+    {
+      "id": "validation-deauth-only-2",
+      "output": "{\"evidenceIds\":[\"validation-deauth-only-2-a\"],\"pattern\":\"validation-deauth-only-2-a\"}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.3440000000009604,
+      "promptSha256": "978d4e4319e2067ccfcd37206cf024a6b9d91da95be275d50dbab34e51aea215"
+    },
+    {
+      "id": "validation-different-network-0",
+      "output": "{\"evidenceIds\":[\"validation-different-network-0-a\",\"validation-different-network-0-b\",\"validation-different-network-0-c\"],\"pattern\":\"no_relevant_pattern\"}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.9529999999977008,
+      "promptSha256": "56516c2b04f839efb938046a827d15924e025d9f6def36385ad9eafba4b3c406"
+    },
+    {
+      "id": "validation-different-network-1",
+      "output": "{\"evidenceIds\":[\"validation-different-network-1-a\",\"validation-different-network-1-c\"],\"pattern\":\"no_relevant_pattern\"}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.5940000000009604,
+      "promptSha256": "1385d9fb5c40b3d747ccd0c6f74795c93f9b3b451788716f9b158a6aa0482aa6"
+    },
+    {
+      "id": "validation-different-network-2",
+      "output": "{\"evidenceIds\":[\"validation-different-network-2-a\",\"validation-different-network-2-c\"],\"pattern\":\"no_relevant_pattern\"}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.5940000000009604,
+      "promptSha256": "007fcab39747ba7554a06b39440b274186f1e7956fd2e6873091dd33c943d020"
+    },
+    {
+      "id": "validation-reversed-exchange-0",
+      "output": "{\"evidenceIds\":[\"validation-reversed-exchange-0-c\"],\"pattern\":\"reverse_order\"}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.125,
+      "promptSha256": "d5486efb5839b951bbad2a36713ef605d2c8c6f2ace00968c483617f2468307b"
+    },
+    {
+      "id": "validation-reversed-exchange-1",
+      "output": "{\"evidenceIds\":[\"validation-reversed-exchange-1-a\",\"validation-reversed-exchange-1-b\",\"validation-reversed-exchange-1-c\"],\"pattern\":\"reverse_order\"}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 2.0780000000013388,
+      "promptSha256": "c4cf728363805595990047f6c0683670317439cd3205d184d1b095b826798b05"
+    },
+    {
+      "id": "validation-reversed-exchange-2",
+      "output": "{\"evidenceIds\":[\"validation-reversed-exchange-2-a\",\"validation-reversed-exchange-2-b\",\"validation-reversed-exchange-2-c\"],\"pattern\":\"reverse_order\"}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 2.0469999999986612,
+      "promptSha256": "cdc9eaf304a587991397e2ccef6a4cc35db82aae2a6f0228de15d2d6d76bb7d5"
+    },
+    {
+      "id": "validation-uncertain-order-0",
+      "output": "{\"evidenceIds\":[\"validation-uncertain-order-0-a\",\"validation-uncertain-order-0-b\",\"validation-uncertain-order-0-c\"],\"pattern\":\"insufficient_timing\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 2.0940000000009604,
+      "promptSha256": "4a27d21a108bd1f2bd6ab42e30fb4cce83b2a339afe4b8c787988e3a8bb2ac49"
+    },
+    {
+      "id": "validation-uncertain-order-1",
+      "output": "{\"evidenceIds\":[\"validation-uncertain-order-1-a\",\"validation-uncertain-order-1-b\",\"validation-uncertain-order-1-c\"],\"pattern\":\"insufficient_timing\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 2.1559999999990396,
+      "promptSha256": "0b27ee5b102ff1f260dde1a9d79eecb2367d307b237679407b2eba8f6cec5df8"
+    },
+    {
+      "id": "validation-uncertain-order-2",
+      "output": "{\"evidenceIds\":[\"validation-uncertain-order-2-a\",\"validation-uncertain-order-2-b\",\"validation-uncertain-order-2-c\"],\"pattern\":\"insufficient_timing\"}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 2.2190000000009604,
+      "promptSha256": "34c70dcdb19345fb9ac15a132b0aa8ec0a5232fc09c569b60e931e56cbdbae21"
+    }
+  ],
+  "fieldQualified": false,
+  "finalQuantizedModel": false
+}

@@ -9,13 +9,13 @@ import kotlinx.coroutines.*
 import java.io.File
 
 /** Real candidate generation on frozen examples, with no reference answer in model input. */
-internal fun runDomainAiAcceptance(context:Context,result:Bundle,selection:String)=runBlocking {
+internal fun runDomainAiAcceptance(context:Context,testContext:Context,result:Bundle,selection:String)=runBlocking {
     check(BuildConfig.DEBUG)
     val provider=BundledModelFactory.development(context)
     val manifest=provider.availability().manifest ?: error("Trained candidate not installed")
     check(manifest.id=="layertime-qwen3-4b-domain-development") {"Wrong model: ${manifest.id}"}
     val requested=selection.split(',').toSet()
-    val examples=DomainAiExamples.load(context).filter {it.id in requested}
+    val examples=DomainAiExamples.load(testContext).filter {it.id in requested}
     check(examples.size==requested.size && examples.isNotEmpty())
     val rows=mutableListOf<Map<String,Any?>>()
     val file=File(context.filesDir,"diagnostics/domain-candidate-acceptance.json")

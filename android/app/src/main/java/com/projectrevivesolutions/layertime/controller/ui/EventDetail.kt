@@ -95,11 +95,12 @@ fun EventDetailScreen(
 ) {
     val noFrames = "Raw 802.11 frames are not transported by LayerTime Link 0.1 (EVENT_SUMMARY is normalized). See the Link 0.2 evidence-transfer proposal."
     val capture = rememberCaptureImportUi()
+    BackContentFrame(onBack) {
     LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                if(com.projectrevivesolutions.layertime.controller.DeviceKind.isLokmatWatch) SciFiOutline("‹ BACK", enabled = true) { onBack() }
+                PageBackControl()
                 Text("ATTACK DETAIL  //  #${e.eventId}  ${e.detectorName}", color = LtColors.ConsoleEdge,
                     fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 1.sp, style = glowText())
             }
@@ -192,6 +193,7 @@ fun EventDetailScreen(
         }
 
         captureImportItems(capture, "7 - IMPORTED CAPTURE (WIRESHARK)", e.eventId)
+    }
     }
 }
 
@@ -371,11 +373,12 @@ fun LazyListScope.captureImportItems(ui: CaptureImportUi, title: String, eventId
 @Composable
 fun CaptureOnlyScreen(onBack: () -> Unit, onOpenWireshark: () -> Unit = {}) {
     val capture = rememberCaptureImportUi()
+    BackContentFrame(onBack) {
     LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                if(com.projectrevivesolutions.layertime.controller.DeviceKind.isLokmatWatch) SciFiOutline("‹ BACK", enabled = true) { onBack() }
+                PageBackControl()
                 Text("CAPTURE DECODE  //  NO DETECTION SELECTED", color = LtColors.ConsoleEdge,
                     fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 1.sp, style = glowText())
             }
@@ -383,6 +386,7 @@ fun CaptureOnlyScreen(onBack: () -> Unit, onOpenWireshark: () -> Unit = {}) {
         // The analytic pipeline on the capture itself, above the frame list so it is seen first.
         item { Section("TRIAGE") { CaptureTriageSection(onOpenWireshark) } }
         captureImportItems(capture, "IMPORTED CAPTURE (WIRESHARK)", null)
+    }
     }
 }
 

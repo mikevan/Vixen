@@ -2,6 +2,16 @@ package com.projectrevivesolutions.layertime.controller.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxScope
@@ -17,6 +27,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.IntOffset
@@ -66,7 +78,7 @@ fun OpsWatchAssembly(modifier: Modifier, face: @Composable (Modifier) -> Unit) {
 
 /** Nine-slice housing: corners retain proportions as live telemetry changes panel height. */
 @Composable
-fun OpsTelemetryHousing(modifier: Modifier, compact: Boolean = false, content: @Composable BoxScope.() -> Unit) {
+fun OpsTelemetryHousing(modifier: Modifier, compact: Boolean = false, borderBack:(()->Unit)?=null, content: @Composable BoxScope.() -> Unit) {
     val image = ImageBitmap.imageResource(R.drawable.ops_telemetry_housing_v2)
     Box(modifier) {
         // A decorative background follows the content's measured size; it must not
@@ -80,14 +92,16 @@ fun OpsTelemetryHousing(modifier: Modifier, compact: Boolean = false, content: @
             for (y in 0..2) for(x in 0..2) drawImage(image,
                 srcOffset=IntOffset(sx[x],sy[y]),srcSize=IntSize(sx[x+1]-sx[x],sy[y+1]-sy[y]),
                 dstOffset=IntOffset(dx[x],dy[y]),dstSize=IntSize(dx[x+1]-dx[x],dy[y+1]-dy[y]))
+            if(borderBack!=null)drawHousingBackReturn(image,sx,sy)
         }
         content()
+        borderBack?.let {HousingBorderBack(it)}
     }
 }
 
 /** Landscape material with constant-size corners and proportional illuminated rail sections. */
 @Composable
-fun OpsConnectionHousing(modifier: Modifier, compact: Boolean = false, content: @Composable BoxScope.() -> Unit) {
+fun OpsConnectionHousing(modifier: Modifier, compact: Boolean = false, borderBack:(()->Unit)?=null, content: @Composable BoxScope.() -> Unit) {
     val image=ImageBitmap.imageResource(R.drawable.ops_connection_housing_v1)
     Box(modifier) {
         Canvas(Modifier.matchParentSize()) {
@@ -99,7 +113,42 @@ fun OpsConnectionHousing(modifier: Modifier, compact: Boolean = false, content: 
             for(y in 0..2) for(x in 0..2) drawImage(image,
                 srcOffset=IntOffset(sx[x],sy[y]),srcSize=IntSize(sx[x+1]-sx[x],sy[y+1]-sy[y]),
                 dstOffset=IntOffset(dx[x],dy[y]),dstSize=IntSize(dx[x+1]-dx[x],dy[y+1]-dy[y]))
+            if(borderBack!=null)drawHousingBackReturn(image,sx,sy)
         }
         content()
+        borderBack?.let {HousingBorderBack(it)}
+    }
+}
+
+/** Extend the original frame using its own glass, bevel and rail pixels.
+ * Top and left are the original housing: only the inner right/lower return is new. */
+private fun DrawScope.drawHousingBackReturn(image:ImageBitmap,sx:IntArray,sy:IntArray) {
+    val right=110.dp.toPx().toInt();val bottom=44.dp.toPx().toInt();val rail=14.dp.toPx().toInt()
+    val dx=intArrayOf(0,rail,right-rail,right)
+    val dy=intArrayOf(0,rail,bottom-rail,bottom)
+    val glass=Path().apply {
+        moveTo(29.dp.toPx(),12.dp.toPx());lineTo((right-rail).toFloat(),12.dp.toPx())
+        lineTo((right-rail).toFloat(),(bottom-rail).toFloat());lineTo(14.dp.toPx(),(bottom-rail).toFloat())
+        lineTo(14.dp.toPx(),27.dp.toPx());close()
+    }
+    clipPath(glass) {
+        drawImage(image,srcOffset=IntOffset(sx[1],sy[1]),
+            srcSize=IntSize(sx[2]-sx[1],sy[2]-sy[1]),
+            dstOffset=IntOffset(0,0),dstSize=IntSize(right,bottom))
+    }
+    // Return rail: right edge and bottom edge, including their shared bevelled corner.
+    // Omit the original top/left edges rather than painting over their corner.
+    for(y in 0..2)for(x in 0..2) {
+        if(x!=2 && y!=2)continue
+        drawImage(image,srcOffset=IntOffset(sx[x],sy[y]),
+            srcSize=IntSize(sx[x+1]-sx[x],sy[y+1]-sy[y]),
+            dstOffset=IntOffset(dx[x],dy[y]),dstSize=IntSize(dx[x+1]-dx[x],dy[y+1]-dy[y]))
+    }
+}
+
+@Composable private fun BoxScope.HousingBorderBack(onBack:()->Unit) {
+    Box(Modifier.align(Alignment.TopStart).padding(start=18.dp,top=5.dp).width(80.dp).height(32.dp)
+        .clickable(role=Role.Button,onClickLabel="Back",onClick=onBack),contentAlignment=Alignment.Center) {
+        Text("‹ BACK",color=Color(0xFFB7F5FF),fontWeight=FontWeight.Bold,fontSize=11.sp)
     }
 }

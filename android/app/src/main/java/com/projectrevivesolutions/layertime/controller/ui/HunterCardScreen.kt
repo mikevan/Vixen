@@ -109,10 +109,11 @@ fun HunterCardScreen(onBack: () -> Unit, onOpenWireshark: () -> Unit) {
             .onFailure { parsed = null; message = "Vixen could not read ${c.name}." }
     }
 
+    BackContentFrame({ if (chosen != null) { chosen = null; parsed = null } else onBack() }) {
     LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                if(com.projectrevivesolutions.layertime.controller.DeviceKind.isLokmatWatch) SciFiOutline("‹ BACK", enabled = true) { if (chosen != null) { chosen = null; parsed = null } else onBack() }
+                PageBackControl()
                 Text("HUNTER CARD", color = LtColors.ConsoleEdge, fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 1.sp, style = glowText())
             }
         }
@@ -190,6 +191,7 @@ fun HunterCardScreen(onBack: () -> Unit, onOpenWireshark: () -> Unit) {
                 }
             }
         }
+    }
     }
 }
 

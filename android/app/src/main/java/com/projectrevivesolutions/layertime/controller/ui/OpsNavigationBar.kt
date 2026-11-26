@@ -7,6 +7,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.AccountTree
 import androidx.compose.material.icons.outlined.CalendarMonth
@@ -57,6 +58,7 @@ private fun NavigationInstrument(destination:Destination,selected:Boolean,modifi
     val shape=CutCornerShape(7.dp)
     val icon=when(destination) {
         Destination.OPS -> Icons.Outlined.WifiTethering
+        Destination.REPORTS -> Icons.Outlined.Description
         Destination.EVENTS -> Icons.Outlined.CalendarMonth
         Destination.TOOLS -> Icons.Outlined.Build
         Destination.BUILDER -> Icons.Outlined.AccountTree
@@ -66,6 +68,7 @@ private fun NavigationInstrument(destination:Destination,selected:Boolean,modifi
     val label=when(destination) {
         Destination.OPS -> "Ops"; Destination.EVENTS -> "Events"; Destination.TOOLS -> "Tools"
         Destination.MISSION -> "Mission"; Destination.SYSTEM -> "System"
+        Destination.REPORTS -> "Reports"
         Destination.BUILDER -> "Builder"
     }
     Column(modifier.padding(horizontal=3.dp).heightIn(min=NavigationInstrumentHeight)

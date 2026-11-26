@@ -68,10 +68,11 @@ fun MissionScreen(selected:Set<Int>,link:MissionLink,onSelectionChange:(Set<Int>
                   evidenceHold:Int=EvidenceHold.DEFAULT_SEC,evidenceLink:EvidenceHold.Link=EvidenceHold.Link.OFFLINE,
                   onEvidenceHoldChange:(Int)->Unit={}) {
     fun toggle(id:Int) {onSelectionChange(if(id in selected)selected-id else selected+id)}
-    OpsTelemetryHousing(Modifier.fillMaxSize()) {
+    OpsTelemetryHousing(Modifier.fillMaxSize(),borderBack=LocalPageBack.current) {
         Column(Modifier.fillMaxSize().padding(start=18.dp,end=18.dp,top=20.dp,bottom=24.dp),
             verticalArrangement=Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
+                PageBackControl()
                 Text("MISSION CONFIGURATION",color=MissionInk,style=MissionType.copy(fontSize=12.sp,lineHeight=15.sp,letterSpacing=.5.sp),modifier=Modifier.weight(1f))
                 Text("///",color=MissionCyan.copy(alpha=.6f),style=MissionType.copy(letterSpacing=1.sp))
             }
@@ -165,7 +166,7 @@ fun MissionScreen(selected:Set<Int>,link:MissionLink,onSelectionChange:(Set<Int>
                             .padding(horizontal=9.dp,vertical=5.dp),verticalAlignment=Alignment.CenterVertically,
                             horizontalArrangement=Arrangement.spacedBy(10.dp)) {
                             MissionCheck(if(checked)SensorSelection.PresetState.ALL else SensorSelection.PresetState.NONE)
-                            Text(LinkConstants.ReconTarget.name(id),color=if(checked)MissionGreen else MissionInk,
+                            Text(if(id==19) "Drone" else LinkConstants.ReconTarget.name(id),color=if(checked)MissionGreen else MissionInk,
                                 style=MissionType.copy(fontSize=10.sp,lineHeight=13.sp,letterSpacing=.5.sp))
                         }
                     }

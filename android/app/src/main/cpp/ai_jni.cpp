@@ -1,5 +1,6 @@
 #include <jni.h>
 #include "llama.h"
+#include "prompt_cache.h"
 #include <algorithm>
 #include <atomic>
 #include <memory>
@@ -10,12 +11,51 @@
 #include <vector>
 #include <chrono>
 #include <android/log.h>
+#include <iostream>
+#include <streambuf>
 
 namespace {
+#ifdef LT_AI_VULKAN
+// Preserve backend device/driver failures in Android diagnostics; no prompt text is logged.
+class AndroidBackendLog final:public std::streambuf {
+    std::mutex mutex;std::string line;
+    void append(char ch) {
+        if(ch=='\n' || line.size()>=3500) {
+            if(!line.empty())__android_log_print(ANDROID_LOG_INFO,"LayerTimeAI.Backend","%s",line.c_str());
+            line.clear();
+        }
+        if(ch!='\n')line+=ch;
+    }
+    int_type overflow(int_type ch) override {
+        if(!traits_type::eq_int_type(ch,traits_type::eof())) {std::lock_guard<std::mutex> lock(mutex);append(traits_type::to_char_type(ch));}
+        return traits_type::not_eof(ch);
+    }
+    std::streamsize xsputn(const char* s,std::streamsize n) override {
+        std::lock_guard<std::mutex> lock(mutex);for(std::streamsize i=0;i<n;++i)append(s[i]);return n;
+    }
+    int sync() override {return 0;}
+};
+#endif
 struct Session {
     std::unique_ptr<llama_model, decltype(&llama_model_free)> model{nullptr, llama_model_free};
+    std::unique_ptr<llama_context, decltype(&llama_free)> context{nullptr, llama_free};
+    std::vector<llama_token> prompt_tokens;
+    bool gpu=false;
     std::atomic<int64_t> cancelled_through{0};
     std::mutex run;
+};
+// A cancelled/failed decode may leave a partial KV sequence. Never reuse it.
+struct ContextRun {
+    Session& session; bool committed=false;
+    ~ContextRun() {
+        if(session.context) {
+            llama_set_abort_callback(session.context.get(),nullptr,nullptr);
+            if(!committed) {
+                llama_memory_clear(llama_get_memory(session.context.get()),false);
+                session.prompt_tokens.clear();
+            }
+        }
+    }
 };
 std::mutex handles_mutex;
 std::unordered_map<int64_t, std::shared_ptr<Session>> handles;
@@ -55,12 +95,23 @@ bool aborted(void* data) {
 extern "C" JNIEXPORT jlong JNICALL
 Java_com_projectrevivesolutions_layertime_controller_ai_runtime_NativeLlama_load(JNIEnv* env,jobject,jstring path) {
     try {
-        std::call_once(backend,[]{llama_backend_init();});
+        std::call_once(backend,[]{
+#ifdef LT_AI_VULKAN
+            // Process-lifetime buffer: std::cerr must remain valid through native teardown.
+            std::cerr.rdbuf(new AndroidBackendLog());
+#endif
+            llama_backend_init();
+        });
         const char* value=env->GetStringUTFChars(path,nullptr);
         if(!value)throw std::runtime_error("Missing model path.");
         const std::string filename(value);env->ReleaseStringUTFChars(path,value);
         auto session=std::make_shared<Session>();
         auto params=llama_model_default_params();params.n_gpu_layers=0;params.load_mode=LLAMA_LOAD_MODE_MMAP;
+#ifdef LT_AI_VULKAN
+        session->gpu=llama_supports_gpu_offload();
+        params.n_gpu_layers=session->gpu?999:0;
+#endif
+        __android_log_print(ANDROID_LOG_INFO,"LayerTimeAI","modelBackend=%s",session->gpu?"GPU":"CPU");
         session->model.reset(llama_model_load_from_file(filename.c_str(),params));
         if(!session->model)throw std::runtime_error("The bundled model could not be loaded.");
         const auto id=next_handle.fetch_add(1);
@@ -101,21 +152,34 @@ Java_com_projectrevivesolutions_layertime_controller_ai_runtime_NativeLlama_gene
         if(tokens.empty() || tokens.size()+max_tokens>static_cast<size_t>(context_tokens))
             throw std::runtime_error("Model context budget exceeded; input was not truncated.");
         const auto context_start=std::chrono::steady_clock::now();
+        ContextRun context_run{*session};
         auto params=llama_context_default_params();
-        params.n_ctx=std::min(context_tokens,static_cast<int>((tokens.size()+max_tokens+255)/256*256));
+        const int required=static_cast<int>(tokens.size())+max_tokens;
+        params.n_ctx=std::min(context_tokens,std::max(2048,(required+255)/256*256));
         params.n_batch=512;params.n_ubatch=512;
         params.n_threads=std::clamp(threads,1,4);params.n_threads_batch=std::clamp(threads,1,6);
-        params.abort_callback=aborted;params.abort_callback_data=&run;
-        params.offload_kqv=false;params.no_perf=true;
-        std::unique_ptr<llama_context,decltype(&llama_free)> ctx(llama_init_from_model(session->model.get(),params),llama_free);
+        params.offload_kqv=session->gpu;params.no_perf=true;
+        if(!session->context || llama_n_ctx(session->context.get())<static_cast<unsigned>(required)) {
+            session->prompt_tokens.clear();
+            session->context.reset(llama_init_from_model(session->model.get(),params));
+        }
+        auto* ctx=session->context.get();
         if(!ctx)throw std::runtime_error("Not enough memory to create the local model context.");
+        llama_set_n_threads(ctx,params.n_threads,params.n_threads_batch);
+        llama_set_abort_callback(ctx,aborted,&run);
+        auto reused=ltai::reusable_prompt_prefix(session->prompt_tokens,tokens);
+        auto memory=llama_get_memory(ctx);
+        if(reused==0 || !llama_memory_seq_rm(memory,0,static_cast<llama_pos>(reused),-1)) {
+            reused=0;llama_memory_clear(memory,false);
+        }
         const auto prefill_start=std::chrono::steady_clock::now();
-        for(size_t i=0;i<tokens.size();i+=512) {
+        for(size_t i=reused;i<tokens.size();i+=512) {
             if(aborted(&run))throw std::runtime_error("Local inference cancelled.");
             const int n=static_cast<int>(std::min<size_t>(512,tokens.size()-i));
-            if(llama_decode(ctx.get(),llama_batch_get_one(tokens.data()+i,n))!=0)
+            if(llama_decode(ctx,llama_batch_get_one(tokens.data()+i,n))!=0)
                 throw std::runtime_error("Local model prefill failed or was cancelled.");
         }
+        session->prompt_tokens=tokens;
         const auto decode_start=std::chrono::steady_clock::now();
         std::unique_ptr<llama_sampler,decltype(&llama_sampler_free)> sampler(
             llama_sampler_chain_init(llama_sampler_chain_default_params()),llama_sampler_free);
@@ -128,22 +192,23 @@ Java_com_projectrevivesolutions_layertime_controller_ai_runtime_NativeLlama_gene
         int generated=0;
         for(int i=0;i<max_tokens;++i) {
             if(aborted(&run))throw std::runtime_error("Local inference cancelled.");
-            auto token=llama_sampler_sample(sampler.get(),ctx.get(),-1);
+            auto token=llama_sampler_sample(sampler.get(),ctx,-1);
             if(llama_vocab_is_eog(vocab,token))break;
             ++generated;
             char small[256];int n=llama_token_to_piece(vocab,token,small,sizeof(small),0,false);
             if(n<0){std::vector<char> large(-n);n=llama_token_to_piece(vocab,token,large.data(),large.size(),0,false);if(n>0)output.append(large.data(),n);}
             else if(n>0)output.append(small,n);
             if(output.size()>1024*1024)throw std::runtime_error("Local model output exceeded its limit.");
-            if(i+1<max_tokens && llama_decode(ctx.get(),llama_batch_get_one(&token,1))!=0)
+            if(i+1<max_tokens && llama_decode(ctx,llama_batch_get_one(&token,1))!=0)
                 throw std::runtime_error("Local model decode failed or was cancelled.");
         }
         const auto done=std::chrono::steady_clock::now();
         auto millis=[](auto a,auto b){return static_cast<long long>(std::chrono::duration_cast<std::chrono::milliseconds>(b-a).count());};
-        __android_log_print(ANDROID_LOG_INFO,"LayerTimeAI","contextMs=%lld prefillMs=%lld decodeMs=%lld outputTokens=%d contextTokens=%u decodeThreads=%d batchThreads=%d",
-            millis(context_start,prefill_start),millis(prefill_start,decode_start),millis(decode_start,done),generated,params.n_ctx,params.n_threads,params.n_threads_batch);
+        __android_log_print(ANDROID_LOG_INFO,"LayerTimeAI","contextMs=%lld prefillMs=%lld decodeMs=%lld outputTokens=%d contextTokens=%u decodeThreads=%d batchThreads=%d promptTokens=%zu reusedTokens=%zu prefilledTokens=%zu",
+            millis(context_start,prefill_start),millis(prefill_start,decode_start),millis(decode_start,done),generated,llama_n_ctx(ctx),params.n_threads,params.n_threads_batch,tokens.size(),reused,tokens.size()-reused);
         jbyteArray result=env->NewByteArray(static_cast<jsize>(output.size()));
         if(result)env->SetByteArrayRegion(result,0,static_cast<jsize>(output.size()),reinterpret_cast<const jbyte*>(output.data()));
+        context_run.committed=!env->ExceptionCheck();
         return result;
     }catch(const std::exception& ex){fail(env,ex.what());return nullptr;}
 }

@@ -9,10 +9,16 @@ import math
 from pathlib import Path
 from prepare import verify
 
+def lora_targets(scope):
+    if scope=='qv':return ['q_proj','v_proj']
+    if scope=='attention':return ['q_proj','k_proj','v_proj','o_proj']
+    if scope=='all':return ['q_proj','k_proj','v_proj','o_proj','gate_proj','up_proj','down_proj']
+    raise ValueError('Unknown LoRA target scope')
+
 def main():
     source_names=['train_lora.py','completion_loss.py','prepare.py','assemble_development_corpus.py','training_stability.py',
                   'audit_policy_curriculum.py','evaluate_local_model.py','evidence_facts.py','grounded_contract.py','analytic_intent.py','intent_curriculum_audit.py','training_recovery.py','analytic_quantity.py','quantity_ontology.py',
-                  'domain_training_profile.py','compact_domain_contract.py','blue_team_contracts.py','repair_domain_views_v2.py','frozen_cpu_layers.py']
+                  'domain_training_profile.py','compact_domain_contract.py','blue_team_contracts.py','repair_domain_views_v2.py','frozen_cpu_layers.py','instruction_view_profile.py']
     source_snapshot={name:Path(__file__).with_name(name).read_bytes() for name in source_names}
     parser=argparse.ArgumentParser()
     parser.add_argument('--dataset',type=Path,required=True)
@@ -30,6 +36,7 @@ def main():
     parser.add_argument('--qlora',action='store_true',help='NF4 base weights with trainable LoRA adapters')
     parser.add_argument('--multitask',action='store_true',help='Verify source-grounded explanation tasks alongside capture reviews')
     parser.add_argument('--domain',action='store_true',help='Use the explicitly admitted compact blue-team domain profile')
+    parser.add_argument('--lora-targets',choices=('qv','attention','all'),default='qv')
     parser.add_argument('--lora-rank',type=int,default=8)
     parser.add_argument('--lora-alpha',type=int,default=16)
     parser.add_argument('--learning-rate',type=float,default=1e-4)
@@ -183,7 +190,7 @@ def main():
         model=PeftModel.from_pretrained(model,args.output/'initial-adapter',local_files_only=True,is_trainable=True)
     else:
         model=get_peft_model(model,LoraConfig(r=args.lora_rank,lora_alpha=args.lora_alpha,lora_dropout=0.05,
-            target_modules=['q_proj','v_proj'],task_type='CAUSAL_LM'))
+            target_modules=lora_targets(args.lora_targets),task_type='CAUSAL_LM'))
     arguments=TrainingArguments(output_dir=str(args.output),max_steps=args.max_steps,per_device_train_batch_size=1,
         per_device_eval_batch_size=1,gradient_accumulation_steps=args.gradient_accumulation,learning_rate=args.learning_rate,fp16=True,
         gradient_checkpointing=True,gradient_checkpointing_kwargs={'use_reentrant':False},

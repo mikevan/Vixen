@@ -2,6 +2,8 @@
 
 # Embedded AI workflow evaluation
 
+Reusable analysis infrastructure should serve the evidence workflow without forcing the product onto one phone or framework. This bounded evaluation tests an implementation choice; it does not demonstrate a warning capability for the people the toolkit intends to serve.
+
 This isolated Kotlin/JVM project evaluates Koog 1.3.0 without changing the Android application's Kotlin 2.0.21 toolchain. The published framework uses Kotlin 2.3.10 dependencies.
 
 Run with the repository's existing Gradle wrapper:

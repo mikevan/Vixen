@@ -1,0 +1,12 @@
+{
+  "versionCode": 141,
+  "apkSha256": "ce3bb4ea08b5b490e224d0c4657c74daf2cf3d36aec1d516fc70c84137f8faf7",
+  "modelSha256": "3d529dd89436601669d6d92f9c67793f35d7ba3a71bfe15cb44ae9547e7f194c",
+  "change": "Native Wi-Fi EAPOL packet windows now use the same ordinary preservation path as deauth",
+  "testsPerVariant": 427,
+  "failures": 0,
+  "modelChanged": false,
+  "harnessChanged": false,
+  "baselineRerunStarted": false,
+  "physicalEapolTransferVerified": false
+}

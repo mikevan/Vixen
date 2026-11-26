@@ -131,8 +131,6 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
     var showReview by remember {mutableStateOf(false)}
     var showResult by remember {mutableStateOf(BuilderEditingSession.showResult)}
     val captureState by com.projectrevivesolutions.layertime.controller.wireshark.PcapImport.state.collectAsState()
-    var showPractice by remember {mutableStateOf(false)}
-    var showDomainAiPractice by remember {mutableStateOf(false)}
     var selected by remember {mutableStateOf<String?>(null)}
     val lastRun by TriageSession.run.collectAsState()
     val analysisRunning by TriageSession.running.collectAsState()
@@ -173,8 +171,8 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
     var menuFor by remember {mutableStateOf<String?>(null)}
     var confirmType by remember {mutableStateOf<String?>(null)}
     var suppressTap by remember {mutableStateOf(false)}
-    androidx.activity.compose.BackHandler(enabled=confirmType!=null || menuFor!=null || selected!=null || showLoad || showMore || showPractice || showDomainAiPractice || showResult) {
-        when {showDomainAiPractice->showDomainAiPractice=false;confirmType!=null->confirmType=null;menuFor!=null->menuFor=null;showLoad->showLoad=false;showMore->showMore=false;selected!=null->selected=null;showPractice->showPractice=false;showResult->showResult=false}
+    androidx.activity.compose.BackHandler(enabled=confirmType!=null || menuFor!=null || selected!=null || showLoad || showMore || showResult) {
+        when {confirmType!=null->confirmType=null;menuFor!=null->menuFor=null;showLoad->showLoad=false;showMore->showMore=false;selected!=null->selected=null;showResult->showResult=false}
     }
     val textMeasurer=rememberTextMeasurer()
     val timelinePainter=rememberVectorPainter(Icons.Outlined.Layers)
@@ -246,14 +244,14 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
     Box(Modifier.fillMaxSize().onGloballyPositioned {screenOrigin=it.positionInRoot()}) {
     if(showResult && lastRun?.workflow==draft?.workflow && lastRun?.finding!=null) {
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(6.dp)) {
-            BuilderTextButton("Back to blocks",true){showResult=false}
-            FindingCard(lastRun!!.finding!!,onWireshark)
+            FindingCard(lastRun!!.finding!!,onWireshark,onBack={showResult=false})
         }
     } else Column(Modifier.fillMaxSize()) {
-    OpsTelemetryHousing(Modifier.fillMaxWidth().weight(1f)) {
+    OpsTelemetryHousing(Modifier.fillMaxWidth().weight(1f),borderBack=LocalPageBack.current) {
         Column(Modifier.fillMaxSize().padding(start=18.dp,end=18.dp,top=20.dp,bottom=20.dp),
             verticalArrangement=Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(4.dp)) {
+                PageBackControl()
                 Text("WORKSPACE",color=BuilderInk,style=BuilderType.copy(letterSpacing=.5.sp),modifier=Modifier.weight(1f))
                 BuilderControl("Zoom out",Icons.Outlined.Remove,zoom>BuilderViewport.MIN_ZOOM) {
                     if(vw>0f)update(current().transform(1f/1.25f,vw/2f,vh/2f,0f,0f,vw,vh,worldWidth,worldHeight))}
@@ -424,16 +422,7 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
         WorkflowStore.open(context,entry)?.let {opened->
             edit(if(opened.shipped)DraftEdits.copyOf(opened) else opened);showLoad=false;selected=null;check=null;showResult=false;fit()
         } ?: say("Could not load this analytic.",true)
-    },onImport={showLoad=false;importFlow.launch(arrayOf("application/json","text/plain","application/octet-stream"))},onPractice={
-        runCatching {
-            check(!com.projectrevivesolutions.layertime.controller.wireshark.PcapImport.running){"A recording is still loading."}
-            edit(DraftEdits.copyOf(DraftEdits.open(com.projectrevivesolutions.layertime.controller.flow.BuilderPractice.workflow(),null,true)))
-            val file=java.io.File(context.cacheDir,com.projectrevivesolutions.layertime.controller.flow.BuilderPractice.FILE_NAME)
-            file.writeBytes(com.projectrevivesolutions.layertime.controller.flow.BuilderPractice.fixture().pcap())
-            com.projectrevivesolutions.layertime.controller.wireshark.PcapImport.start(context,android.net.Uri.fromFile(file),training=true)
-            showLoad=false;showResult=false;fit();say("Practice blocks and recording loaded. Tap Run to test them.")
-        }.onFailure {say("Could not load practice: ${it.message}",true)}
-    })
+    },onImport={showLoad=false;importFlow.launch(arrayOf("application/json","text/plain","application/octet-stream"))})
     if(showMore) BuilderModal(onDismiss={showMore=false}) {
         Text("ANALYTIC",color=BuilderCyan,style=BuilderType)
         draft?.let {d->
@@ -450,15 +439,7 @@ fun BuilderScreen(onWireshark:()->Unit={},onTimeline:()->Unit={}) {
                 }.onFailure {say("Could not share: ${it.message}",true)}
             }
             if(d.authoring!=null)Text("Sharing includes the original authoring prompt and model version. Review the prompt for private context before sharing.",color=BuilderMuted,style=BuilderType.copy(fontSize=12.sp))
-            BuilderTextButton("Test deauth examples",DraftEdits.sentences(d.workflow).isEmpty()){check=DraftEdits.checkScenarios(d.workflow);say(check!!.sentence,check!!.failures.isNotEmpty());showMore=false}
         }
-        BuilderTextButton("Practice guide",true){showMore=false;showPractice=true}
-        if(com.projectrevivesolutions.layertime.controller.BuildConfig.DEBUG)
-            BuilderTextButton("Test trained AI",true){showMore=false;showDomainAiPractice=true}
-    }
-    if(showDomainAiPractice) BuilderModal(onDismiss={showDomainAiPractice=false}) {DomainAiPracticePanel()}
-    if(showPractice) BuilderModal(onDismiss={showPractice=false}) {
-        BuilderPracticePanel(onOpen={w->edit(DraftEdits.copyOf(DraftEdits.open(w,null,true)));showPractice=false;fit()},onWireshark=onWireshark)
     }
     if(showReview) BuilderReviewPanel(onDismiss={showReview=false},onWireshark=onWireshark,
         onDraft={edit(it);selected=null;check=null;showResult=false;fit()})
@@ -714,13 +695,8 @@ private fun BuilderStepDetail(d:Draft,step:com.projectrevivesolutions.layertime.
 private fun WiresharkCheckMenu(current:String?,onHold:(String)->Unit,onDismiss:()->Unit) {
     Box(Modifier.fillMaxSize().background(Color(0xCC01080F)).pointerInput(Unit){detectTapGestures{onDismiss()}},
         contentAlignment=Alignment.Center) {
-        val shape=RoundedCornerShape(8.dp)
-        Column(Modifier.fillMaxWidth(.9f).fillMaxHeight(.72f)
-            .background(Brush.verticalGradient(listOf(Color(0xFF0C2636),Color(0xFF05121D))),shape)
-            .border(1.dp,BuilderCyan.copy(alpha=.5f),shape).clip(shape)
-            .pointerInput(Unit){detectTapGestures{}}
-            .padding(16.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
-            FrameBackControl(onBack={onDismiss()})
+        OpsTelemetryHousing(Modifier.fillMaxWidth(.9f).fillMaxHeight(.72f).pointerInput(Unit){detectTapGestures{}},borderBack=onDismiss) {
+            Column(Modifier.fillMaxSize().padding(start=18.dp,end=18.dp,top=50.dp,bottom=20.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
             Text("WIRESHARK CHECKS",color=BuilderInk,style=BuilderType.copy(fontSize=13.sp,lineHeight=16.sp,letterSpacing=.6.sp))
             Text("Tap a check to choose it. Drag to scroll. Tap outside this box to close it.",
                 color=BuilderMuted,style=BuilderType.copy(fontSize=12.sp,lineHeight=15.sp))
@@ -743,7 +719,8 @@ private fun WiresharkCheckMenu(current:String?,onHold:(String)->Unit,onDismiss:(
                     }
                 }
             }
-            FrameBackControl(bottom=true,onBack={onDismiss()})
+
+            }
         }
     }
 }
@@ -754,16 +731,15 @@ private fun WiresharkConfirm(type:String,onYes:()->Unit,onNo:()->Unit) {
     val spec=StepRegistry.spec(type)!!
     Box(Modifier.fillMaxSize().background(Color(0xCC01080F)).pointerInput(Unit){detectTapGestures{onNo()}},
         contentAlignment=Alignment.Center) {
-        val shape=RoundedCornerShape(8.dp)
-        Column(Modifier.fillMaxWidth(.82f).background(Brush.verticalGradient(listOf(Color(0xFF0C2636),Color(0xFF05121D))),shape)
-            .border(1.dp,BuilderGreen.copy(alpha=.6f),shape).clip(shape).pointerInput(Unit){detectTapGestures{}}
-            .padding(18.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
-            FrameBackControl(onBack={onNo()})
+        OpsTelemetryHousing(Modifier.fillMaxWidth(.82f).pointerInput(Unit){detectTapGestures{}},borderBack=onNo) {
+            Column(Modifier.fillMaxWidth().padding(start=18.dp,end=18.dp,top=50.dp,bottom=20.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
             Text("Use \"${spec.title}\"?",color=BuilderInk,style=BuilderType.copy(fontSize=14.sp,lineHeight=18.sp))
             Text(wiresharkFieldHint(type),color=BuilderMuted,style=BuilderType.copy(fontSize=12.sp,lineHeight=15.sp))
             Row(horizontalArrangement=Arrangement.spacedBy(10.dp)) {
                 BuilderTextButton("Yes, use it",true){onYes()}
                 BuilderTextButton("No",true){onNo()}
+            }
+
             }
         }
     }

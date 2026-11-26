@@ -1,0 +1,466 @@
+[
+  {
+    "id": "positive-a",
+    "input": {
+      "events": [
+        {
+          "id": "r1",
+          "kind": "deauth",
+          "observedMs": 24000,
+          "network": "ap-a"
+        },
+        {
+          "id": "r2",
+          "kind": "eapol",
+          "observedMs": 31000,
+          "network": "ap-a"
+        },
+        {
+          "id": "r3",
+          "kind": "remote_id",
+          "observedMs": 57000,
+          "network": null
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "sameNetworkDisconnectExchange": true,
+        "disconnectBeforeExchange": true,
+        "remoteIdAfterExchange": true,
+        "disconnectToRemoteIdMs": 33000,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_then_remote_id",
+      "evidenceIds": [
+        "r1",
+        "r2",
+        "r3"
+      ]
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  },
+  {
+    "id": "positive-b",
+    "input": {
+      "events": [
+        {
+          "id": "a",
+          "kind": "deauth",
+          "observedMs": 110000,
+          "network": "ap-b"
+        },
+        {
+          "id": "b",
+          "kind": "eapol",
+          "observedMs": 113000,
+          "network": "ap-b"
+        },
+        {
+          "id": "c",
+          "kind": "remote_id",
+          "observedMs": 184000,
+          "network": null
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "sameNetworkDisconnectExchange": true,
+        "disconnectBeforeExchange": true,
+        "remoteIdAfterExchange": true,
+        "disconnectToRemoteIdMs": 74000,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_then_remote_id",
+      "evidenceIds": [
+        "a",
+        "b",
+        "c"
+      ]
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  },
+  {
+    "id": "no-follow-on",
+    "input": {
+      "events": [
+        {
+          "id": "d",
+          "kind": "deauth",
+          "observedMs": 2000,
+          "network": "ap-a"
+        },
+        {
+          "id": "e",
+          "kind": "eapol",
+          "observedMs": 4200,
+          "network": "ap-a"
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "sameNetworkDisconnectExchange": true,
+        "disconnectBeforeExchange": true,
+        "remoteIdAfterExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_only",
+      "evidenceIds": [
+        "d",
+        "e"
+      ]
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  },
+  {
+    "id": "remote-only",
+    "input": {
+      "events": [
+        {
+          "id": "u",
+          "kind": "remote_id",
+          "observedMs": 88000,
+          "network": null
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "sameNetworkDisconnectExchange": false,
+        "disconnectBeforeExchange": null,
+        "remoteIdAfterExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only",
+      "evidenceIds": [
+        "u"
+      ]
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  },
+  {
+    "id": "before-sequence",
+    "input": {
+      "events": [
+        {
+          "id": "w",
+          "kind": "remote_id",
+          "observedMs": 1000,
+          "network": null
+        },
+        {
+          "id": "x",
+          "kind": "deauth",
+          "observedMs": 20000,
+          "network": "ap-a"
+        },
+        {
+          "id": "y",
+          "kind": "eapol",
+          "observedMs": 25000,
+          "network": "ap-a"
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "sameNetworkDisconnectExchange": true,
+        "disconnectBeforeExchange": true,
+        "remoteIdAfterExchange": false,
+        "disconnectToRemoteIdMs": -19000,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "reverse_order",
+      "evidenceIds": [
+        "w",
+        "x",
+        "y"
+      ]
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  },
+  {
+    "id": "late-remote",
+    "input": {
+      "events": [
+        {
+          "id": "j",
+          "kind": "deauth",
+          "observedMs": 20000,
+          "network": "ap-a"
+        },
+        {
+          "id": "k",
+          "kind": "eapol",
+          "observedMs": 24000,
+          "network": "ap-a"
+        },
+        {
+          "id": "l",
+          "kind": "remote_id",
+          "observedMs": 120001,
+          "network": null
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "sameNetworkDisconnectExchange": true,
+        "disconnectBeforeExchange": true,
+        "remoteIdAfterExchange": true,
+        "disconnectToRemoteIdMs": 100001,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "outside_window",
+      "evidenceIds": [
+        "j",
+        "k",
+        "l"
+      ]
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  },
+  {
+    "id": "unknown-clock",
+    "input": {
+      "events": [
+        {
+          "id": "s1",
+          "kind": "deauth",
+          "observedMs": 20000,
+          "network": "ap-a"
+        },
+        {
+          "id": "s2",
+          "kind": "eapol",
+          "observedMs": 25000,
+          "network": "ap-a"
+        },
+        {
+          "id": "s3",
+          "kind": "remote_id",
+          "observedMs": 50000,
+          "network": null
+        }
+      ],
+      "relations": {
+        "clockAligned": false,
+        "sameNetworkDisconnectExchange": true,
+        "disconnectBeforeExchange": null,
+        "remoteIdAfterExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "insufficient_timing",
+      "evidenceIds": [
+        "s1",
+        "s2",
+        "s3"
+      ]
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  },
+  {
+    "id": "empty",
+    "input": {
+      "events": [],
+      "relations": {
+        "clockAligned": true,
+        "sameNetworkDisconnectExchange": false,
+        "disconnectBeforeExchange": null,
+        "remoteIdAfterExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "no_relevant_pattern",
+      "evidenceIds": []
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  },
+  {
+    "id": "deauth-only",
+    "input": {
+      "events": [
+        {
+          "id": "n",
+          "kind": "deauth",
+          "observedMs": 20000,
+          "network": "ap-a"
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "sameNetworkDisconnectExchange": false,
+        "disconnectBeforeExchange": null,
+        "remoteIdAfterExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "no_relevant_pattern",
+      "evidenceIds": []
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  },
+  {
+    "id": "different-network",
+    "input": {
+      "events": [
+        {
+          "id": "p",
+          "kind": "deauth",
+          "observedMs": 20000,
+          "network": "ap-a"
+        },
+        {
+          "id": "q",
+          "kind": "eapol",
+          "observedMs": 25000,
+          "network": "ap-b"
+        },
+        {
+          "id": "r",
+          "kind": "remote_id",
+          "observedMs": 50000,
+          "network": null
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "sameNetworkDisconnectExchange": false,
+        "disconnectBeforeExchange": true,
+        "remoteIdAfterExchange": true,
+        "disconnectToRemoteIdMs": 30000,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only",
+      "evidenceIds": [
+        "r"
+      ]
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  },
+  {
+    "id": "reversed-exchange",
+    "input": {
+      "events": [
+        {
+          "id": "s",
+          "kind": "eapol",
+          "observedMs": 20000,
+          "network": "ap-a"
+        },
+        {
+          "id": "t",
+          "kind": "deauth",
+          "observedMs": 25000,
+          "network": "ap-a"
+        },
+        {
+          "id": "v",
+          "kind": "remote_id",
+          "observedMs": 50000,
+          "network": null
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "sameNetworkDisconnectExchange": true,
+        "disconnectBeforeExchange": false,
+        "remoteIdAfterExchange": true,
+        "disconnectToRemoteIdMs": 25000,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only",
+      "evidenceIds": [
+        "v"
+      ]
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  },
+  {
+    "id": "window-boundary",
+    "input": {
+      "events": [
+        {
+          "id": "m1",
+          "kind": "deauth",
+          "observedMs": 14000,
+          "network": "ap-a"
+        },
+        {
+          "id": "m2",
+          "kind": "eapol",
+          "observedMs": 19000,
+          "network": "ap-a"
+        },
+        {
+          "id": "m3",
+          "kind": "remote_id",
+          "observedMs": 104000,
+          "network": null
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "sameNetworkDisconnectExchange": true,
+        "disconnectBeforeExchange": true,
+        "remoteIdAfterExchange": true,
+        "disconnectToRemoteIdMs": 90000,
+        "configuredWindowMs": 90000
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_then_remote_id",
+      "evidenceIds": [
+        "m1",
+        "m2",
+        "m3"
+      ]
+    },
+    "trainingAllowed": false,
+    "review": "Authored prospective development reference, not independent field truth"
+  }
+]

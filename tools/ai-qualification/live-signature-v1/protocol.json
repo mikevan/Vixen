@@ -1,0 +1,12 @@
+{
+  "schema": "vixen-live-signature-development/1",
+  "status": "frozen-before-predictions",
+  "scope": "Narrow evidence-pattern interpretation; no causal attribution or general model qualification",
+  "promotion": "No global model promotion. Final quantized model must pass every case without repair on the production request path before task-scoped beta admission. Field/RF truth remains separate.",
+  "casesSha256": "e313bf82b4e00e2ebdb09aabf41a5652cfaa9342dfa1cde2b2b0bf233b9a4992",
+  "systemSha256": "15e973e9271958d8c9e100c20fa19a6b445769836bd3848bd5f479f6607759b5",
+  "maxOutputTokens": 128,
+  "decode": "greedy; no thinking",
+  "models": "Compare existing 0.6B base and preserved direct semantic adapter; no optimizer updates or evaluation-to-training admission",
+  "acceptance": "All pattern and evidence-ID sets correct; raw outputs preserved; schema-only pass or rejection is not a semantic pass; positive and counterfactual cases all required"
+}

@@ -18,21 +18,18 @@ import com.projectrevivesolutions.layertime.controller.ui.theme.LtColors
 internal fun BuilderModal(onDismiss:()->Unit,content:@Composable ()->Unit) {
     val height=(LocalConfiguration.current.screenHeightDp*.78f).coerceAtMost(650f).dp
     Dialog(onDismissRequest=onDismiss) {
-        OpsTelemetryHousing(Modifier.fillMaxWidth().height(height),compact=true) {
-            Column(Modifier.fillMaxSize().padding(start=14.dp,end=14.dp,top=38.dp,bottom=38.dp).verticalScroll(rememberScrollState()),
+        OpsTelemetryHousing(Modifier.fillMaxWidth().height(height),compact=true,borderBack=onDismiss) {
+            Column(Modifier.fillMaxSize().padding(start=14.dp,end=14.dp,top=50.dp,bottom=20.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement=Arrangement.spacedBy(10.dp)){content()}
-            Box(Modifier.align(Alignment.TopStart)){FrameBackControl(onBack=onDismiss)}
-            Box(Modifier.align(Alignment.BottomStart)){FrameBackControl(bottom=true,onBack=onDismiss)}
         }
     }
 }
 
 @Composable
-internal fun BuilderLoadMenu(flows:List<WorkflowStore.Entry>,onDismiss:()->Unit,onLoad:(WorkflowStore.Entry)->Unit,onImport:()->Unit,onPractice:()->Unit) {
+internal fun BuilderLoadMenu(flows:List<WorkflowStore.Entry>,onDismiss:()->Unit,onLoad:(WorkflowStore.Entry)->Unit,onImport:()->Unit) {
     BuilderModal(onDismiss) {
         Text("LOAD ANALYTIC",color=LtColors.Cyan,fontSize=18.sp)
         SciFiOutline("LOAD FROM FILE",true,onClick=onImport)
-        SciFiOutline("LOAD PRACTICE ANALYTIC",true,onClick=onPractice)
         val latest=flows.groupBy {it.name to it.shipped}.values.mapNotNull {it.maxByOrNull {entry->entry.version}}
         for(shipped in listOf(false,true)) {
             Text(if(shipped)"INCLUDED ANALYTICS" else "YOUR SAVED ANALYTICS",color=LtColors.Cyan,fontSize=14.sp)

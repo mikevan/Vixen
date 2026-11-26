@@ -100,7 +100,6 @@ import com.projectrevivesolutions.layertime.controller.mission.EvidenceHold
 import com.projectrevivesolutions.layertime.controller.mission.MissionPrefs
 import com.projectrevivesolutions.layertime.controller.mission.SensorSelection
 import com.projectrevivesolutions.layertime.controller.link.LinkConstants
-import com.projectrevivesolutions.layertime.controller.link.LinkMeasure
 import com.projectrevivesolutions.layertime.controller.link.ConnNotice
 import com.projectrevivesolutions.layertime.controller.link.CardClear
 import com.projectrevivesolutions.layertime.controller.link.HunterRoster
@@ -108,7 +107,6 @@ import com.projectrevivesolutions.layertime.controller.link.HunterScanner
 import com.projectrevivesolutions.layertime.controller.DeviceKind
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
-import com.projectrevivesolutions.layertime.controller.BuildConfig
 import com.projectrevivesolutions.layertime.controller.model.ConnState
 import com.projectrevivesolutions.layertime.controller.model.EventRow
 import com.projectrevivesolutions.layertime.controller.model.LogEntry
@@ -157,6 +155,7 @@ import java.util.Locale
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.start(applicationContext)
         enableEdgeToEdge()
         ControllerRepository.deviceReport = DeviceReportBuilder.build(applicationContext)
         // The shipped workflow (deauth triage) loads once; the Builder shows it and TRIAGE runs it.
@@ -262,7 +261,6 @@ private fun ControllerScreen() {
     val server by repo.server.collectAsState()
     val events by repo.events.collectAsState()
     val log by repo.log.collectAsState()
-    val background by repo.background.collectAsState()
     val linkStale by repo.linkStale.collectAsState()
     val reconnecting by repo.reconnecting.collectAsState()
     val connDetail by repo.connDetail.collectAsState()
@@ -308,7 +306,7 @@ private fun ControllerScreen() {
     val is24 = DateFormat.is24HourFormat(context)
     val hourText = remember(nowMs, is24) { SimpleDateFormat(if (is24) "HH" else "hh", Locale.US).format(Date(nowMs)) }
     val minText = remember(nowMs) { SimpleDateFormat("mm", Locale.US).format(Date(nowMs)) }
-    val dateText = remember(nowMs) { SimpleDateFormat("EEE '•' MMM dd", Locale.US).format(Date(nowMs)).uppercase() }
+    val dateText = remember(nowMs) { SimpleDateFormat("EEE 'â€¢' MMM dd", Locale.US).format(Date(nowMs)).uppercase() }
 
     val permLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -365,13 +363,11 @@ private fun ControllerScreen() {
     }
     confirmClear?.let { h ->
         androidx.compose.ui.window.Dialog(onDismissRequest={confirmClear=null}) {
-            OpsConnectionHousing(Modifier.fillMaxWidth()) {
-                Column(Modifier.fillMaxWidth().padding(18.dp).verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(12.dp)) {
-                    FrameBackControl(onBack={confirmClear=null})
+            OpsConnectionHousing(Modifier.fillMaxWidth(),borderBack={confirmClear=null}) {
+                Column(Modifier.fillMaxWidth().padding(start=18.dp,end=18.dp,top=50.dp,bottom=20.dp).verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(12.dp)) {
                     Text("Clear Card",color=LtColors.Cyan,fontSize=18.sp)
                     Text(CardClear.confirmText(h.name),color=LtColors.Ivory,fontSize=15.sp)
                     SciFiPrimary("Erase",true){confirmClear=null;eraseCard(h)}
-                    FrameBackControl(bottom=true,onBack={confirmClear=null})
                 }
             }
         }
@@ -485,9 +481,9 @@ private fun ControllerScreen() {
     }
     val fahrenheit = remember { RingData.useFahrenheit() }
     // N/A only when the device has no sensor; "--" while a sensor has not reported yet.
-    val tempValue = ambientC?.let { c -> "%.0f°".format(if (fahrenheit) c * 9f / 5f + 32f else c) }
+    val tempValue = ambientC?.let { c -> "%.0fÂ°".format(if (fahrenheit) c * 9f / 5f + 32f else c) }
         ?: if (hasTempSensor && !tempSilent) "--" else null
-    val tempUnit = if (ambientC != null) (if (fahrenheit) "°F" else "°C") else null
+    val tempUnit = if (ambientC != null) (if (fahrenheit) "Â°F" else "Â°C") else null
     // Position for the SUN ring: a GPS fix or a grid the operator entered, whichever is newer.
     // A fresh GPS fix takes over from an older manual entry; entering a grid after the last
     // fix means the operator knows better where they are now.
@@ -563,7 +559,7 @@ private fun ControllerScreen() {
                             item {
                                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                    SciFiOutline("‹ BACK", enabled = true) { page = "main" }
+                                    SciFiOutline("â€¹ BACK", enabled = true) { page = "main" }
                                     Text("MISSION CONFIGURATION", color = LtColors.ConsoleEdge, fontWeight = FontWeight.Bold,
                                         fontSize = 16.sp, letterSpacing = 2.sp, style = glowText())
                                 }
@@ -660,7 +656,7 @@ private fun ControllerScreen() {
                             item {
                                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                    SciFiOutline("‹ BACK", enabled = true) { page = "main" }
+                                    SciFiOutline("â€¹ BACK", enabled = true) { page = "main" }
                                     Text("DETECTED ATTACKS  //  ${events.size}", color = LtColors.ConsoleEdge,
                                         fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 2.sp, style = glowText())
                                 }
@@ -682,7 +678,7 @@ private fun ControllerScreen() {
                                     Column {
                                         Text("#${e.eventId}  ${e.detectorName}", color = LtColors.Amber,
                                             fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 1.sp)
-                                        Text("${LinkConstants.SourceKind.name(e.sourceKind)} · ${LinkConstants.Band.name(e.band)} · ch ${e.channel} · ${e.rssi} dBm · x${e.count}   → TAP FOR DETAIL",
+                                        Text("${LinkConstants.SourceKind.name(e.sourceKind)} Â· ${LinkConstants.Band.name(e.band)} Â· ch ${e.channel} Â· ${e.rssi} dBm Â· x${e.count}   â†’ TAP FOR DETAIL",
                                             color = LtColors.Ivory, fontSize = 12.sp, fontFamily = ConsoleFonts.mono)
                                     }
                                 }
@@ -690,6 +686,8 @@ private fun ControllerScreen() {
                         }
                         }
                     }
+
+                    "ai-reports" -> AiReportsScreen()
 
                     "builder" -> BuilderScreen(onWireshark = { page = "wireshark" }, onTimeline = { page = "timeline" })
 
@@ -728,7 +726,7 @@ private fun ControllerScreen() {
                                         color = LtColors.Amber, fontSize = 12.sp)
                                 }
                             }
-                            if (BuildConfig.DEBUG) item { LinkMeasurePanel(active) }
+
                         }
                         }
                     }
@@ -764,25 +762,7 @@ private fun ControllerScreen() {
                                         color = LtColors.Grey, fontSize = 12.sp)
                                 }
                             }
-                            if (BuildConfig.DEBUG && !onHull) item { LinkMeasurePanel(active) }
-                            item {
-                                SciFiPanel("SCREEN-OFF RECEPTION TEST") {
-                                    Text("Start, turn the screen off for a while, turn it on, then stop.", color = LtColors.Ivory, fontSize = 12.sp)
-                                    background?.let { bt ->
-                                        FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                            HudReadout("RECEIVED", "${bt.eventsReceivedDuring}", LtColors.Amber)
-                                            HudReadout("DISCONNECTS", "${bt.disconnectsDuring}", LtColors.Amber)
-                                            HudReadout("TEST", if (bt.running) "RUNNING" else "ENDED", if (bt.running) LtColors.Green else LtColors.Grey)
-                                        }
-                                    }
-                                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                        SciFiPrimary("START TEST", enabled = active && background?.running != true, large = true) {
-                                            repo.startBackgroundTest("screen-off reception")
-                                        }
-                                        SciFiOutline("STOP TEST", enabled = background?.running == true, large = true) { repo.stopBackgroundTest() }
-                                    }
-                                }
-                            }
+
                             item {
                                 SciFiPanel("DISPLAY") {
                                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -867,7 +847,7 @@ private fun ControllerScreen() {
                                         Text("Server 0.${server!!.serverMinor}   |   Session ${server!!.sessionId}   |   Max frames ${server!!.maxFrame}",
                                             color = LtColors.Ivory, fontSize = 12.sp, fontFamily = ConsoleFonts.mono)
                                     }
-                                    SciFiPrimary(if (scanBusy) "Scanning…" else "Scan", enabled = !scanBusy, large = true) { scanHunters() }
+                                    SciFiPrimary(if (scanBusy) "Scanningâ€¦" else "Scan", enabled = !scanBusy, large = true) { scanHunters() }
                                     HunterRoster.sentence(rosterScan)?.let { Text(it, color = LtColors.Cyan, fontSize = 12.sp) }
                                     // Why the link is where it is, and what to tap next (ConnNotice).
                                     val notice = locationNotice?.let { ConnNotice.Notice(it, ConnNotice.Tone.PROBLEM) }
@@ -975,7 +955,7 @@ private fun ControllerScreen() {
     BoxWithConstraints(Modifier.fillMaxSize()) {
         if (huntOpen) {
             // HUNT v1 takes the whole screen until STOP HUNT.
-            SectionWindow(framed=!DeviceKind.isLokmatWatch,onBack={goBack()}) {
+            BackContentFrame(onBack={goBack()},headerSlot=false) {
             HuntScreen(
                 onStop = { LinkForegroundService.active?.huntStop(); HuntSession.end() },
                 onAgain = {
@@ -1098,6 +1078,7 @@ private fun ControllerScreen() {
                                 OpsWatchAssembly(Modifier.size(diameter * 1.10f).zIndex(1f)) { face(it, false) }
                             }
                         }
+                        LiveSignaturePanel()
                     } else {
                         NavHeaderStrip(dest.label, active, events.size, linkStale)
                     }
@@ -1158,36 +1139,6 @@ internal fun emptyEventsMessage(connected: Boolean, status: com.projectrevivesol
     !connected -> "No detections yet. Connect a Hunter and start detection."
     status?.monitoring == true -> "No detections yet. Detection is running."
     else -> "No detections yet. Tap START to begin detection."
-}
-
-/**
- * LINK MEASURE: the watch side of Link 0.2 Phase 0 (claude/link_0_2_phase0_plan.md,
- * M5). A PING burst for the round trip that limits HUNT polling, and BULK runs for
- * throughput at 20 bytes and at a larger MTU. BULK needs the Hunter measurement
- * firmware; a release Hunter answers UnknownOp, and the panel says so.
- */
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun LinkMeasurePanel(connected: Boolean) {
-    val st by LinkMeasure.state.collectAsState()
-    val idle = connected && st.running == null
-    val client = LinkForegroundService.active
-    SciFiPanel("LINK MEASURE  //  TEST") {
-        Text("Link 0.2 Phase 0. Run in order: PING, BULK at 20 bytes, MTU 247, then BULK at 244 bytes. " +
-            "BULK needs the Hunter measurement firmware. The larger MTU lasts until this connection drops.",
-            color = LtColors.Ivory, fontSize = 12.sp)
-        HudReadout("MTU", "${st.mtu}", if (st.mtu > 23) LtColors.Green else LtColors.Cyan)
-        if (!connected) Text("Connect to a Hunter first.", color = LtColors.Grey, fontSize = 12.sp)
-        st.running?.let { Text(it, color = LtColors.Green, fontSize = 12.sp, fontFamily = ConsoleFonts.mono) }
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            SciFiOutline("PING x100", enabled = idle) { client?.measurePingBurst(100) }
-            SciFiOutline("BULK 200 x 20", enabled = idle) { client?.measureBulk(200, 20) }
-            SciFiOutline("MTU 247", enabled = idle && st.mtu <= 23) { client?.measureRequestMtu() }
-            SciFiOutline("BULK 200 x 244", enabled = idle) { client?.measureBulk(200, 244) }
-            SciFiOutline("CLEAR", enabled = st.lines.isNotEmpty() && st.running == null) { LinkMeasure.clear() }
-        }
-        st.lines.forEach { Text(it, color = LtColors.Ivory, fontSize = 12.sp, fontFamily = ConsoleFonts.mono) }
-    }
 }
 
 @Composable
@@ -1296,6 +1247,7 @@ private fun SlashAccent(edge: Color) {
 /** The console page that a destination opens. */
 private fun pageFor(d: Destination): String = when (d) {
     Destination.OPS -> "main"
+    Destination.REPORTS -> "ai-reports"
     Destination.EVENTS -> "attacks"
     Destination.TOOLS -> "tools"
     Destination.BUILDER -> "builder"
@@ -1311,6 +1263,7 @@ private fun destForPage(page: String): Destination = when (page) {
     "builder" -> Destination.BUILDER
     "config" -> Destination.MISSION
     "system" -> Destination.SYSTEM
+    "ai-reports" -> Destination.REPORTS
     else -> Destination.OPS
 }
 
@@ -1385,7 +1338,7 @@ private fun HudStatusStrip(active: Boolean, connecting: Boolean, events: Int, st
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text("LT ◆ CONSOLE", color = edge, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 2.sp,
+        Text("LT â—† CONSOLE", color = edge, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 2.sp,
             style = glowText(), modifier = Modifier.weight(1f))
         HudLed(linkColor, 8.dp)
         Text(linkText, color = linkColor, fontWeight = FontWeight.Bold, fontSize = 12.sp, letterSpacing = 1.sp,
@@ -1517,8 +1470,8 @@ private fun EventRowCard(e: EventRow, onOpen: () -> Unit) {
             Column(Modifier.padding(19.dp)) {
                 Text("#${e.eventId}  ${e.detectorName}", color = LtColors.Amber,
                     fontWeight = FontWeight.Bold, fontSize = 14.sp, letterSpacing = 1.sp)
-                Text("${LinkConstants.SourceKind.name(e.sourceKind)} · ${LinkConstants.Band.name(e.band)} · " +
-                    "ch ${e.channel} · ${e.rssi} dBm · x${e.count} · ${e.ageSeconds}s · " +
+                Text("${LinkConstants.SourceKind.name(e.sourceKind)} Â· ${LinkConstants.Band.name(e.band)} Â· " +
+                    "ch ${e.channel} Â· ${e.rssi} dBm Â· x${e.count} Â· ${e.ageSeconds}s Â· " +
                     LinkConstants.Confidence.name(e.confidence), color = LtColors.Ivory, fontSize = 12.sp,
                     fontFamily = ConsoleFonts.mono)
                 e.sourceId?.let { Text("id: $it", color = LtColors.Grey, fontSize = 12.sp, fontFamily = ConsoleFonts.mono) }
@@ -1646,7 +1599,7 @@ private fun LayerTimeButtonPanel(nowMs: Long) {
     }
     val context = LocalContext.current
     val on = remember(nowMs / 3_000L) { com.projectrevivesolutions.layertime.controller.service.LayerTimeKeyService.isEnabled(context) }
-    SciFiPanel("LAYERSCOPE BUTTON", statusColor = if (on) LtColors.Green else LtColors.Amber) {
+    SciFiPanel("VIXEN BUTTON", statusColor = if (on) LtColors.Green else LtColors.Amber) {
         HudReadout("GREEN BUTTON", if (on) "ACTIVE" else "OFF", if (on) LtColors.Green else LtColors.Amber)
         Text(
             if (on) "A short press opens Vixen from anywhere. Hold it for Back in other apps. In Vixen it slides the face in or out."

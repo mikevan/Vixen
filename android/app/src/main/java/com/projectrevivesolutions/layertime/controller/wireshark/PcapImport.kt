@@ -35,7 +35,7 @@ object PcapImport {
         data class Running(val fileName: String, val phase: String, val frames: Int, val percent: Int?,
                            val ratePerSecond: Double, val elapsedSeconds: Double, val slowing: Boolean) : State
         data class Done(val fileName: String, val fileBytes: Long, val fileType: String, val wiresharkVersion: String,
-                        val result: CaptureDecodeLoop.Result, val captureId: String = java.util.UUID.randomUUID().toString(), val training: Boolean = false) : State
+                        val result: CaptureDecodeLoop.Result, val captureId: String = java.util.UUID.randomUUID().toString(), val training: Boolean = false, val origin: com.projectrevivesolutions.layertime.controller.link.HunterEvidenceOrigin? = null) : State
         data class Failed(val fileName: String, val message: String) : State
     }
 
@@ -95,7 +95,7 @@ object PcapImport {
 
     /** Start an import. Ignored while another import is running. */
     @Synchronized
-    fun start(context: Context, uri: Uri, training: Boolean = false) {
+    fun start(context: Context, uri: Uri, training: Boolean = false, origin: com.projectrevivesolutions.layertime.controller.link.HunterEvidenceOrigin? = null) {
         Log.i(TAG, "IMPORT start requested uri=$uri running=$running")
         if (running) { Log.i(TAG, "IMPORT ignored: another import is running"); return }
         val app = context.applicationContext
@@ -104,7 +104,7 @@ object PcapImport {
         com.projectrevivesolutions.layertime.controller.flow.TriageSession.clear()
         val name = displayName(app, uri)
         _state.value = State.Running(name, "copy", 0, null, 0.0, 0.0, false)
-        worker = Thread({ runImport(app, uri, name, training || name.startsWith("TRAINING-")) }, "ltws-pcap-import").apply { start() }
+        worker = Thread({ runImport(app, uri, name, training || name.startsWith("TRAINING-"), origin) }, "ltws-pcap-import").apply { start() }
     }
 
     private fun displayName(context: Context, uri: Uri): String = runCatching {
@@ -123,7 +123,7 @@ object PcapImport {
         _state.value = State.Failed(fileName, message)
     }
 
-    private fun runImport(context: Context, uri: Uri, fileName: String, training: Boolean) {
+    private fun runImport(context: Context, uri: Uri, fileName: String, training: Boolean, origin: com.projectrevivesolutions.layertime.controller.link.HunterEvidenceOrigin?) {
         try {
             phase("copy", fileName)
             val dir = File(context.cacheDir, "pcap_import").apply { mkdirs() }
@@ -180,7 +180,13 @@ object PcapImport {
                     result.readError != null -> Log.i(TAG, "PCAP DONE WITH READ ERROR $tail error=${result.readError}")
                     else -> Log.i(TAG, "PCAP DONE $tail")
                 }
-                _state.value = State.Done(fileName, bytes, r.fileType, version, result, training=training)
+                val done=State.Done(fileName, bytes, r.fileType, version, result, training=training, origin=origin)
+                _state.value=done
+                com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.record("capture_decoded",mapOf(
+                    "captureId" to done.captureId,"hunterAddress" to origin?.hunterAddress,"sessionId" to origin?.sessionId,
+                    "eventId" to origin?.eventId,"payloadSha256" to origin?.payloadSha256,
+                    "totalFrames" to result.totalFrames,"observations" to result.observations.size,
+                    "cancelled" to result.cancelled,"readError" to result.readError,"training" to training))
             }
         } catch (t: Throwable) {
             Log.e(TAG, "PCAP FAILED file=$fileName", t)

@@ -1,0 +1,24 @@
+# Vixen AI iteration history
+
+We preserve mistakes alongside successful checks so each change has a reviewable reason. This record links the development evidence; it does not combine different tasks into a single accuracy score.
+
+Start with [how we use and train AI](how-we-use-ai.md) and [current AI status](CURRENT-AI-STATUS.md). For the reusable training exercises, begin with [Notella Tutorial 0: environment setup](https://github.com/mikevan/Notella/blob/main/docs/setup.md), then [the tutorial index](https://github.com/mikevan/Notella/blob/main/docs/index.md).
+
+| Stage | What happened | What we changed or concluded |
+| --- | --- | --- |
+| Unchanged-model acceptance | Only 1/12 authored development cases passed all gates, even though all passed structure/reference checks and the desktop timing limit. | Keep semantic review separate from formatting. [Baseline results](acceptance/v2/RESULTS.md). |
+| First domain adapter and correction | The first candidate completed 1,090 updates. A correction completed another 682, but both passed 2/12 overall frozen cases. Some explanations improved while others regressed. | Preserve both candidates and failures; do not promote either on training completion. [Checkpoint](CHECKIN-BUILD122.md), [correction evidence](../../tools/ai-training/acceptance/v2/trained-domain-v2/). |
+| Broader instruction experiment | A later fresh-base adapter completed 682 applied updates and passed 4/12 unchanged acceptance cases, but still reversed sequence and missed identity and missing-evidence distinctions. | No promotion. Higher fixture agreement did not establish ordinary product suitability. [Current status](CURRENT-AI-STATUS.md#latest-accuracy-experiments). |
+| Saved field collection explanation | A field request omitted the output schema required by the compact prompt format, causing failure before inference. | Supply the declared schema and preserve regression checks. This repairs request construction, not model truth. [Field evaluation](../field-ai-evaluation.md). |
+| SIG-001 | With a corrected input containing a flood and no follow-on, the model invented a drone observation. With the second observation supplied, it confused observer and observed entity. JSON and references were valid. An earlier input had accidentally leaked later context and was excluded from model-only attribution. | Preserve the contaminated attempt and corrected reproduction separately. The model grounding defect remains open. [Defect record](model-defects/SIG-001.json). |
+| Controlled positive path | Builds 132–134 exposed omissions, a false claim that 30,000 ms exceeded 90,000 ms, and invalid JSON. Deterministic policy comparison and a structured explanation contract yielded two complete component passes in build 135, at 125.184 and 119.835 seconds. | Credit preserved slices, correlation, and the bounded explanation path. These times do not meet the illustrative 30-second assessment goal; the result does not prove fresh RF detection or ordinary warning delivery. [Detailed status](CURRENT-AI-STATUS.md#component-replay-passed-twice-ordinary-field-workflow-remains-unproven). |
+| Live harness demonstration | The source transmitted controlled telemetry over real BLE, but Vixen used a separate modal and direct development-model route. The ordinary event list and alert service did not receive that result. | Counting this as the field MVP would have been a test-design error. Remove the test-only interface and require the common field route. [Correction](CURRENT-AI-STATUS.md#field-fidelity-correction), [acceptance requirements](mvp-field-acceptance.json). |
+| Passive measurement | The MVP now has recorded OKRs, bounded asynchronous instrumentation, independent scoring, and non-interference/idempotency requirements. | Record actual observations and delivery attempts without steering decisions. Missing truth remains unmeasured; instrumentation is not a semantic qualification result. [MVP OKRs](../mvp-okrs.md). |
+
+The phone-model comparisons, Notella's compact decision tasks, and full temporal-state experiments are different cohorts and workflows. [Notella's iteration history](https://github.com/mikevan/Notella/blob/main/docs/ai-iteration-history.md) records its own development results. None is an independent field-accuracy estimate.
+
+## Evidence and next gate
+
+Use the linked protocols, exact answers, criterion reviews, and defect receipts to inspect each claim. Private captures and local model files stay private; a local path in a record is not a public download. Keep old results intact and distinguish implementation checks, model semantics, controlled transport, and normal field delivery.
+
+The next MVP gate is the ordinary capture-to-preserved-evidence-to-analysis-to-warning chain, with the same application behavior used in controlled and field tests. No model promotion or new field success is claimed by this documentation.

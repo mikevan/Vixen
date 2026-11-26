@@ -85,7 +85,7 @@ class PcapImportService : LifecycleService() {
             Notification.Builder(this, CHANNEL_ID) else @Suppress("DEPRECATION") Notification.Builder(this)
         builder.setContentTitle("Vixen capture import")
             .setContentText(text)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_vixen_notification)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
         if (st.percent != null && st.phase == "decode") builder.setProgress(100, st.percent, false)
