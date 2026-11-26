@@ -28,7 +28,7 @@ object SensorSelection {
         // AirTag, Tile, SmartTag, Google Tag
         Group(TRACKERS, "TRACKERS", listOf(10, 14, 15, 16)),
         // Flock, Axon, Meta
-        Group(COUNTER_SURVEIL, "COUNTER-SURVEIL", listOf(8, 13, 12)),
+        Group(COUNTER_SURVEIL, "COUNTER-SURVEIL", listOf(8, 13, 12, 19)),
         // Deauth, Pwnagotchi, MultiSSID, Pineapple, Flipper, EAPOL
         Group(COUNTER_INTRUSION, "COUNTER-INTRUSION", listOf(5, 6, 7, 9, 11, 18)),
     )
@@ -46,7 +46,7 @@ object SensorSelection {
     val DEFAULT_SENSORS: Set<Int> = (ALL_SENSORS - group(TRACKERS)!!.members.toSet()).toSet()
 
     /** kAllSensorsMask in src/core/model/MonitorEvent.h: bits 5 to 16, and 18. */
-    const val ALL_MASK: Long = 0x5FFE0L
+    const val ALL_MASK: Long = 0xDFFE0L
 
     enum class PresetState { NONE, PARTIAL, ALL }
 

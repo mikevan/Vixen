@@ -1,7 +1,7 @@
 package com.projectrevivesolutions.layertime.controller.ai
 
 /** Product-owned contracts. No Android, network, or orchestration-framework types cross this boundary. */
-enum class AiTask { REVIEW_CAPTURE, REVIEW_GROUNDED_CAPTURE, EXPLAIN_EVIDENCE, CREATE_ANALYTIC, PLAN_ANALYTIC, PLAN_ANALYTIC_QUANTITIES, DEFINE_ATOM, DEFINE_AGENT }
+enum class AiTask { INTERPRET_SIGNATURE, REVIEW_CAPTURE, REVIEW_GROUNDED_CAPTURE, EXPLAIN_EVIDENCE, CREATE_ANALYTIC, PLAN_ANALYTIC, PLAN_ANALYTIC_QUANTITIES, DEFINE_ATOM, DEFINE_AGENT }
 enum class ModelCapability { STRUCTURED_OUTPUT, TOOL_CALLS }
 enum class ModelState { NOT_INSTALLED, READY, INCOMPATIBLE }
 
@@ -14,6 +14,9 @@ data class LocalModelManifest(
     val capabilities: Set<ModelCapability>,
     val contextTokens: Int,
     val blueTeamTrained: Boolean,
+    val qualifiedTasks: Set<AiTask> = emptySet(),
+    val qualifiedPromptHashes: Map<AiTask,String> = emptyMap(),
+    val qualifiedSchemaHashes: Map<AiTask,String> = emptyMap(),
 )
 
 data class ModelAvailability(val state: ModelState, val manifest: LocalModelManifest? = null, val reason: String? = null)

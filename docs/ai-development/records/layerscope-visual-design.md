@@ -17,3 +17,11 @@ The upper assembly and its branding/link plate are the title section. The watch 
 Detection reference: retain a compact crosshair/DETECTION header and real Hunter-count badge, a two-segment All/Deauth selector, one Start/Stop/Clear row with equal button widths, and a full-width Hunt Vixen action. Use explicit line heights and shared row alignment. Controls retain existing enabled conditions and callbacks; do not manufacture a connected state to match the sample image. The hardware watch continues on its legacy component path.
 
 Builder is now a sixth persistent phone/tablet destination (Ops, Events, Tools, Builder, Mission, System), also available in the wide-screen navigation rail. Its initial scope is a blank 10,000 by 6,000 dp editing board, with pinch zoom, drag-to-pan, zoom buttons, Fit and Reset. Keep zoom anchored to the gesture and bound panning to the board. Native controls and the indigo housing stay stationary. The grid adapts to zoom and draws only visible lines. No example nodes, execution pipeline, or Hunter frame transport is implemented by this visual scaffold. This user-approved navigation addition supersedes the earlier five-tab limit and tablet-only Builder restriction. The hardware-watch layout remains separate.
+
+
+## Current frame navigation standard — 2026-11-15
+
+The owner approved build 148's border-integrated Back treatment as the design
+language for every frame with a Back option. See the current
+[Vixen UI design language](../../ui-design-language.md) for the rule and reference
+implementation. Earlier visual notes remain historical context.

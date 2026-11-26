@@ -1,0 +1,6 @@
+{
+  "tensors": 112,
+  "allWeightsFinite": true,
+  "nonfiniteTensors": [],
+  "nonzeroLoraBTensors": 56
+}

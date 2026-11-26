@@ -14,6 +14,10 @@ on:
       candidate_revision:
         type: string
         default: ''
+      download_bundle:
+        description: Build the additional public download artifacts
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -86,6 +90,28 @@ jobs:
           set -o pipefail
           cd product/android
           bash gradlew --no-daemon --max-workers=2 :app:assembleFullDebug :app:testFullDebugUnitTest :app:testPlayReleaseUnitTest :app:bundlePlayRelease :app:assemblePlayRelease 2>&1 | tee ../android.log
+      - name: Reject built-in test interfaces in app APKs
+        working-directory: product
+        run: python3 tools/check_field_apk.py android/app/build/outputs/apk/full/debug/app-full-debug.apk android/app/build/outputs/apk/play/release/app-play-release-unsigned.apk
+
+      - name: Build the full Android sideload APK
+        if: inputs.download_bundle && inputs.candidate_repository == ''
+        working-directory: product/android
+        run: |
+          bash gradlew --no-daemon --max-workers=2 :app:assembleFullRelease :app:testFullReleaseUnitTest
+          apk=app/build/outputs/apk/full/release/app-full-release-unsigned.apk
+          python3 ../tools/check_field_apk.py "$apk"
+          mkdir -p ../downloads
+          cp "$apk" ../downloads/vixen-unsigned.apk
+          git rev-parse HEAD > ../downloads/source.txt
+      - name: Upload the sideload APK for signing
+        if: inputs.download_bundle && inputs.candidate_repository == ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: vixen-download-bundle
+          if-no-files-found: error
+          path: product/downloads/
+
       - name: Save build results and logs
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

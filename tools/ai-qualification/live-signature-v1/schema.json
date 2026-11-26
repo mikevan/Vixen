@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pattern",
+    "evidenceIds"
+  ],
+  "properties": {
+    "pattern": {
+      "type": "string",
+      "enum": [
+        "disconnect_sequence_then_remote_id",
+        "disconnect_sequence_only",
+        "remote_id_only",
+        "reverse_order",
+        "outside_window",
+        "insufficient_timing",
+        "no_relevant_pattern"
+      ]
+    },
+    "evidenceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  }
+}

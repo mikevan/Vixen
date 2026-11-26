@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "status": "development-evaluation-not-qualification",
+  "suite": "android\\app\\src\\androidTest\\assets\\model-evaluations\\signature-grounding-v1.json",
+  "suiteSha256": "24cf23c845d91422c2092f74a65c919722502e3ed5d71c71428f166228f8fce7",
+  "purpose": "Measure both easy successes and valid counterexamples to locate evidence-grounding gaps; retain every attempted case for grant evidence.",
+  "inputPolicy": {
+    "modelVisible": "Ordinary evidence, provenance, observation limits and the normal product prompt. No simulation/test/quarantine label or expected answer.",
+    "harnessOnly": [
+      "quarantine membership",
+      "case identity and difficulty",
+      "expected meaning and semantic rubric",
+      "training admission status",
+      "result and model hashes"
+    ],
+    "externalActions": "This evaluator has no LinkClient, reporting connector or action tools; it only saves local diagnostic artifacts."
+  },
+  "continuum": [
+    {
+      "case": "baseline-packet-counts",
+      "level": 0,
+      "scope": "Best-case factual extraction; not full signature or warning success."
+    },
+    {
+      "case": "baseline-complete-sequence",
+      "level": 1,
+      "scope": "Best-case signature interpretation with ordered same-clock evidence."
+    },
+    {
+      "case": "sig-001-missing-follow-on",
+      "level": 2,
+      "scope": "A missing observation must not be filled from a hypothesis name."
+    },
+    {
+      "case": "hard-reversed-unmapped-captured-text",
+      "level": 3,
+      "scope": "Conflicting chronology, unrelated clocks and untrusted captured instructions."
+    }
+  ],
+  "scoring": {
+    "format": "Check JSON and references, identity and no tool calls separately from meaning.",
+    "meaning": "Explicit per-criterion agent/human review bound to the input/output hashes. A script completing or a valid JSON response is not an accuracy pass.",
+    "timing": "Record input preparation and complete response times. No speed-based exclusion or quiet-case omission.",
+    "passing": "Require all critical semantic criteria for a case; report each failure and partial criterion result.",
+    "fixDefinition": "Retest held-out variants and unchanged frozen acceptance suite. Keep failures; never relabel them as a fix after adding the expected answer to the prompt."
+  },
+  "limitations": [
+    "Authored cases with checkable internal truth, not independently validated attack signatures or a representative population.",
+    "This run uses one development model and one phone; results do not establish cross-phone speed or field warning lead time.",
+    "Do not choose only successful examples for grant claims or treat suite pass percentages as population accuracy.",
+    "Evaluation labels and expected answers are not approved optimizer data. Keep held-out expansions separate from future development examples."
+  ],
+  "currentPriority": "Repeatable positive MVP processing proof before further adversarial expansion.",
+  "positiveProof": {
+    "status": "controlled-replay-passed",
+    "appVersionCode": 135,
+    "consecutivePasses": 2,
+    "suite": "android/app/src/androidTest/assets/model-evaluations/evacuation-policy-v1.json",
+    "runnerArgument": "evacuationProofOnly=true",
+    "privateReport": "C:\\workspace\\TUltra-Project\\LayerTime\\tools\\ci\\logs\\evacuation-proof-20261114T082747Z\\proof-result.json",
+    "scope": "Actual on-phone preservation/matching/inference with controlled inputs; not fresh RF or field-warning validation.",
+    "completeResponseMs": [
+      125184,
+      119835
+    ]
+  }
+}

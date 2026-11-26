@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "suiteId": "evacuation-policy-v1",
+  "quarantined": true,
+  "trainingApproved": false,
+  "validityScope": "Operator-defined warning policy with internally consistent supplied measurements; not empirical validation of an attack or field evacuation threshold.",
+  "cases": [
+    {
+      "id": "evacuation-positive",
+      "kind": "evacuation",
+      "firstAtMs": 20000,
+      "followAtMs": 50000,
+      "expectedState": "SEQUENCE_OBSERVED",
+      "criteria": [
+        "Classify the supplied observations as EVACUATION EVENT under the configured policy.",
+        "Cite both the local Wi-Fi/BLE outage and the later drone-signature observation.",
+        "Preserve the 30-second gap within the 90-second policy window.",
+        "Distinguish a policy classification from proof of cause, attack or hostile intent."
+      ]
+    },
+    {
+      "id": "evacuation-negative-no-drone",
+      "kind": "evacuation",
+      "firstAtMs": 20000,
+      "followAtMs": null,
+      "expectedState": "CANDIDATE",
+      "criteria": [
+        "Do not classify a completed EVACUATION EVENT when the required drone observation is absent.",
+        "Describe the verified local Wi-Fi/BLE outage and missing follow-on.",
+        "Do not invent a drone, cause, attacker or proof of safety."
+      ]
+    }
+  ]
+}

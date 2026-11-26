@@ -1,0 +1,1 @@
+{"additionalProperties":false,"properties":{"pattern":{"enum":["disconnect_sequence_then_remote_id","disconnect_sequence_only","remote_id_only","reverse_order","outside_window","insufficient_timing","no_relevant_pattern"],"type":"string"}},"required":["pattern"],"type":"object"}

@@ -2,28 +2,12 @@ package com.projectrevivesolutions.layertime.controller.events
 
 import com.projectrevivesolutions.layertime.controller.model.EventRow
 
-/**
- * Stage 1 triage: separates signal from the Apple Find My flood so the events
- * list and the export are not drowned by momentary AirTag beacons.
- *
- * Three verdicts:
- *   TRACK  a tracker-family device that stays present over time. A tag that keeps
- *          reappearing across the phone's own observation window is the
- *          counter-surveillance hit, whatever its confidence.
- *   NOISE  a LOW-confidence sighting with no dwell. This is the AirTag chaff: a
- *          Find My beacon from a passing phone or a stranger's AirPods. Away-from-
- *          owner tags are graded MED or HIGH by the Hunter, so they do not land here.
- *   KEEP   everything else: MED or HIGH confidence.
- *
- * Dwell is measured by TIME SPAN only (first to last phone-side reading). The
- * Hunter's sighting count is deliberately NOT used: field test 2026-11-02 showed
- * stationary nearby Apple devices reaching counts of 16 to 40 with zero span, so
- * a count rule promoted the whole flood to TRACK. Count says "heard a lot", not
- * "present over time". The sharper signal, a tag that persists across changes in
- * the operator's position, is the next increment and needs per-event position.
- *
- * Pure and host-tested (EventTriageTest). Thresholds are constants, to be wired
- * to an operator control in a later increment.
+/** Evidence sorting, not a determination of maliciousness or physical tracking.
+ * TRACK: a tracker-family detector with fresh, increasing reports received over
+ * the configured observation span. KEEP: medium/high confidence without that
+ * span. NOISE: low confidence without an established span, not proof of benignness.
+ * Counts alone, replayed summaries, mixed Hunter IDs and wall-clock changes must
+ * not establish persistence. Missing timing/provenance remains unresolved.
  */
 object EventTriage {
     const val CONF_LOW = 0
@@ -34,27 +18,48 @@ object EventTriage {
     // Flock(8), AirTag(10), Meta(12), Axon(13), Tile(14), SmartTag(15), GoogleTag(16).
     val TRACKER_DETECTORS = setOf(8, 10, 12, 13, 14, 15, 16)
 
-    // A source present across at least this span of phone-side readings is dwelling.
+    // Minimum span between fresh increasing receipts; not verified RF dwell.
     const val DWELL_MILLIS = 120_000L
 
     enum class Triage { TRACK, KEEP, NOISE }
 
     data class Verdict(val triage: Triage, val reason: String)
 
-    /** Milliseconds between the first and last signal reading; 0 if fewer than two. */
+    // A receipt older than this is not a fresh sample. This is an observation
+    // freshness limit, not a threat definition. Wire age is quantized seconds.
+    const val MAX_FRESH_AGE_SECONDS = 3
+
+    /** Span of fresh, increasing reports for one Hunter record; never RF dwell proof.
+     * Old samples without provenance cannot establish persistence. Grouped MAC
+     * rows may contain several detector/event histories; do not join their counts.
+     */
     fun dwellSpanMillis(e: EventRow): Long {
-        val h = e.rssiHistory
-        return if (h.size >= 2) h.last().timeMillis - h.first().timeMillis else 0L
+        val groups=e.rssiHistory.filter {it.receivedMonotonicMs!=null && it.hunterEventId!=null &&
+            it.sightingCount!=null && it.ageSeconds!=null && it.ageSeconds in 0..MAX_FRESH_AGE_SECONDS}
+            .groupBy {it.hunterEventId}
+        return groups.values.maxOfOrNull { samples ->
+            // Keep the first receipt of each count: replaying a new count later
+            // must not move its endpoint forward (including saturated 65535).
+            val increases=samples.distinctBy {it.sightingCount}
+            var span=0L
+            for(i in increases.indices) for(j in i+1 until increases.size) {
+                val first=increases[i];val last=increases[j]
+                if(last.sightingCount!! > first.sightingCount!! &&
+                    last.receivedMonotonicMs!! >= first.receivedMonotonicMs!!)
+                    span=maxOf(span,last.receivedMonotonicMs-first.receivedMonotonicMs)
+            }
+            span
+        } ?: 0L
     }
 
     fun dwells(e: EventRow): Boolean = dwellSpanMillis(e) >= DWELL_MILLIS
 
     fun classify(e: EventRow): Verdict {
         if (e.detector in TRACKER_DETECTORS && dwells(e)) {
-            return Verdict(Triage.TRACK, "tracker dwell: ${dwellSpanMillis(e) / 1000}s across ${e.count} sightings")
+            return Verdict(Triage.TRACK, "fresh reports received over ${dwellSpanMillis(e) / 1000}s; reported count ${e.count}. This does not establish physical tracking.")
         }
         if (e.confidence <= CONF_LOW) {
-            return Verdict(Triage.NOISE, "low confidence, no dwell")
+            return Verdict(Triage.NOISE, "low confidence; no fresh repeat-report span established")
         }
         return Verdict(Triage.KEEP, "confidence ${confName(e.confidence)}")
     }

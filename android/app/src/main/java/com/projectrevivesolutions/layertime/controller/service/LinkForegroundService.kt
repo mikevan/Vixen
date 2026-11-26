@@ -39,6 +39,9 @@ class LinkForegroundService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
+        com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.start(applicationContext)
+        com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.start(applicationContext)
+        lifecycleScope.launch {com.projectrevivesolutions.layertime.controller.signatures.LiveSignatureAnalysis(applicationContext).run()}
         client = LinkClient(applicationContext)
         active = client
         createChannel()
@@ -143,10 +146,10 @@ class LinkForegroundService : LifecycleService() {
         return builder
             .setContentTitle("Vixen")
             .setContentText(text)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_vixen_notification)
             .setOngoing(true)
             .setContentIntent(open)
-            .addAction(Notification.Action.Builder(Icon.createWithResource(this, R.drawable.ic_launcher_foreground), "DISCONNECT", stop).build())
+            .addAction(Notification.Action.Builder(Icon.createWithResource(this, R.drawable.ic_vixen_notification), "DISCONNECT", stop).build())
             .build()
     }
 

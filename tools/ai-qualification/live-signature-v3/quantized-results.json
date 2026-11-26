@@ -1,0 +1,409 @@
+{
+  "modelSha256": "3d529dd89436601669d6d92f9c67793f35d7ba3a71bfe15cb44ae9547e7f194c",
+  "total": 50,
+  "completed": 50,
+  "correct": 50,
+  "results": [
+    {
+      "id": "test-positive-0",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\"}",
+      "correct": true,
+      "seconds": 9.179647317000047,
+      "promptSha256": "f526effe979e98ad418c7b7a628999de2210da5a58f178c31bc053bfc9a631aa",
+      "exitCode": 0
+    },
+    {
+      "id": "test-positive-1",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\"}",
+      "correct": true,
+      "seconds": 9.231463028000007,
+      "promptSha256": "a992fb3f8381720377994b450385002cd496f07e864d2fdbf1fdacab27ddfcca",
+      "exitCode": 0
+    },
+    {
+      "id": "test-positive-2",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\"}",
+      "correct": true,
+      "seconds": 9.17803416999999,
+      "promptSha256": "45fa0e5363237849a1114bfa81e5be216844b7a1667981768ce2036240ffc476",
+      "exitCode": 0
+    },
+    {
+      "id": "test-positive-3",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\"}",
+      "correct": true,
+      "seconds": 9.259276704000001,
+      "promptSha256": "e13c0bb711f93f8b1bf193f64b09a20252e4136ccf9a900a625e53ccc53899ae",
+      "exitCode": 0
+    },
+    {
+      "id": "test-positive-4",
+      "output": "{\"pattern\":\"disconnect_sequence_then_remote_id\"}",
+      "correct": true,
+      "seconds": 12.072147763999965,
+      "promptSha256": "2cf9776c3d88ef60c80e008ab03033497a28dd392573689286a15d45b30738f8",
+      "exitCode": 0
+    },
+    {
+      "id": "test-pair-only-0",
+      "output": "{\"pattern\":\"disconnect_sequence_only\"}",
+      "correct": true,
+      "seconds": 9.933997772999987,
+      "promptSha256": "95afa7cd8a160adf32e3886a36e9f2b3736fb19e27e53d07ee77f8c0e6180c26",
+      "exitCode": 0
+    },
+    {
+      "id": "test-pair-only-1",
+      "output": "{\"pattern\":\"disconnect_sequence_only\"}",
+      "correct": true,
+      "seconds": 9.321091729999978,
+      "promptSha256": "3fee07e74e416b70603f188e17c6f8879f5909e221590dadd3a7dafdedf2ad02",
+      "exitCode": 0
+    },
+    {
+      "id": "test-pair-only-2",
+      "output": "{\"pattern\":\"disconnect_sequence_only\"}",
+      "correct": true,
+      "seconds": 8.882154543000013,
+      "promptSha256": "cb0266f88a5d57e486a4eec145722710a9d1876cb2b2f2ab5227a34f3ea8a224",
+      "exitCode": 0
+    },
+    {
+      "id": "test-pair-only-3",
+      "output": "{\"pattern\":\"disconnect_sequence_only\"}",
+      "correct": true,
+      "seconds": 8.901736175999986,
+      "promptSha256": "69d04bb774c87fe44d48fab25aac69d5de69f2d8d980368f88c5dced8b75a720",
+      "exitCode": 0
+    },
+    {
+      "id": "test-pair-only-4",
+      "output": "{\"pattern\":\"disconnect_sequence_only\"}",
+      "correct": true,
+      "seconds": 8.825032772999975,
+      "promptSha256": "66a14f43550b9c588e3b2462c4648c0511d565901339cb36e9964ffebebd4964",
+      "exitCode": 0
+    },
+    {
+      "id": "test-rid-only-0",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 9.315471602000002,
+      "promptSha256": "5c3cee11a140744d556f0a3abaf8422c9b184fb50bb3d88577b4e0264ace21cb",
+      "exitCode": 0
+    },
+    {
+      "id": "test-rid-only-1",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 10.557417224000005,
+      "promptSha256": "986e9e5d9df18372634223d5d64376a7430ee2b5eb8b11799b438e7a55c1c0a5",
+      "exitCode": 0
+    },
+    {
+      "id": "test-rid-only-2",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 9.341299137000021,
+      "promptSha256": "7c837500571883c24da4cd0cd4a11f0b919263dfaab698f50b56d0f36950f2bb",
+      "exitCode": 0
+    },
+    {
+      "id": "test-rid-only-3",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 8.76768339900002,
+      "promptSha256": "8f079c36c3e8e3f82c9abf7ebf8e2bfbe6542dbf6901ab244d6c51d11e8a4bc5",
+      "exitCode": 0
+    },
+    {
+      "id": "test-rid-only-4",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 8.820887718999984,
+      "promptSha256": "7a91e5944f861aac182353c3babed4c05cb4bd3a485216b63ee078678da4272b",
+      "exitCode": 0
+    },
+    {
+      "id": "test-reversed-0",
+      "output": "{\"pattern\":\"reverse_order\"}",
+      "correct": true,
+      "seconds": 9.030981295000004,
+      "promptSha256": "89068ce56ff36bca572cdbdc2184aaaa35d7df9fd914757fabf0a6a2fa222067",
+      "exitCode": 0
+    },
+    {
+      "id": "test-reversed-1",
+      "output": "{\"pattern\":\"reverse_order\"}",
+      "correct": true,
+      "seconds": 9.160892949000015,
+      "promptSha256": "4f62d5c2716c2777bcdf4cdaafd193435ad29b3eabf44fbc9b6682c697640614",
+      "exitCode": 0
+    },
+    {
+      "id": "test-reversed-2",
+      "output": "{\"pattern\":\"reverse_order\"}",
+      "correct": true,
+      "seconds": 11.523765044000015,
+      "promptSha256": "c23bd1edf81e1fad965adf6ffa81fdf54ebecaf2990fe3d74a64df8459290f55",
+      "exitCode": 0
+    },
+    {
+      "id": "test-reversed-3",
+      "output": "{\"pattern\":\"reverse_order\"}",
+      "correct": true,
+      "seconds": 11.168951238000034,
+      "promptSha256": "54777d7073245fc9281a0329b5f17bb95e801b0c24b1eb9283f5547e01e1ab79",
+      "exitCode": 0
+    },
+    {
+      "id": "test-reversed-4",
+      "output": "{\"pattern\":\"reverse_order\"}",
+      "correct": true,
+      "seconds": 9.240972413999998,
+      "promptSha256": "c864b84e58c780b6730dd06726688650fe898e87d2e8084615b19cd6efa57467",
+      "exitCode": 0
+    },
+    {
+      "id": "test-late-0",
+      "output": "{\"pattern\":\"outside_window\"}",
+      "correct": true,
+      "seconds": 9.27020958199995,
+      "promptSha256": "91e3d1c047becc54f3860853cefd6528911fee3fa83ee1b2664caa7b2ab1c0d3",
+      "exitCode": 0
+    },
+    {
+      "id": "test-late-1",
+      "output": "{\"pattern\":\"outside_window\"}",
+      "correct": true,
+      "seconds": 9.311088536000057,
+      "promptSha256": "09ef9a49d187b68206a4c72a4b94fb3fde48299a81c9200c837338cf47909c90",
+      "exitCode": 0
+    },
+    {
+      "id": "test-late-2",
+      "output": "{\"pattern\":\"outside_window\"}",
+      "correct": true,
+      "seconds": 8.95321362900006,
+      "promptSha256": "5f51baae716fadc58e422a98f7681107ed40f27b46d077a94686f69a303c95d2",
+      "exitCode": 0
+    },
+    {
+      "id": "test-late-3",
+      "output": "{\"pattern\":\"outside_window\"}",
+      "correct": true,
+      "seconds": 9.264190026000051,
+      "promptSha256": "12d9f781738913762d030ffc8ec945a73fa4dc8448dcfc76d612c8b05ed09661",
+      "exitCode": 0
+    },
+    {
+      "id": "test-late-4",
+      "output": "{\"pattern\":\"outside_window\"}",
+      "correct": true,
+      "seconds": 8.998721002000025,
+      "promptSha256": "af3863015b8ba1dfdef23d753625cb8af84438aa772444d4e96938a4041b8dab",
+      "exitCode": 0
+    },
+    {
+      "id": "test-unaligned-0",
+      "output": "{\"pattern\":\"insufficient_timing\"}",
+      "correct": true,
+      "seconds": 9.244077688000061,
+      "promptSha256": "703586d908ce1c7c09efee7e3fc282fae94ac8502a4a21d956439531bd5b6104",
+      "exitCode": 0
+    },
+    {
+      "id": "test-unaligned-1",
+      "output": "{\"pattern\":\"insufficient_timing\"}",
+      "correct": true,
+      "seconds": 9.020699127000057,
+      "promptSha256": "697ccc5860af6ea93a1cbdee5c9b1fb7f421f6b85c2ea562ee31895b3240acb7",
+      "exitCode": 0
+    },
+    {
+      "id": "test-unaligned-2",
+      "output": "{\"pattern\":\"insufficient_timing\"}",
+      "correct": true,
+      "seconds": 9.053474834999975,
+      "promptSha256": "cca8c08c5bfae410cbd5c2e61773d9673bd5dc61b88fbce1bfbda9f3ef171230",
+      "exitCode": 0
+    },
+    {
+      "id": "test-unaligned-3",
+      "output": "{\"pattern\":\"insufficient_timing\"}",
+      "correct": true,
+      "seconds": 9.174756444999957,
+      "promptSha256": "13d25e93fa0ec0b1880aa3478e47ee7397122f2cae3b4ba55a1a2c16cca01e84",
+      "exitCode": 0
+    },
+    {
+      "id": "test-unaligned-4",
+      "output": "{\"pattern\":\"insufficient_timing\"}",
+      "correct": true,
+      "seconds": 8.882145191999939,
+      "promptSha256": "a34e0e96b7e61cefdf72299c4ed46090828432315ff2328561826d9b60ad62b4",
+      "exitCode": 0
+    },
+    {
+      "id": "test-deauth-only-0",
+      "output": "{\"pattern\":\"no_relevant_pattern\"}",
+      "correct": true,
+      "seconds": 8.64311153199992,
+      "promptSha256": "a6ac48532823254ee49ce2263bf5fecf1afae69934c4a62ea69e439b9262d780",
+      "exitCode": 0
+    },
+    {
+      "id": "test-deauth-only-1",
+      "output": "{\"pattern\":\"no_relevant_pattern\"}",
+      "correct": true,
+      "seconds": 8.649508433999927,
+      "promptSha256": "044510e50d2f718e2bd2d5991a076ba2584e19b65fb59fe17b43c9a8e78f40cb",
+      "exitCode": 0
+    },
+    {
+      "id": "test-deauth-only-2",
+      "output": "{\"pattern\":\"no_relevant_pattern\"}",
+      "correct": true,
+      "seconds": 8.576770659999966,
+      "promptSha256": "130f4d47db1b7097cecd8e0f41b1e11ffe9c85073ea63b0743122cbac08046a3",
+      "exitCode": 0
+    },
+    {
+      "id": "test-deauth-only-3",
+      "output": "{\"pattern\":\"no_relevant_pattern\"}",
+      "correct": true,
+      "seconds": 8.66990926099993,
+      "promptSha256": "75ca50a358be4b909999b637c408f8f79de6fabdad50ca42c41bf835ef6e5ba9",
+      "exitCode": 0
+    },
+    {
+      "id": "test-deauth-only-4",
+      "output": "{\"pattern\":\"no_relevant_pattern\"}",
+      "correct": true,
+      "seconds": 8.840654034000067,
+      "promptSha256": "e5acbe4f5107e275b44961f5c962705309c89ee63a9f28d372957049fd5d196d",
+      "exitCode": 0
+    },
+    {
+      "id": "test-different-network-0",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 9.283157033000066,
+      "promptSha256": "7cddc7b11471e6250ba43d84e341e5c6e9198a5ea90d7d56091ab11a941504bb",
+      "exitCode": 0
+    },
+    {
+      "id": "test-different-network-1",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 9.17272063200005,
+      "promptSha256": "c976c8c920415e4992496c05439f83de396761ee8275e9c212bf09d53d8506c5",
+      "exitCode": 0
+    },
+    {
+      "id": "test-different-network-2",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 9.005865231999906,
+      "promptSha256": "576e918465ebfb9f843db076eb73485083c8f70cfd822afafb8f07048f44cfd9",
+      "exitCode": 0
+    },
+    {
+      "id": "test-different-network-3",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 9.136906730999954,
+      "promptSha256": "defb0b3c5f58644ace8a3baa4a63ef3088bf3d8ff4ddf457d84e3f5bc7282d14",
+      "exitCode": 0
+    },
+    {
+      "id": "test-different-network-4",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 9.376953231000016,
+      "promptSha256": "4d37b76b6d4b3557103616b44d637b3cd52286afd888cb4862b1e059a94b3d4d",
+      "exitCode": 0
+    },
+    {
+      "id": "test-reversed-exchange-0",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 9.082208519999995,
+      "promptSha256": "3220d5cc68dc421aa617ff4aa7c0e19e255d9adfbc5fbdd552bc8ee16cf92007",
+      "exitCode": 0
+    },
+    {
+      "id": "test-reversed-exchange-1",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 8.906982416999995,
+      "promptSha256": "cf2958eca5f76c866622dbce8b6b95f4befa9c72664861a8c0d98996a7bf7d8b",
+      "exitCode": 0
+    },
+    {
+      "id": "test-reversed-exchange-2",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 9.124530327000002,
+      "promptSha256": "5909b3d938ddcd213d073fa897ada2911c79a1a3977a81cc761056a7f27ea34b",
+      "exitCode": 0
+    },
+    {
+      "id": "test-reversed-exchange-3",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 9.532974526000089,
+      "promptSha256": "4087f79b84ff51ab2108cd28114954c312a9b92467038ddcc96c698dac0a9962",
+      "exitCode": 0
+    },
+    {
+      "id": "test-reversed-exchange-4",
+      "output": "{\"pattern\":\"remote_id_only\"}",
+      "correct": true,
+      "seconds": 8.773806419000039,
+      "promptSha256": "4411b9a36d49a73c93c131e86bb8a60559086b4ddc6db78ea58c8677bd3e1da2",
+      "exitCode": 0
+    },
+    {
+      "id": "test-uncertain-order-0",
+      "output": "{\"pattern\":\"insufficient_timing\"}",
+      "correct": true,
+      "seconds": 8.938613514999929,
+      "promptSha256": "26648be2b57815a44ea9ff109b867ca21540b870e5d0c184c24d30c40dac32f3",
+      "exitCode": 0
+    },
+    {
+      "id": "test-uncertain-order-1",
+      "output": "{\"pattern\":\"insufficient_timing\"}",
+      "correct": true,
+      "seconds": 11.096048911000025,
+      "promptSha256": "eb241daa50fe56d63d261147a83c4799e1819074ef9246c83dd054862bb3c205",
+      "exitCode": 0
+    },
+    {
+      "id": "test-uncertain-order-2",
+      "output": "{\"pattern\":\"insufficient_timing\"}",
+      "correct": true,
+      "seconds": 10.111615185000005,
+      "promptSha256": "1319fd3d6ad70d9e6b714cd9574683cb378d3b81d6b5ef54d6c03b9403e9ff7e",
+      "exitCode": 0
+    },
+    {
+      "id": "test-uncertain-order-3",
+      "output": "{\"pattern\":\"insufficient_timing\"}",
+      "correct": true,
+      "seconds": 10.5972671049999,
+      "promptSha256": "cd773e1317edded4089e8f69a1e30ed2449ec4c01508eed6114ce13086f376e5",
+      "exitCode": 0
+    },
+    {
+      "id": "test-uncertain-order-4",
+      "output": "{\"pattern\":\"insufficient_timing\"}",
+      "correct": true,
+      "seconds": 22.21477072899995,
+      "promptSha256": "d62ca612bdc2742822c29d2a48798dac7494fde040d139f6cf3aa2b1af9e0598",
+      "exitCode": 0
+    }
+  ],
+  "phoneQualified": false
+}

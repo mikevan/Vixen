@@ -1,0 +1,103 @@
+{
+  "condition": "4b-instruct-nf4",
+  "results": [
+    {
+      "id": "positive-a",
+      "output": "{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"r1\", \"r2\", \"r3\"]\n}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 2.7040000000015425,
+      "promptSha256": "0643068b4907fa1508e753e1738b4774397e3a15753632d29348843fb3529f84"
+    },
+    {
+      "id": "positive-b",
+      "output": "{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"a\", \"b\", \"c\"]\n}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 2.187000000001717,
+      "promptSha256": "c41928b6c20e6494f3f576840d5816dd1c2d941936b9c62c1fab02f29c970528"
+    },
+    {
+      "id": "no-follow-on",
+      "output": "{\n  \"pattern\": \"disconnect_sequence_only\",\n  \"evidenceIds\": [\"d\", \"e\"]\n}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.8589999999967404,
+      "promptSha256": "b34c78c7f9bd5aa09893850b355c1d1f384b3ee43d48fd1b8610188fbf45b6c5"
+    },
+    {
+      "id": "remote-only",
+      "output": "{\n  \"pattern\": \"no_relevant_pattern\",\n  \"evidenceIds\": []\n}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.5630000000019209,
+      "promptSha256": "d86f05352b5e04225378ad7373fd8d8d262112135aa0ad39b920dfb8980e312d"
+    },
+    {
+      "id": "before-sequence",
+      "output": "{\n  \"pattern\": \"reverse_order\",\n  \"evidenceIds\": [\"x\", \"y\", \"w\"]\n}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.9840000000003783,
+      "promptSha256": "ab7642eaa0c85f20ab10c9e80fc7e2ef95a38165ea979f1173f4adfe6779c3d8"
+    },
+    {
+      "id": "late-remote",
+      "output": "{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"j\", \"k\", \"l\"]\n}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 2.2659999999996217,
+      "promptSha256": "8818ce56bad6af3ea931c8c00b8e430b28d57d795ac2bf5a621499a7fb1f09d9"
+    },
+    {
+      "id": "unknown-clock",
+      "output": "{\n  \"pattern\": \"insufficient_timing\",\n  \"evidenceIds\": [\"s1\", \"s2\", \"s3\"]\n}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 2.264999999999418,
+      "promptSha256": "431c5710760e4884d17e3ec626e1c2982e4e235d9502600a7eb0a9edcefbde30"
+    },
+    {
+      "id": "empty",
+      "output": "{\n  \"pattern\": \"no_relevant_pattern\",\n  \"evidenceIds\": []\n}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.5159999999996217,
+      "promptSha256": "d77d408a4f447a5f2597133e8523aace65905976cd501c478ba5e3238a64cd63"
+    },
+    {
+      "id": "deauth-only",
+      "output": "{\n  \"pattern\": \"no_relevant_pattern\",\n  \"evidenceIds\": []\n}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 1.5620000000017171,
+      "promptSha256": "02decb8554be85e039ed9a1e08d91d6762bc21746b2dcb8d36a4eb12591f862b"
+    },
+    {
+      "id": "different-network",
+      "output": "{\n  \"pattern\": \"no_relevant_pattern\",\n  \"evidenceIds\": []\n}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.625,
+      "promptSha256": "dae83321466635ab6659bc61ab9236f08091004e3038a6841bd5d9e02c5fa358"
+    },
+    {
+      "id": "reversed-exchange",
+      "output": "{\n  \"pattern\": \"reverse_order\",\n  \"evidenceIds\": [\"s\", \"t\", \"v\"]\n}",
+      "schemaValid": true,
+      "correct": false,
+      "seconds": 1.985000000000582,
+      "promptSha256": "432027b3266c83743dbc851371ee0a98ba7356a6fe37e075efdb0db294b5ca51"
+    },
+    {
+      "id": "window-boundary",
+      "output": "{\n  \"pattern\": \"disconnect_sequence_then_remote_id\",\n  \"evidenceIds\": [\"m1\", \"m2\", \"m3\"]\n}",
+      "schemaValid": true,
+      "correct": true,
+      "seconds": 2.4059999999990396,
+      "promptSha256": "36c429e0be63d99be3b4cdfdb20c75ebcae0d1f826c96a968337885dd20deb22"
+    }
+  ],
+  "fieldQualified": false,
+  "finalQuantizedModel": false
+}

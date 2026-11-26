@@ -55,7 +55,7 @@ class LayoutModeTest {
 
     @Test fun builderIsPresentInSharedNavigationOrder() {
         assertEquals(
-            listOf("OPS", "EVENTS", "TOOLS", "BUILDER", "MISSION", "SYSTEM"),
+            listOf("OPS", "AI REPORTS", "EVENTS", "TOOLS", "BUILDER", "MISSION", "SYSTEM"),
             Destination.values().map { it.label },
         )
     }

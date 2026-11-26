@@ -37,7 +37,7 @@ import java.util.UUID
  * pulls detection events with GET_CHANGED whenever the Node's changeSeq moves.
  *
  * It honours the contract's rules: one outstanding Control request at a time,
- * ≤20-byte frames, pull-not-push. All wire encode/decode goes through
+ * ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤20-byte frames, pull-not-push. All wire encode/decode goes through
  * [LinkCodec], which is verified against contracts/vectors/link_frames.json.
  *
  * All queue manipulation and GATT calls are marshalled onto a single Handler so
@@ -354,7 +354,7 @@ class LinkClient(private val appContext: Context) {
             stopScan()
             val name = runCatching { device.name }.getOrNull() ?: result.scanRecord?.deviceName
             currentAddress = device.address; currentName = name ?: targetName ?: "Hunter"
-            repo.setDeviceLabel((name ?: "Hunter") + " / " + device.address)
+            repo.setDeviceLabel((name ?: "Hunter") + " / " + device.address, device.address)
             repo.setConn(ConnState.CONNECTING, "${name ?: "?"} ${device.address} rssi=${result.rssi}")
             handler.postDelayed({ if (gatt == null) connect(device) }, CONNECT_AFTER_SCAN_MS)
         }
@@ -679,7 +679,9 @@ class LinkClient(private val appContext: Context) {
 
     /** Sends the saved MISSION list. Only a Hunter with Capability.SENSOR_SET takes it. */
     private fun sendSensors() {
-        val mask = SensorSelection.mask(MissionPrefs.readSensors(appContext))
+        val requested = SensorSelection.mask(MissionPrefs.readSensors(appContext))
+        val remoteIdSupported=(repo.server.value?.capabilities ?: 0) and LinkConstants.Capability.REMOTE_ID != 0
+        val mask=if(remoteIdSupported)requested else requested and (1L shl 19).inv()
         sentSensorMask = mask
         val id = nextReqId(); submit(LinkConstants.Op.COMMAND, LinkCodec.setSensors(id, mask))
         repo.log(LogEntry.Category.COMMAND, "SetSensors 0x%05X #$id".format(mask))
@@ -849,9 +851,12 @@ class LinkClient(private val appContext: Context) {
             is Frame.EventSummary -> {
                 summaries.add(f)
                 val newOne = repo.onEventSummary(f)
+                preserveInterestingEvidence(f)
                 // Fetch human-readable identifiers the first time we see them.
                 if (newOne && f.hasSourceId) getTextQueued(f.eventId, LinkConstants.TextField.SOURCE_ID)
                 if (newOne && f.hasDetail) getTextQueued(f.eventId, LinkConstants.TextField.DETAIL)
+                if (newOne && (repo.server.value?.capabilities ?: 0) and LinkConstants.Capability.OBSERVATION_TIME != 0)
+                    getTextQueued(f.eventId, LinkConstants.TextField.OBSERVATION_TIME)
             }
             is Frame.Text -> textFrags.add(f)
             is Frame.End -> if (pending?.kind == LinkCard.OP_CARD_CLEAR) {
@@ -881,7 +886,10 @@ class LinkClient(private val appContext: Context) {
                     else repo.log(LogEntry.Category.LINK, "GET_TEXT event #$textEventId field=$textField came back empty (record likely evicted on the Hunter)")
                 } else { // GET_CHANGED run
                     lastSeenChangeSeq = f.changeSeq
-                    if (f.gap == 1) repo.log(LogEntry.Category.LINK, "GET_CHANGED gap=1: a change was dropped before we saw it")
+                    if (f.gap == 1) {
+                        repo.onChangeGap(f.changeSeq)
+                        repo.log(LogEntry.Category.LINK, "GET_CHANGED gap=1: a change was dropped before we saw it")
+                    }
                 }
                 finishLink()
             }
@@ -921,16 +929,44 @@ class LinkClient(private val appContext: Context) {
     private var rawCapture = false
     private var evidence: LinkEvidence.Assembler? = null
     private var evidenceStartedMs = 0L
+    private var evidencePeer:String?=null
+    private var evidenceSession=-1
     private var evidenceResumes = 0
 
     /** Whether the connected Hunter keeps frames (HELLO_ACK capability bit 5). */
     val keepsFrames: Boolean get() = rawCapture
+
+    // Preserve available native windows; this does not change Hunter's capture
+    // duration, hold setting or sensor selection. Identity is rechecked on execution.
+    private val automaticEvidencePolicy=com.projectrevivesolutions.layertime.controller.signatures.EvidenceCapturePolicy()
+    private fun preserveInterestingEvidence(f:Frame.EventSummary) {
+        if(!handshakeDone || !rawCapture || !automaticEvidencePolicy.supportsPacketWindow(f.detector,f.sourceKind) || f.confidence !in 1..2 || f.ageSeconds !in 0..3)return
+        val peer=currentAddress ?: return
+        val session=repo.server.value?.sessionId ?: return
+        if(!automaticEvidencePolicy.shouldCapture(peer,session,f.eventId,f.count,f.confidence,f.ageSeconds,
+            android.os.SystemClock.elapsedRealtime()))return
+        fun request(phase:String) {
+            if(!handshakeDone || currentAddress!=peer || repo.server.value?.sessionId!=session)return
+            if(evidence!=null || card!=null) {
+                com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.record("evidence_auto_skipped",mapOf(
+                    "hunterAddress" to peer,"sessionId" to session,"eventId" to f.eventId,"reason" to "transfer_busy","phase" to phase))
+                return
+            }
+            com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.record("evidence_auto_requested",mapOf(
+                "hunterAddress" to peer,"sessionId" to session,"eventId" to f.eventId,"phase" to phase))
+            pullEvidence(f.eventId)
+        }
+        request("trigger")
+        handler.postDelayed({request("post_trigger")},10000)
+    }
 
     /** Pulls one detection's window; EvidencePull reports progress and the pcap. */
     fun pullEvidence(eventId: Long) = handler.post {
         if (evidence != null) return@post
         if (!handshakeDone) { EvidencePull.set(EvidencePull.State.Failed(eventId, "The Hunter is not connected.")); return@post }
         if (!rawCapture) { EvidencePull.set(EvidencePull.State.Failed(eventId, "This Hunter's firmware does not keep frames. Flash the evidence firmware.")); return@post }
+        evidencePeer=currentAddress
+        evidenceSession=repo.server.value?.sessionId ?: -1
         evidence = LinkEvidence.Assembler(eventId)
         evidenceStartedMs = android.os.SystemClock.elapsedRealtime()
         evidenceResumes = 0
@@ -979,14 +1015,42 @@ class LinkClient(private val appContext: Context) {
     }
 
     private fun finishEvidence(a: LinkEvidence.Assembler) {
-        evidence = null
+        val peer=evidencePeer
+        if(peer==null || peer!=currentAddress || evidenceSession!=repo.server.value?.sessionId)
+            return failEvidence("The Hunter identity changed during the evidence pull.")
         val frames = a.frames()
-        val dir = java.io.File(appContext.cacheDir, "evidence").apply { mkdirs() }
-        val file = java.io.File(dir, "hunter_event_${a.eventId}.pcap")
-        file.writeBytes(LinkEvidence.toPcap(frames, System.currentTimeMillis()))
-        val ms = android.os.SystemClock.elapsedRealtime() - evidenceStartedMs
-        repo.log(LogEntry.Category.LINK, "evidence event #${a.eventId}: ${frames.size} frames, ${a.bytesReceived} bytes in $ms ms")
-        EvidencePull.set(EvidencePull.State.Done(a.eventId, a.window!!, frames.size, file, ms))
+        val saved=try {
+            val dir=java.io.File(appContext.filesDir,"evidence").apply {check(isDirectory || mkdirs())}
+            check(dir.listFiles().orEmpty().sumOf {it.length()}<512L*1024*1024 && dir.usableSpace>16L*1024*1024) {
+                "Evidence storage budget reached; preserve and export existing files."
+            }
+            val file=java.io.File(dir,"hunter_${evidenceSession}_${a.eventId}_${java.util.UUID.randomUUID()}.pcap")
+            val receivedAt=System.currentTimeMillis()
+            val origin=HunterEvidenceOrigin(peer,evidenceSession,a.eventId,receivedAt,LinkEvidence.payloadHash(frames),a.window!!.collecting)
+            val pending=java.io.File(dir,file.name+".pending")
+            val pcap=LinkEvidence.toPcap(frames,receivedAt)
+            pending.writeBytes(pcap)
+            val pcapHash=java.security.MessageDigest.getInstance("SHA-256").digest(pcap).joinToString(""){"%02x".format(it)}
+            com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.saveEvidenceOrigin(
+                java.io.File(dir,file.nameWithoutExtension+".json"),origin)
+            check(pending.renameTo(file))
+            Triple(file,origin,pcapHash)
+        } catch(ex:Exception) {
+            com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.record("evidence_save_failed",mapOf(
+                "hunterAddress" to peer,"sessionId" to evidenceSession,"eventId" to a.eventId))
+            return failEvidence("The pulled frames could not be saved on this phone. The Hunter's saved files were not changed.")
+        }
+        evidence=null
+        val (file,origin,pcapHash)=saved
+        com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.record("evidence_received",mapOf(
+            "hunterAddress" to peer,"sessionId" to evidenceSession,"eventId" to a.eventId,
+            "payloadSha256" to origin.payloadSha256,"file" to "evidence/${file.name}",
+            "pcapSha256" to pcapHash,
+            "frames" to frames.size,"seen" to a.window!!.seen,
+            "dropped" to a.window!!.dropped,"truncated" to a.window!!.truncated,"collecting" to origin.collecting))
+        val ms=android.os.SystemClock.elapsedRealtime()-evidenceStartedMs
+        repo.log(LogEntry.Category.LINK,"evidence event #${a.eventId}: ${frames.size} frames, ${a.bytesReceived} bytes in $ms ms")
+        EvidencePull.set(EvidencePull.State.Done(a.eventId,a.window!!,frames.size,file,ms,origin))
     }
 
     private fun dropEvidence() { if (evidence != null) failEvidence("The connection dropped during the pull.") }
@@ -994,6 +1058,8 @@ class LinkClient(private val appContext: Context) {
     private fun failEvidence(message: String) {
         val a = evidence ?: return
         evidence = null
+        com.projectrevivesolutions.layertime.controller.state.FieldObservationJournal.record("evidence_transfer_failed",mapOf(
+            "hunterAddress" to evidencePeer,"sessionId" to evidenceSession,"eventId" to a.eventId,"reason" to message))
         repo.log(LogEntry.Category.ERROR, "evidence event #${a.eventId}: $message")
         EvidencePull.set(EvidencePull.State.Failed(a.eventId, message))
     }

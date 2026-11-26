@@ -24,6 +24,18 @@ class AiCoordinator(private val provider: LocalModelProvider) {
 
     private suspend fun <T> executeResponse(request: LocalModelRequest, timeoutMs: Long,
                                           decode: (LocalModelResponse) -> T): AiOutcome<T> {
+        val stamp=com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.begin("ai_attempt",mapOf("task" to request.task.name,"maxOutputTokens" to request.maxOutputTokens))
+        return try {
+            val result=executeUnmeasured(request,timeoutMs,decode)
+            val status=when(result){is AiOutcome.Completed->"completed";is AiOutcome.Unavailable->"unavailable";is AiOutcome.Invalid->"invalid";AiOutcome.TimedOut->"timed_out"}
+            com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.end(stamp,status)
+            result
+        } catch(ex:Throwable) {
+            com.projectrevivesolutions.layertime.controller.metrics.KpiTelemetry.end(stamp,if(ex is CancellationException) "cancelled" else "exception")
+            throw ex
+        }
+    }
+    private suspend fun <T> executeUnmeasured(request:LocalModelRequest,timeoutMs:Long,decode:(LocalModelResponse)->T):AiOutcome<T> {
         require(timeoutMs in 1..120_000)
         if (request.messages.isEmpty() || request.messages.sumOf { it.content.length.toLong() } > 1_000_000 ||
             request.maxOutputTokens !in 1..4096) return AiOutcome.Invalid("The AI request exceeds its supported limits.")
@@ -31,9 +43,17 @@ class AiCoordinator(private val provider: LocalModelProvider) {
         val manifest = available.manifest
         if (available.state != ModelState.READY || manifest == null)
             return AiOutcome.Unavailable(available.reason ?: "The bundled model is unavailable.")
-        if (manifest.contractVersion != 1 || !manifest.blueTeamTrained || manifest.id.isBlank() || manifest.version.isBlank() ||
+        if (manifest.contractVersion != 1 || (!manifest.blueTeamTrained && request.task !in manifest.qualifiedTasks) || manifest.id.isBlank() || manifest.version.isBlank() ||
             !manifest.sha256.matches(Regex("[a-fA-F0-9]{64}")))
             return AiOutcome.Unavailable("The bundled model is not compatible with this product release.")
+        if(!manifest.blueTeamTrained && request.task in manifest.qualifiedTasks) {
+            fun sha(text:String)=java.security.MessageDigest.getInstance("SHA-256").digest(text.toByteArray(Charsets.UTF_8)).joinToString(""){"%02x".format(it)}
+            if(request.task!=AiTask.INTERPRET_SIGNATURE || request.maxOutputTokens!=64 || request.messages.size!=2 ||
+                request.messages[0].role!=PromptMessage.Role.SYSTEM || request.messages[1].role!=PromptMessage.Role.USER ||
+                sha(request.messages[0].content)!=manifest.qualifiedPromptHashes[request.task] ||
+                sha(request.outputSchema)!=manifest.qualifiedSchemaHashes[request.task])
+                return AiOutcome.Unavailable("This request differs from the qualified signature interpretation contract.")
+        }
         if (request.task !in manifest.tasks || ModelCapability.STRUCTURED_OUTPUT !in manifest.capabilities)
             return AiOutcome.Unavailable("This model does not support this task.")
         if(request.tools.isNotEmpty() && ModelCapability.TOOL_CALLS !in manifest.capabilities)

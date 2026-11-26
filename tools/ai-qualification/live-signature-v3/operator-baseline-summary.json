@@ -1,0 +1,31 @@
+{
+  "scope": "Operator-run live BLE harness integration; synthetic RF evidence; compared with source-timestamped records received by Vixen, not independent SD readback",
+  "modelMatchesFrozen": true,
+  "counts": {
+    "1": {
+      "detector": 5,
+      "count": 8
+    },
+    "2": {
+      "detector": 18,
+      "count": 4
+    },
+    "3": {
+      "detector": 19,
+      "count": 4
+    }
+  },
+  "sourceGapMs": 30000,
+  "reportLatencyAfterRemoteReceiptMs": 5645,
+  "notificationPosted": true,
+  "monitoringContinued": true,
+  "rawOutput": "{\"pattern\":\"disconnect_sequence_then_remote_id\"}",
+  "finding": "Deauthentication and EAPOL observations were followed by an unverified Remote ID broadcast after 30 seconds. This is a candidate sequence for review; it does not prove an outage, a coordinated attack, or hostile drone intent.",
+  "eapolPacketWindowPreservedOnPhone": false,
+  "interpretationPass": true,
+  "completeEvidenceParityPass": false,
+  "applicationVersionCode": 140,
+  "closedDeauthPacketCount": 48,
+  "packetFileHashVerified": true,
+  "independentSourceSdReadbackVerified": false
+}

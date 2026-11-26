@@ -1,0 +1,12 @@
+{
+  "status": "passed-bounded-beta",
+  "modelSha256": "3d529dd89436601669d6d92f9c67793f35d7ba3a71bfe15cb44ae9547e7f194c",
+  "task": "INTERPRET_SIGNATURE",
+  "allCasesPassed": true,
+  "phonePathPassed": true,
+  "evidenceRef": "tools/ai-qualification/live-signature-v3/phone-candidate.json",
+  "promptSha256": "600281fece5da3236bf6ec9d5dddbf2bba819da0b291d2632945dabb2f5c542e",
+  "schemaSha256": "d7040ab009995ee38f72e4a6195f6325acd4b896e464d290e40cb4cc57257654",
+  "qualificationScope": "Authored synthetic bounded signature interpretation; no general or field validation",
+  "grammarSha256": "5faa490a727c18a623b4f57e6274389c049a56942af991a236aa46d6a608b007"
+}

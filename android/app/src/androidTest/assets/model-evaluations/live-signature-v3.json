@@ -1,0 +1,1752 @@
+[
+  {
+    "id": "test-positive-0",
+    "input": {
+      "events": [
+        {
+          "id": "2e3f68d0",
+          "kind": "deauth",
+          "network": "net-1371923",
+          "observedMs": 488260
+        },
+        {
+          "id": "5cc93d2f",
+          "kind": "eapol",
+          "network": "net-1371923",
+          "observedMs": 493260
+        },
+        {
+          "id": "93ba2d0f",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 506440
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 18180,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_then_remote_id"
+    }
+  },
+  {
+    "id": "test-positive-1",
+    "input": {
+      "events": [
+        {
+          "id": "a4a50bf0",
+          "kind": "deauth",
+          "network": "net-1625286",
+          "observedMs": 208148
+        },
+        {
+          "id": "090c3bec",
+          "kind": "eapol",
+          "network": "net-1625286",
+          "observedMs": 213148
+        },
+        {
+          "id": "944f7428",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 229396
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 21248,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_then_remote_id"
+    }
+  },
+  {
+    "id": "test-positive-2",
+    "input": {
+      "events": [
+        {
+          "id": "b1f4cfce",
+          "kind": "deauth",
+          "network": "net-4871522",
+          "observedMs": 866537
+        },
+        {
+          "id": "8aafea9e",
+          "kind": "eapol",
+          "network": "net-4871522",
+          "observedMs": 871537
+        },
+        {
+          "id": "ba62e00f",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 966079
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 120000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 99542,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_then_remote_id"
+    }
+  },
+  {
+    "id": "test-positive-3",
+    "input": {
+      "events": [
+        {
+          "id": "54067f27",
+          "kind": "deauth",
+          "network": "net-285425",
+          "observedMs": 316527
+        },
+        {
+          "id": "5e5f6004",
+          "kind": "eapol",
+          "network": "net-285425",
+          "observedMs": 321527
+        },
+        {
+          "id": "16aff352",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 390736
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 74209,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_then_remote_id"
+    }
+  },
+  {
+    "id": "test-positive-4",
+    "input": {
+      "events": [
+        {
+          "id": "31733ed5",
+          "kind": "deauth",
+          "network": "net-2373440",
+          "observedMs": 170667
+        },
+        {
+          "id": "218480fe",
+          "kind": "eapol",
+          "network": "net-2373440",
+          "observedMs": 175667
+        },
+        {
+          "id": "cb40d2a2",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 225660
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 54993,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_then_remote_id"
+    }
+  },
+  {
+    "id": "test-pair-only-0",
+    "input": {
+      "events": [
+        {
+          "id": "1e42201a",
+          "kind": "deauth",
+          "network": "net-2502806",
+          "observedMs": 471871
+        },
+        {
+          "id": "b4f38b8f",
+          "kind": "eapol",
+          "network": "net-2502806",
+          "observedMs": 476871
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_only"
+    }
+  },
+  {
+    "id": "test-pair-only-1",
+    "input": {
+      "events": [
+        {
+          "id": "db72f764",
+          "kind": "deauth",
+          "network": "net-5204427",
+          "observedMs": 289793
+        },
+        {
+          "id": "83ec296d",
+          "kind": "eapol",
+          "network": "net-5204427",
+          "observedMs": 294793
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 120000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_only"
+    }
+  },
+  {
+    "id": "test-pair-only-2",
+    "input": {
+      "events": [
+        {
+          "id": "3db50e31",
+          "kind": "deauth",
+          "network": "net-7030931",
+          "observedMs": 128025
+        },
+        {
+          "id": "736e7742",
+          "kind": "eapol",
+          "network": "net-7030931",
+          "observedMs": 133025
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_only"
+    }
+  },
+  {
+    "id": "test-pair-only-3",
+    "input": {
+      "events": [
+        {
+          "id": "a5d5501d",
+          "kind": "deauth",
+          "network": "net-5579841",
+          "observedMs": 804282
+        },
+        {
+          "id": "0312d17f",
+          "kind": "eapol",
+          "network": "net-5579841",
+          "observedMs": 809282
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 120000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_only"
+    }
+  },
+  {
+    "id": "test-pair-only-4",
+    "input": {
+      "events": [
+        {
+          "id": "e9fb891c",
+          "kind": "deauth",
+          "network": "net-2802376",
+          "observedMs": 539153
+        },
+        {
+          "id": "00b271c3",
+          "kind": "eapol",
+          "network": "net-2802376",
+          "observedMs": 544153
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "disconnect_sequence_only"
+    }
+  },
+  {
+    "id": "test-rid-only-0",
+    "input": {
+      "events": [
+        {
+          "id": "106fe9fa",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 567791
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 120000,
+        "disconnectBeforeExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-rid-only-1",
+    "input": {
+      "events": [
+        {
+          "id": "f33b86b8",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 789908
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-rid-only-2",
+    "input": {
+      "events": [
+        {
+          "id": "cdb10e27",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 211010
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 120000,
+        "disconnectBeforeExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-rid-only-3",
+    "input": {
+      "events": [
+        {
+          "id": "f3301e8a",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 259779
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-rid-only-4",
+    "input": {
+      "events": [
+        {
+          "id": "92b0c554",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 503226
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-reversed-0",
+    "input": {
+      "events": [
+        {
+          "id": "ef8eb562",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 897175
+        },
+        {
+          "id": "7d277de6",
+          "kind": "deauth",
+          "network": "net-1071284",
+          "observedMs": 899175
+        },
+        {
+          "id": "ed35afd9",
+          "kind": "eapol",
+          "network": "net-1071284",
+          "observedMs": 904175
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 120000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": -2000,
+        "remoteIdAfterExchange": false,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": false
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "reverse_order"
+    }
+  },
+  {
+    "id": "test-reversed-1",
+    "input": {
+      "events": [
+        {
+          "id": "ff451548",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 503502
+        },
+        {
+          "id": "ca76ec39",
+          "kind": "deauth",
+          "network": "net-1878770",
+          "observedMs": 505502
+        },
+        {
+          "id": "02c9cbd0",
+          "kind": "eapol",
+          "network": "net-1878770",
+          "observedMs": 510502
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": -2000,
+        "remoteIdAfterExchange": false,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": false
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "reverse_order"
+    }
+  },
+  {
+    "id": "test-reversed-2",
+    "input": {
+      "events": [
+        {
+          "id": "ea3ef9ba",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 438624
+        },
+        {
+          "id": "5a888313",
+          "kind": "deauth",
+          "network": "net-6577482",
+          "observedMs": 440624
+        },
+        {
+          "id": "450e47b9",
+          "kind": "eapol",
+          "network": "net-6577482",
+          "observedMs": 445624
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": -2000,
+        "remoteIdAfterExchange": false,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": false
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "reverse_order"
+    }
+  },
+  {
+    "id": "test-reversed-3",
+    "input": {
+      "events": [
+        {
+          "id": "f3047fa8",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 414353
+        },
+        {
+          "id": "d9b157ba",
+          "kind": "deauth",
+          "network": "net-4128899",
+          "observedMs": 416353
+        },
+        {
+          "id": "85ac9dba",
+          "kind": "eapol",
+          "network": "net-4128899",
+          "observedMs": 421353
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 120000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": -2000,
+        "remoteIdAfterExchange": false,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": false
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "reverse_order"
+    }
+  },
+  {
+    "id": "test-reversed-4",
+    "input": {
+      "events": [
+        {
+          "id": "7425ad36",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 763195
+        },
+        {
+          "id": "e003394f",
+          "kind": "deauth",
+          "network": "net-757998",
+          "observedMs": 765195
+        },
+        {
+          "id": "1ed3247e",
+          "kind": "eapol",
+          "network": "net-757998",
+          "observedMs": 770195
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": -2000,
+        "remoteIdAfterExchange": false,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": false
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "reverse_order"
+    }
+  },
+  {
+    "id": "test-late-0",
+    "input": {
+      "events": [
+        {
+          "id": "6cc97240",
+          "kind": "deauth",
+          "network": "net-7579578",
+          "observedMs": 313424
+        },
+        {
+          "id": "bbef53ec",
+          "kind": "eapol",
+          "network": "net-7579578",
+          "observedMs": 318424
+        },
+        {
+          "id": "27ece785",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 426428
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 113004,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": false
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "outside_window"
+    }
+  },
+  {
+    "id": "test-late-1",
+    "input": {
+      "events": [
+        {
+          "id": "12b7b1d8",
+          "kind": "deauth",
+          "network": "net-2177711",
+          "observedMs": 489215
+        },
+        {
+          "id": "eb48fc81",
+          "kind": "eapol",
+          "network": "net-2177711",
+          "observedMs": 494215
+        },
+        {
+          "id": "da0baa24",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 558748
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 69533,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": false
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "outside_window"
+    }
+  },
+  {
+    "id": "test-late-2",
+    "input": {
+      "events": [
+        {
+          "id": "5f4ed706",
+          "kind": "deauth",
+          "network": "net-952961",
+          "observedMs": 413864
+        },
+        {
+          "id": "0b17282a",
+          "kind": "eapol",
+          "network": "net-952961",
+          "observedMs": 418864
+        },
+        {
+          "id": "eaa36f6a",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 469249
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 55385,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": false
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "outside_window"
+    }
+  },
+  {
+    "id": "test-late-3",
+    "input": {
+      "events": [
+        {
+          "id": "5d61aef4",
+          "kind": "deauth",
+          "network": "net-9291054",
+          "observedMs": 862409
+        },
+        {
+          "id": "737c1a4f",
+          "kind": "eapol",
+          "network": "net-9291054",
+          "observedMs": 867409
+        },
+        {
+          "id": "575f6c7b",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 1004795
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 120000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 142386,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": false
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "outside_window"
+    }
+  },
+  {
+    "id": "test-late-4",
+    "input": {
+      "events": [
+        {
+          "id": "40f5e0a9",
+          "kind": "deauth",
+          "network": "net-4227825",
+          "observedMs": 402879
+        },
+        {
+          "id": "07a921e1",
+          "kind": "eapol",
+          "network": "net-4227825",
+          "observedMs": 407879
+        },
+        {
+          "id": "177d8071",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 544322
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 120000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 141443,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": false
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "outside_window"
+    }
+  },
+  {
+    "id": "test-unaligned-0",
+    "input": {
+      "events": [
+        {
+          "id": "0677f14f",
+          "kind": "deauth",
+          "network": "net-6533959",
+          "observedMs": 301523
+        },
+        {
+          "id": "43225faa",
+          "kind": "eapol",
+          "network": "net-6533959",
+          "observedMs": 306523
+        },
+        {
+          "id": "72def6fb",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 352721
+        }
+      ],
+      "relations": {
+        "clockAligned": false,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 51198,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "insufficient_timing"
+    }
+  },
+  {
+    "id": "test-unaligned-1",
+    "input": {
+      "events": [
+        {
+          "id": "55a16f7a",
+          "kind": "deauth",
+          "network": "net-5984162",
+          "observedMs": 420876
+        },
+        {
+          "id": "3c4f0a47",
+          "kind": "eapol",
+          "network": "net-5984162",
+          "observedMs": 425876
+        },
+        {
+          "id": "50d38c63",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 445464
+        }
+      ],
+      "relations": {
+        "clockAligned": false,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 24588,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "insufficient_timing"
+    }
+  },
+  {
+    "id": "test-unaligned-2",
+    "input": {
+      "events": [
+        {
+          "id": "56cb9084",
+          "kind": "deauth",
+          "network": "net-5827260",
+          "observedMs": 260048
+        },
+        {
+          "id": "76bf032a",
+          "kind": "eapol",
+          "network": "net-5827260",
+          "observedMs": 265048
+        },
+        {
+          "id": "19d754d8",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 292675
+        }
+      ],
+      "relations": {
+        "clockAligned": false,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 32627,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "insufficient_timing"
+    }
+  },
+  {
+    "id": "test-unaligned-3",
+    "input": {
+      "events": [
+        {
+          "id": "51b465a4",
+          "kind": "deauth",
+          "network": "net-4733328",
+          "observedMs": 761424
+        },
+        {
+          "id": "f17a40d4",
+          "kind": "eapol",
+          "network": "net-4733328",
+          "observedMs": 766424
+        },
+        {
+          "id": "7ad1f3c2",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 817874
+        }
+      ],
+      "relations": {
+        "clockAligned": false,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 56450,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "insufficient_timing"
+    }
+  },
+  {
+    "id": "test-unaligned-4",
+    "input": {
+      "events": [
+        {
+          "id": "1351cadc",
+          "kind": "deauth",
+          "network": "net-3537088",
+          "observedMs": 548651
+        },
+        {
+          "id": "b5c751b0",
+          "kind": "eapol",
+          "network": "net-3537088",
+          "observedMs": 553651
+        },
+        {
+          "id": "3721fb25",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 578961
+        }
+      ],
+      "relations": {
+        "clockAligned": false,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 30310,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "insufficient_timing"
+    }
+  },
+  {
+    "id": "test-deauth-only-0",
+    "input": {
+      "events": [
+        {
+          "id": "873fe1bd",
+          "kind": "deauth",
+          "network": "net-8205914",
+          "observedMs": 705511
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "no_relevant_pattern"
+    }
+  },
+  {
+    "id": "test-deauth-only-1",
+    "input": {
+      "events": [
+        {
+          "id": "68a538fa",
+          "kind": "deauth",
+          "network": "net-3309065",
+          "observedMs": 582905
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "no_relevant_pattern"
+    }
+  },
+  {
+    "id": "test-deauth-only-2",
+    "input": {
+      "events": [
+        {
+          "id": "f4ee3dbd",
+          "kind": "deauth",
+          "network": "net-7255055",
+          "observedMs": 791585
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "no_relevant_pattern"
+    }
+  },
+  {
+    "id": "test-deauth-only-3",
+    "input": {
+      "events": [
+        {
+          "id": "c7d75c95",
+          "kind": "deauth",
+          "network": "net-6944350",
+          "observedMs": 516319
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "no_relevant_pattern"
+    }
+  },
+  {
+    "id": "test-deauth-only-4",
+    "input": {
+      "events": [
+        {
+          "id": "400757f8",
+          "kind": "deauth",
+          "network": "net-4540355",
+          "observedMs": 743226
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": null,
+        "disconnectToRemoteIdMs": null,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": null
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "no_relevant_pattern"
+    }
+  },
+  {
+    "id": "test-different-network-0",
+    "input": {
+      "events": [
+        {
+          "id": "49c0c5b9",
+          "kind": "deauth",
+          "network": "net-9926677",
+          "observedMs": 794268
+        },
+        {
+          "id": "6b08954b",
+          "kind": "eapol",
+          "network": "other-net-9926677",
+          "observedMs": 799268
+        },
+        {
+          "id": "7fc8e810",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 819559
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 25291,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-different-network-1",
+    "input": {
+      "events": [
+        {
+          "id": "7cb2afff",
+          "kind": "deauth",
+          "network": "net-280766",
+          "observedMs": 447545
+        },
+        {
+          "id": "9a79701e",
+          "kind": "eapol",
+          "network": "other-net-280766",
+          "observedMs": 452545
+        },
+        {
+          "id": "be86c6f1",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 489999
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 42454,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-different-network-2",
+    "input": {
+      "events": [
+        {
+          "id": "285e0fb6",
+          "kind": "deauth",
+          "network": "net-7839566",
+          "observedMs": 237515
+        },
+        {
+          "id": "bb0a667a",
+          "kind": "eapol",
+          "network": "other-net-7839566",
+          "observedMs": 242515
+        },
+        {
+          "id": "652880e0",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 258204
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 20689,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-different-network-3",
+    "input": {
+      "events": [
+        {
+          "id": "305a9341",
+          "kind": "deauth",
+          "network": "net-5466555",
+          "observedMs": 384860
+        },
+        {
+          "id": "4f3f20d2",
+          "kind": "eapol",
+          "network": "other-net-5466555",
+          "observedMs": 389860
+        },
+        {
+          "id": "09d9085e",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 427743
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 42883,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-different-network-4",
+    "input": {
+      "events": [
+        {
+          "id": "d7e5fa0c",
+          "kind": "deauth",
+          "network": "net-7352859",
+          "observedMs": 146973
+        },
+        {
+          "id": "95b2ac8c",
+          "kind": "eapol",
+          "network": "other-net-7352859",
+          "observedMs": 151973
+        },
+        {
+          "id": "0ee0d7b1",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 203012
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 56039,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": false,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-reversed-exchange-0",
+    "input": {
+      "events": [
+        {
+          "id": "bebf3a9c",
+          "kind": "eapol",
+          "network": "net-3406590",
+          "observedMs": 629976
+        },
+        {
+          "id": "03a5fca7",
+          "kind": "deauth",
+          "network": "net-3406590",
+          "observedMs": 631976
+        },
+        {
+          "id": "b62b99c7",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 645423
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": false,
+        "disconnectToRemoteIdMs": 13447,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-reversed-exchange-1",
+    "input": {
+      "events": [
+        {
+          "id": "55105ae5",
+          "kind": "eapol",
+          "network": "net-9477819",
+          "observedMs": 640839
+        },
+        {
+          "id": "efc9f94e",
+          "kind": "deauth",
+          "network": "net-9477819",
+          "observedMs": 642839
+        },
+        {
+          "id": "01df31ee",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 680161
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": false,
+        "disconnectToRemoteIdMs": 37322,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-reversed-exchange-2",
+    "input": {
+      "events": [
+        {
+          "id": "1d35d2f2",
+          "kind": "eapol",
+          "network": "net-7525868",
+          "observedMs": 277300
+        },
+        {
+          "id": "5b34ca23",
+          "kind": "deauth",
+          "network": "net-7525868",
+          "observedMs": 279300
+        },
+        {
+          "id": "1dcb55ef",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 309773
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": false,
+        "disconnectToRemoteIdMs": 30473,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-reversed-exchange-3",
+    "input": {
+      "events": [
+        {
+          "id": "48e93a43",
+          "kind": "eapol",
+          "network": "net-8103753",
+          "observedMs": 302750
+        },
+        {
+          "id": "ea37f0bc",
+          "kind": "deauth",
+          "network": "net-8103753",
+          "observedMs": 304750
+        },
+        {
+          "id": "fcbf8551",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 355993
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": false,
+        "disconnectToRemoteIdMs": 51243,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-reversed-exchange-4",
+    "input": {
+      "events": [
+        {
+          "id": "d7f57286",
+          "kind": "eapol",
+          "network": "net-3415809",
+          "observedMs": 488816
+        },
+        {
+          "id": "5865eafc",
+          "kind": "deauth",
+          "network": "net-3415809",
+          "observedMs": 490816
+        },
+        {
+          "id": "5257267d",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 517594
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": false,
+        "disconnectToRemoteIdMs": 26778,
+        "remoteIdAfterExchange": true,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "remote_id_only"
+    }
+  },
+  {
+    "id": "test-uncertain-order-0",
+    "input": {
+      "events": [
+        {
+          "id": "f3c29f7d",
+          "kind": "deauth",
+          "network": "net-4730550",
+          "observedMs": 534711
+        },
+        {
+          "id": "99e3b117",
+          "kind": "eapol",
+          "network": "net-4730550",
+          "observedMs": 539711
+        },
+        {
+          "id": "0ced948a",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 581727
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 47016,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "insufficient_timing"
+    }
+  },
+  {
+    "id": "test-uncertain-order-1",
+    "input": {
+      "events": [
+        {
+          "id": "c321acc2",
+          "kind": "deauth",
+          "network": "net-2841778",
+          "observedMs": 139859
+        },
+        {
+          "id": "6c3218a5",
+          "kind": "eapol",
+          "network": "net-2841778",
+          "observedMs": 144859
+        },
+        {
+          "id": "f0ff6cf2",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 193111
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 60000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 53252,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "insufficient_timing"
+    }
+  },
+  {
+    "id": "test-uncertain-order-2",
+    "input": {
+      "events": [
+        {
+          "id": "79fe41cc",
+          "kind": "deauth",
+          "network": "net-8750780",
+          "observedMs": 587989
+        },
+        {
+          "id": "47bd063e",
+          "kind": "eapol",
+          "network": "net-8750780",
+          "observedMs": 592989
+        },
+        {
+          "id": "f4a44f69",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 625864
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 37875,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "insufficient_timing"
+    }
+  },
+  {
+    "id": "test-uncertain-order-3",
+    "input": {
+      "events": [
+        {
+          "id": "f4cfd950",
+          "kind": "deauth",
+          "network": "net-8676723",
+          "observedMs": 355442
+        },
+        {
+          "id": "53031e3f",
+          "kind": "eapol",
+          "network": "net-8676723",
+          "observedMs": 360442
+        },
+        {
+          "id": "992eafca",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 428515
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 90000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 73073,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "insufficient_timing"
+    }
+  },
+  {
+    "id": "test-uncertain-order-4",
+    "input": {
+      "events": [
+        {
+          "id": "16e530a9",
+          "kind": "deauth",
+          "network": "net-5026185",
+          "observedMs": 138537
+        },
+        {
+          "id": "2f3b5538",
+          "kind": "eapol",
+          "network": "net-5026185",
+          "observedMs": 143537
+        },
+        {
+          "id": "9ba82d12",
+          "kind": "remote_id",
+          "network": null,
+          "observedMs": 151045
+        }
+      ],
+      "relations": {
+        "clockAligned": true,
+        "configuredWindowMs": 45000,
+        "disconnectBeforeExchange": true,
+        "disconnectToRemoteIdMs": 12508,
+        "remoteIdAfterExchange": null,
+        "sameNetworkDisconnectExchange": true,
+        "withinWindow": true
+      },
+      "remoteIdAuthenticityVerified": false
+    },
+    "expected": {
+      "pattern": "insufficient_timing"
+    }
+  }
+]

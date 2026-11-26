@@ -1,0 +1,5 @@
+{
+  "originalSha256": "e835098917f8fe016bf84f058c259eff018891edbd8e0456bdafd43a9fe1af26",
+  "publishedSha256": "d8c849699a35f151b30b9944864e884ea74a47c435eb3a8aade59174b3bee5b9",
+  "difference": "Published launcher removes terminal blank lines only. Original runtime launcher is retained; executed training-engine source hashes are in training-job.json."
+}

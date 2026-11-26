@@ -66,12 +66,18 @@ fun TriageSection(e: EventRow, onOpenWireshark: () -> Unit) {
     val isDeauth = e.detectorName.equals("DEAUTH", ignoreCase = true)
     // null, "pulling", or "importing": this panel's own pull, so an older import is never mistaken for it.
     var stage by remember(e.eventId) { mutableStateOf<String?>(null) }
-    val pcapName = "hunter_event_${e.eventId}.pcap"
+    var pcapName by remember(e.sessionId,e.eventId) { mutableStateOf<String?>(null) }
     LaunchedEffect(pull, stage) {
         val p = pull
         if (stage == "pulling" && p is EvidencePull.State.Done && p.eventId == e.eventId) {
-            stage = "importing"
-            PcapImport.start(context, android.net.Uri.fromFile(p.file))
+            if(p.origin?.matches(e.sessionId,e.eventId,e.producerAddress)==true) {
+                stage = "importing"
+                pcapName=p.file.name
+                PcapImport.start(context, android.net.Uri.fromFile(p.file),origin=p.origin)
+            } else {
+                stage=null
+                EvidencePull.set(EvidencePull.State.Failed(e.eventId,"These frames belong to another Hunter session or event."))
+            }
         }
         if (stage == "pulling" && p is EvidencePull.State.Failed && p.eventId == e.eventId) stage = null
     }
@@ -134,7 +140,7 @@ fun TriageSection(e: EventRow, onOpenWireshark: () -> Unit) {
 }
 
 @Composable
-fun FindingCard(f: Finding, onOpenWireshark: () -> Unit) {
+fun FindingCard(f: Finding, onOpenWireshark: () -> Unit, onBack:(()->Unit)?=null) {
     val color=verdictColor(f.verdict)
     var details by remember(f) {mutableStateOf(false)}
     val reports=(f.features+f.couldNotRun).flatMap {it.targetReports}
@@ -142,8 +148,8 @@ fun FindingCard(f: Finding, onOpenWireshark: () -> Unit) {
     val lead=readings.firstOrNull {it.setup.isNotEmpty()} ?: readings.firstOrNull()
     var observations by remember(f) {mutableStateOf(false)}
     androidx.activity.compose.BackHandler(enabled=details || observations){if(details)details=false else observations=false}
-    OpsConnectionHousing(Modifier.fillMaxWidth()) {
-    Column(Modifier.fillMaxWidth().padding(18.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
+    OpsConnectionHousing(Modifier.fillMaxWidth(),borderBack=onBack) {
+    Column(Modifier.fillMaxWidth().padding(start=18.dp,end=18.dp,top=if(onBack!=null)50.dp else 18.dp,bottom=18.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
         if(f.coverage?.training==true)Text("PRACTICE - not a live warning",color=LtColors.Amber,fontSize=13.sp)
         Text(lead?.action ?: f.assessmentLabel,color=LtColors.Amber,fontWeight=FontWeight.Bold,fontSize=23.sp)
         Text(lead?.briefReason ?: f.summary,color=LtColors.Ivory,fontSize=17.sp)

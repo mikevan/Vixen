@@ -58,6 +58,7 @@ object LayoutPlan {
  */
 enum class Destination(val label: String) {
     OPS("OPS"),         // the field screen: the face and the connection and detection controls
+    REPORTS("AI REPORTS"), // saved assessments and archive
     EVENTS("EVENTS"),   // the live detection list, with DECODE A CAPTURE FILE, and detail
     TOOLS("TOOLS"),     // the analytic windows (Wireshark and the rest), run and view here
     BUILDER("BUILDER"), // zoomable workspace for assembling analysis tools

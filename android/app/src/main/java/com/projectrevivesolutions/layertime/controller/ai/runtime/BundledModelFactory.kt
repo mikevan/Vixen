@@ -26,6 +26,9 @@ object BundledModelFactory {
                 require(features.contains("asimddp") && features.contains("asimdhp")) {
                     "This experimental inference build requires ARM dot-product and FP16 CPU support."
                 }
+                require(!BuildConfig.LT_ARM_I8MM_EXPERIMENT || Regex("\\bi8mm\\b").containsMatchIn(features)) {
+                    "This experimental inference build requires ARM integer matrix multiplication support."
+                }
             }
             require(raw.length<=32000)
             val data=FlowJson.parse(raw) as? Map<*,*> ?: error("Invalid model manifest.")
@@ -37,12 +40,34 @@ object BundledModelFactory {
             val version=data["modelVersion"] as? String ?: error("Missing model version.")
             val hash=data["sha256"] as? String ?: error("Missing model hash.")
             require(id.length in 1..120 && version.length in 1..120 && hash.matches(Regex("[a-f0-9]{64}")))
+            val cacheOnly=data["weightsLocation"]=="deviceCache"
+            require(data["weightsLocation"]==null || cacheOnly)
+            require(!cacheOnly || development) {"Cache-only packages are diagnostic only."}
+            require(!cacheOnly || File(context.filesDir,"ai-models/$hash/$filename").isFile) {
+                "The diagnostic model is not installed on this device."
+            }
             val trained=data["blueTeamTrained"]==true && data["releaseEligible"]==true
-            require(development || trained)
+            var scopedPrompt:String?=null;var scopedSchema:String?=null
+            val approved=if(!development && !trained) {
+                val approval=FlowJson.parse(context.assets.open("$assetDir/signature-qualification.json").bufferedReader().use {it.readText()}) as Map<*,*>
+                require(approval["status"]=="passed-bounded-beta" && approval["modelSha256"]==hash &&
+                    approval["task"]=="INTERPRET_SIGNATURE" && approval["allCasesPassed"]==true &&
+                    approval["phonePathPassed"]==true && (approval["evidenceRef"] as? String)?.isNotBlank()==true)
+                fun assetHash(name:String):String=MessageDigest.getInstance("SHA-256").digest(context.assets.open("$assetDir/$name").use {it.readBytes()}).joinToString(""){"%02x".format(it)}
+                require(approval["promptSha256"]==assetHash("signature-system.txt") && approval["schemaSha256"]==assetHash("signature-schema.json"))
+                require(approval["grammarSha256"]==assetHash("signature.gbnf"))
+                scopedPrompt=approval["promptSha256"] as String;scopedSchema=approval["schemaSha256"] as String
+                setOf(AiTask.INTERPRET_SIGNATURE)
+            } else emptySet()
+            require(development || trained || approved.isNotEmpty())
             val tokens=(data["contextTokens"] as? Long)?.takeIf {it in 256..16384}?.toInt() ?: error("Invalid context budget.")
             val tasks=(data["tasks"] as? List<*>)?.map {AiTask.valueOf(it as String)}?.toSet() ?: error("Missing model tasks.")
-            val manifest=LocalModelManifest(id,version,hash,1,tasks,setOf(ModelCapability.STRUCTURED_OUTPUT),tokens,trained)
+            require(approved.isEmpty() || (tasks==approved && promptFormat==LocalPromptFormat.QWEN3_COMPACT && tokens==2048))
+            val manifest=LocalModelManifest(id,version,hash,1,tasks,setOf(ModelCapability.STRUCTURED_OUTPUT),tokens,trained,approved,
+                scopedPrompt?.let {mapOf(AiTask.INTERPRET_SIGNATURE to it)} ?: emptyMap(),
+                scopedSchema?.let {mapOf(AiTask.INTERPRET_SIGNATURE to it)} ?: emptyMap())
             val grammar=context.assets.open("ai/json.gbnf").use {it.readBytes()}
+            val explanationGrammar=context.assets.open("ai/evidence-explanation.gbnf").use {it.readBytes()}
             NativeLlamaProvider(manifest,modelFile={
                 val dir=File(context.filesDir,"ai-models/$hash").apply {mkdirs()}
                 val destination=File(dir,filename)
@@ -52,13 +77,14 @@ object BundledModelFactory {
                     return sha.digest().joinToString(""){"%02x".format(it)}
                 }
                 if(!destination.isFile || digest(destination)!=hash) {
+                    check(!cacheOnly) {"The diagnostic model cache does not match its manifest."}
                     val pending=File(dir,"weights.pending")
                     context.assets.open("$assetDir/$filename").use {input->pending.outputStream().use {input.copyTo(it,1024*1024)}}
                     check(digest(pending)==hash) {"Bundled model integrity check failed."}
                     check(pending.renameTo(destination)) {"Could not install the bundled model."}
                 }
                 destination
-            },grammar=grammar,developmentOnly=development,promptFormat=promptFormat)
+            },grammar=grammar,developmentOnly=development,promptFormat=promptFormat,explanationGrammar=explanationGrammar,signatureGrammar=runCatching {context.assets.open("$assetDir/signature.gbnf").use {it.readBytes()}}.getOrNull())
         }.getOrElse {object:LocalModelProvider {
             override fun availability()=ModelAvailability(ModelState.INCOMPATIBLE,reason="The bundled model package is incompatible or incomplete.")
             override suspend fun countInputTokens(request:LocalModelRequest):Int=error("Model package unavailable.")

@@ -1,12 +1,12 @@
-# Vixen development history: builds 1–141
+# Vixen development history: builds 1–150
 
 This is the evidence trail for how the Android tool was created: what changed, what was tried, what failed, and what was actually checked. It brings the Android Controller, LayerScope and flagship Vixen records into one chronology without turning gaps into a story we cannot prove.
 
-Compiled on **November 15, 2026**, through Vixen build 141. This is a development-build index, **not a claim of 141 public releases, 141 retained APKs, or 141 successful field tests**. The GitHub releases listing contained no published Vixen releases when reviewed. Installation IDs, version names, build numbers and source checkpoints are different pieces of evidence.
+Compiled on **November 15, 2026**, through Vixen build 150. This is a development-build index, **not a claim of 150 public releases, 150 retained APKs, or 150 successful field tests**. The GitHub releases listing contained no published Vixen releases at the original builds-1–141 audit; it was not re-audited for this extension. Installation IDs, version names, build numbers and source checkpoints are different pieces of evidence.
 
 ## How to read the record
 
-- Every number from 1 through 141 has its own entry. Missing individual notes are explicitly marked. A numbered entry alone does not prove that its APK was built or distributed.
+- Every number from 1 through 150 has its own entry. Missing individual notes are explicitly marked. A numbered entry alone does not prove that its APK was built or distributed.
 - Original build notes are quoted as historical records. Later source comments and commit messages are identified separately. A grouped checkpoint does not establish which feature changed in each intermediate build.
 - “Built,” “installed,” “host-tested,” “phone-tested” and “operator-run” retain their original scopes. A developer's reported diagnosis is a historical account, not an independently established cause. Later reversals are retained.
 - Exact version names are listed only where recovered from a version declaration. The old 0.1.x name did not always equal versionCode; the beta naming convention changed later. No missing name or release date has been guessed.
@@ -23,15 +23,17 @@ Compiled on **November 15, 2026**, through Vixen build 141. This is a developmen
 | Builds 54–92 | Connection feedback, LayerScope identity, responsive navigation, grouped observations, ordinary sensor commands, packet windows and field card analysis. | Several changes were committed as explicit groups; a 59–62 visual experiment was reverted. Temporal association was not proof of successful attack. |
 | Builds 100–122 | Tracker defaults, connection-recovery attempts, Builder/reporting, evidence correlation, local model contracts, training and phone runtime work. | Connection changes in 102–108 were reverted in 109. Training completion and faster probes did not qualify the broad model: both domain candidates passed only 2/12 frozen acceptance cases. |
 | Builds 123–139 | Durable field observations, bounded explanations, capture slices, portable runtime experiments and stricter field-test fidelity. | Invented events, wrong numerical comparisons, invalid JSON and test-only paths were retained as failures or component results. The test interfaces were removed. |
-| Builds 140–141 | A narrower offline signature task was qualified against authored controls and connected to the ordinary field workflow. The operator obtained a correct live report; an EAPOL preservation gap was then fixed in code. | The real run passed bounded interpretation, not complete evidence parity. Build 141 still requires the repaired baseline rerun. Synthetic source inputs do not prove actual RF detection, outage, hostile intent, evacuation effectiveness or independent T-Ultra corroboration. |
+| Builds 140–141 | A narrower offline signature task was qualified against authored controls and connected to the ordinary field workflow. The operator obtained a correct live report; an EAPOL preservation gap was then fixed in code. | The real run passed bounded interpretation, not complete evidence parity. The initial 141 receipt required a repaired baseline rerun; that rerun and T1 later passed, as recorded below. Synthetic source inputs do not prove actual RF detection, outage, hostile intent, evacuation effectiveness or independent T-Ultra corroboration. |
+| Builds 142–149 | Timestamped report history, archive/export, separate AI Reports navigation, plain wording and iterative frame design were deployed. Test 2 exposed a candidate-selection failure on 149. | The failed 149 run preserved the records and packets but never invoked AI. Flat/inset Back designs were revised; build 148 has no separate source commit. |
+| Build 150 | Complete same-network pair selection fixed the failure before inference; regression checks and the operator T2 rerun passed their stated criteria. | The report still has no action recommendation. The complete actionable MVP report is not accepted; the model weights were not changed by this repair. |
 
 The 140 scores belong to a **new, narrower output/task contract and model**. They must not be presented as a directly comparable improvement from the old broad 4B prose benchmark. The new authored controls are not independent field incidents.
 
 ## Coverage and navigation
 
-All **141 requested build numbers** are indexed. No individual note was recovered for these **18 numbers**: 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 93, 94, 95, 96, 97, 98, 99, 121. Other entries explicitly identify partial, grouped, inline-comment or local-only evidence rather than claiming a complete release note.
+All **150 build numbers** are indexed. No individual note was recovered for these **18 numbers**: 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 93, 94, 95, 96, 97, 98, 99, 121. Other entries explicitly identify partial, grouped, inline-comment or local-only evidence rather than claiming a complete release note.
 
-[1–20](#build-1) · [21–40](#build-21) · [41–60](#build-41) · [61–80](#build-61) · [81–100](#build-81) · [101–120](#build-101) · [121–141](#build-121) · [Grouped original checkpoints](#grouped-original-checkpoints) · [Source ledger](#source-ledger) · [Local audit records](#local-audit-records)
+[1–20](#build-1) · [21–40](#build-21) · [41–60](#build-41) · [61–80](#build-61) · [81–100](#build-81) · [101–120](#build-101) · [121–150](#build-121) · [Grouped original checkpoints](#grouped-original-checkpoints) · [Source ledger](#source-ledger) · [Local audit records](#local-audit-records)
 
 ## Build-by-build record
 
@@ -2094,6 +2096,75 @@ The normal packet-preservation filter was extended from Wi-Fi deauth alone to Wi
 
 Repair receipt: physicalEapolTransferVerified=false; baselineRerunStarted=false. This is an installed, automatically tested fix, not a retroactive pass for the original capture.
 
+
+**Later operator verification (separate from the original receipt):** the repaired baseline on 141 passed phone-side preservation: 48 deauth and 24 complete EAPOL-Key frames, verified PCAP hashes, the correct 30-second sequence, a posted notification and continued monitoring. The report completed 5,778 ms after first drone-summary receipt. T1 then passed on 141 with irregular timing and duplicate summaries: counts 8/4/4, the same 48/24 packet windows, a 62-second gap, one accepted analysis/notification and a 2,500 ms report delay. Private receipts: `baseline-141/verification.json` and `t1-operator/verdict.json` in the local audit ledger; public account [S56]. These do not establish independent SD parity or real RF detection.
+
+### Build 142
+
+**Source checkpoint and local installation receipt** — [S46], with later wording refinements retained in Git commit `4f18dbb3a45c3ec4610aa98a473f967c41f0a705`.
+
+Added visible report completion times, stable IDs and Hunter sessions, with saved-report history, Archive/Restore and JSON Export. Archive markers remain separate from original inference records. Drone labels and report prose were simplified; the generic repeated warning paragraph was removed from displayed report wording while original saved JSON remained unchanged. Build 142 was installed; three existing reports were checked byte-for-byte. Both variants passed 429 unit tests. Unrelated release work was excluded from commits. This was a normal application feature, not a test-specific interface.
+
+### Build 143
+
+**Source checkpoint and local installation receipt** — [S47].
+
+OPS was reduced to the current assessment with Archive confirmation. A separate AI Reports page gained Active/Archived history. Archiving the newest report no longer promotes an older report into OPS, including after restart. Future assessments retain app version, prompt/schema/grammar, output budget/timeout and richer source facts for later analysis. Model input and inference settings stayed unchanged. Both variants passed 430 tests; installation verification checked 39 existing report/packet files unchanged. No new physical AI pass is assigned to this UI build.
+
+### Build 144
+
+**Source checkpoint and local installation receipt** — [S48].
+
+AI report panels adopted the existing dark instrument housings, cyan headings and recessed actions. Back controls were moved inward and enclosed. Both variants' checks passed; build 144 was installed and 39 original report/packet files matched their earlier hashes. The operator then rejected the redundant outer frame and wasted space. This is a deployed iteration followed by a correction, not the final approved frame design.
+
+### Build 145
+
+**Source checkpoint and retained local build log** — [S49].
+
+Removed the additional route housing and its upper/lower control bands. Back moved into existing content headers; AI Reports used one housing with divided history entries. The build/test run succeeded and installation was observed during this development session. No separate retained installation receipt is asserted for 145; the local build log proves compilation/checks, not installation by itself. The operator said the layout looked better, then requested a small framed Back area.
+
+### Build 146
+
+**Source checkpoint and retained local build log** — [S50].
+
+Wrapped Back in a miniature housing using the content border's artwork. Checks passed and installation was observed in the session; the retained build log is not an independent installation receipt. The operator clarified that Back must be part of the border, rather than a separate box. This approach was superseded.
+
+### Build 147
+
+**Source checkpoint and retained local build log** — [S51].
+
+Replaced the small housing with a flat drawn return joined to the upper-left rails. The app built and was installed in the session. A phone screenshot then showed why the result still failed visually: the flat overlay obscured corner detail and did not share the frame's bevel, texture or lighting. The operator agreed with that diagnosis. This failed visual approach is preserved as an iteration, not described as the approved design.
+
+### Build 148
+
+**Grouped source evidence; no standalone build-148 source checkpoint recovered** — [S52].
+
+The upper-left Back return was rebuilt from the housing's original textured glass and rail sections, retaining the existing top/left rails and adding matching right/lower sections. The local build log records successful checks; deployment as versionCode 148 was observed in the session. The phone was at its lock screen during the observer's final screenshot attempt, so no successful post-deployment visual inspection is claimed from that screenshot. The operator subsequently approved the result and explicitly made it the standard for every frame with Back. These changes were retained with build 149 in commit `3c865116c88bd779c60ab19cdf74018be0804c0b`; a separate 148 commit/APK archive is not asserted.
+
+### Build 149
+
+**Source checkpoint, installation receipt and failed operator Test 2** — [S52], [S53], [S56].
+
+Applied the approved textured border-owned Back design to remaining analytic pages, Builder menus/results and confirmations; removed the standalone Back renderer and duplicate lower controls. Both variants passed 430 tests. Installation verification recorded 40 report/archive/packet files unchanged. The design standard was documented and the operator later authorized commit/push.
+
+**Test 2 failed on frozen Vixen 149.** The harness added unrelated disconnects on B and handshakes on C while retaining A's valid disconnect/handshake sequence and the drone observation 62 seconds after A's first disconnect. Vixen received all five events with counts **8/4/8/4/4**. Four packet windows **48/24/48/24** (144 frames total) were saved, hashes verified, and their A/A/B/C source identities checked. Monitoring continued, but no AI invocation/report was recorded after the reporting deadline.
+
+The procedural selector chose the newest disconnect (B), found no B handshake and stopped before considering A's valid pair. This was a **failure before model inference**, not an observed wrong model answer. The failed run's journal, packet captures and comparison receipt remain separate and private; their local audit hashes are listed below. It is not retroactively passed by build 150.
+
+### Build 150
+
+**Selection repair, regression checks, installation receipt and successful operator rerun** — [S54], [S55], [S56].
+
+Changed candidate selection to rank complete disconnect/handshake pairs on the same network within one producer/session. A newer unmatched network no longer hides a complete older pair. Negative order and outside-window evidence are still eligible; selection does not filter for the expected positive answer. The model weights, prompt, grammar and harness scenario were unchanged.
+
+Regression cases derived from the failed run were first run against the previous selector: **3 of 10 selection tests failed**. After repair, both application variants passed **434 tests**, with no failures/errors/skips. The app was installed and 54 pre-existing report/archive/packet files were checked unchanged. This automatic verification qualified selection logic; it was not itself an end-to-end model pass.
+
+The first attempted run on 150 stopped about 3.4 seconds after Start, before the first 20-second fixture event. The stop's cause was not established. It is an **aborted attempt**, not a model failure or a successful test.
+
+The operator restarted. Read-only observation verified the subsequent complete T2 run: counts **8/4/8/4/4**, correct selection of A's events **1/2** and drone event **5**, a **62,000 ms** source-clock gap, and the raw model pattern `disconnect_sequence_then_remote_id`. The report completed **7,509 ms** after the first drone summary reached Vixen, within the 30-second target. One accepted analysis and one posted notification were recorded despite duplicate summaries. Monitoring continued. Four closed packet windows **48/24/48/24** matched their saved SHA-256 hashes and A/A/B/C source identities; both handshake windows contained complete 95-byte EAPOL-Key bodies. Original drone service data, prepared input and raw output were preserved. The observer read saved records without operating either device during this complete run.
+
+**Scope and remaining gap:** T2 passed its correlation, preservation, notification, duplicate-handling and timing criteria. The report still provides **no action recommendation**, which the operator identified after the rerun. The discussed recommendation was not implemented or qualified. Therefore this is **not acceptance of the complete actionable MVP report**. Independent source-SD parity, physical RF detection, evacuation effectiveness and T-Ultra corroboration were not established by this scenario. The original frozen-149 failure remains a separate result.
+
 ## Grouped original checkpoints
 
 These original commit accounts are preserved together so that batch-level details are available without assigning them to unsupported individual version numbers. The quoted validation claims retain their original scope and are not newly reproduced tests.
@@ -2411,6 +2482,17 @@ The hashes below are SHA-256 of the exact Git blob bytes, or the commit-message 
 | [S43] | Vixen `11520899b644` — MVP objectives and passive instrumentation | `bd8d7febf6a075babb6ee39b380ed303b3ba12ad7ab4a3404076cac7c10897f6` |
 | [S44] | Vixen `11520899b644` — First ordinary operator-run comparison receipt | `b30373b9665dde79399ede41e58931728807995e254823558c572f10b3b076d9` |
 | [S45] | Vixen `11520899b644` — Build 141 preservation-fix receipt | `3f54c7ddc43a9d87946ebf7b1383cc83db49eaa5b4fc94b1bc0412526e57aec1` |
+| [S46] | Vixen `6ac80c057dd3` — Build 142 version and report-history checkpoint | `93e5c9246d863915826dacfb7f0021328ed6be1c1c4122ce53a2caeb464404bb` |
+| [S47] | Vixen `69431deb27f3` — Build 143 version and separated history page | `a7b8b196edc52a76e07651bdb3fe0060b24729b1b6401bd4571b939978dd1a18` |
+| [S48] | Vixen `7a2081eeb4b8` — Build 144 frame styling checkpoint | `bbb5f731fe4c2202235440bf2ef7e6ba5750ee1ea4bea45abebf98919c085b38` |
+| [S49] | Vixen `a848594a7ae1` — Build 145 removal of redundant route frames | `f1d284ca6bf3d3f754b35613ac7763627295900ad95ae493e0896589ba541158` |
+| [S50] | Vixen `22a4ec53a119` — Build 146 inset Back housing | `b3d48054daed352b84241d64ec99a755c23e9addde19dd9926a28f3afddab4d0` |
+| [S51] | Vixen `b3d926d13b25` — Build 147 flat border-return iteration | `fa712d31a4f83f729282252701d701133ae480d884b4c68b8246e6a8c8607b8f` |
+| [S52] | Vixen `3c865116c88b` — Approved build 148 design and build 149 application coverage | `0ef7bf12b6ae10216d6005d3a6b35fa6ca72f606b25228be778acd93e190f378` |
+| [S53] | Vixen `3c865116c88b` — Build 149 version checkpoint | `c358800540c9c2df3f3c1b74ba6406a14430b4db894f109d2af9573a9687824f` |
+| [S54] | Vixen `c028fb44092e` — Build 150 complete-pair selection repair | `27e16d09083a1dd7d0e55ccb032dd588cdbfcec24f375fedacbad843d14cb097` |
+| [S55] | Vixen `c028fb44092e` — Build 150 verification, original T2 failure, rerun and recommendation gap | `aac4b31182312c53e003ff7675f1b503aca44e18ae58de70b46c90a985df7e82` |
+| [S56] | Hunter-TestHarness `5f00861d44da` — T1/T2 scenarios, original failure and successful rerun | `20c189db413426be6a56a6c73935573303238fb9c6445891572246d5a9524ccd` |
 
 ## Local audit records
 
@@ -2427,10 +2509,25 @@ These records were inspected in the retained development workspace. Their raw co
 | `field-ai-evaluation-20261114T052030Z/build126-validation.json` | `8ff39959c83cdff08e30d6a2096817ed6d2a6adeaaf3312367aadab53163e17e` | Retained locally; not a public Git attachment |
 | `field-ai-evaluation-20261114T052030Z/build127-validation.json` | `489acdc8e923936ea4ac947e9c17d01772f781cb89dc464bfbff395071c7abe7` | Retained locally; not a public Git attachment |
 | `live-signature-v3-phone/first-operator-run.jsonl` | `8a8a671edc0bb6a2c7af4d5e8be08e6d11b061c2fd8b23244f10356de85e24ba` | Retained locally; not a public Git attachment |
+| `live-signature-v3-phone/baseline-141/verification.json` | `197b808a41e48a3950c53d3d7c7a2780d63f398a3330fe5d4c3e58b850d4a90a` | Retained locally; not a public Git attachment |
+| `live-signature-v3-phone/t1-operator/verdict.json` | `005f1617bdc4beb36aa0856538abb02d2f91a1eb16c0ef9b1187779131645854` | Retained locally; not a public Git attachment |
+| `vixen142-deploy/verification.json` | `9d5474359577e145b412ccad155678f6cd5da3fec176aac105488e1905026e91` | Retained locally; not a public Git attachment |
+| `vixen143-deploy/verification.json` | `4183932799dc04c3404b88b3271d6759af4e6cc4a4b30376521715daa4cf1e65` | Retained locally; not a public Git attachment |
+| `vixen144-deploy/verification.json` | `beb0d53e76c562e151046c9969851209675c482d77cb2304f770173250b3b27e` | Retained locally; not a public Git attachment |
+| `vixen145-design-build.log` | `92c004f63a706bb17499b751ff2ed42e2963d9a2be813b64e5637d75e936bcd1` | Retained locally; not a public Git attachment |
+| `vixen146-design-build.log` | `ba147c5b8a7e64a97b038372b7be6d03bafe9718f73fcc6eb7200987e7629a07` | Retained locally; not a public Git attachment |
+| `vixen147-design-build.log` | `d8348b82c0a2227828e6fbec549da3520824d9d5ae9f2ea91b8f288b4cb528d5` | Retained locally; not a public Git attachment |
+| `vixen148-design-build.log` | `3672dd3ebfe057c9c5957d8a062805eabef98f3ecdc94120f4e26c7a27834773` | Retained locally; not a public Git attachment |
+| `vixen149-deploy/verification.json` | `c9820aaa3c2d63483077bb7e5410e3d730d5df2b2cbd23d64ca2efd7034c4f28` | Retained locally; not a public Git attachment |
+| `live-signature-v3-phone/t2-operator/verification.json` | `35112ccf0015c1a2b65768ee33845a5c6aaa94e3794f4be158808d1d8eb51557` | Retained locally; not a public Git attachment |
+| `vixen150-deploy/verification.json` | `8f90acf632937a129d044e5f8be1938f180c6e0c2dfb2a469ac352e8d5e514c1` | Retained locally; not a public Git attachment |
+| `vixen150-selection-before.log` | `faec845af19f0f15b10a264bb0a53c0701c0ea2aaa3bc2742bb8e5cc1dda56fa` | Retained locally; not a public Git attachment |
+| `vixen150-selection-after.log` | `c3043ee6f069d9f45a78e7dba7df9048b8a317810a1059d5691feaed9f6b5b02` | Retained locally; not a public Git attachment |
+| `live-signature-v3-phone/t2-rerun-150/verification.json` | `4be9e0a2af1a0dc1944ee6be21d6058d754f89f9b48d5e3a671a262a6a00a43b` | Retained locally; not a public Git attachment |
 
 ## Current stopping point
 
-Build 141 is installed with an unchanged model and test-source firmware. The code fix passed 427 tests in each application variant. Its repaired EAPOL packet transfer has **not yet passed an operator rerun**. The next three harder scenarios are definitions, not completed passes. Preserve the original partial pass, then record the repaired baseline and subsequent outcomes separately.
+Build 150 is installed. The repaired 141 baseline and T1 passed their bounded criteria. Test 2 failed on frozen 149, then passed its defined criteria on 150 after a procedural selection repair; the original failure is retained. Both variants passed 434 tests for 150. The model and T2 harness scenario were unchanged by the repair. **Action recommendations remain unimplemented, so the complete actionable MVP report has not passed acceptance.** Test 3 remains defined, not executed. No additional physical pass, public release, or independent RF/SD/watch verification is inferred.
 
 [S01]: https://github.com/mikevan/Vixen/blob/11520899b644252a48c165658bfa00bd3fdd1449/android/wireshark-spike/RESULTS.md
 [S02]: https://github.com/mikevan/Vixen/blob/11520899b644252a48c165658bfa00bd3fdd1449/docs/ai-development/records/builder-behavior-reporting.md
@@ -2477,3 +2574,15 @@ Build 141 is installed with an unchanged model and test-source firmware. The cod
 [S43]: https://github.com/mikevan/Vixen/blob/11520899b644252a48c165658bfa00bd3fdd1449/docs/mvp-okrs.md
 [S44]: https://github.com/mikevan/Vixen/blob/11520899b644252a48c165658bfa00bd3fdd1449/tools/ai-qualification/live-signature-v3/operator-baseline-summary.json
 [S45]: https://github.com/mikevan/Vixen/blob/11520899b644252a48c165658bfa00bd3fdd1449/tools/ai-qualification/live-signature-v3/preservation-repair-141.json
+
+[S46]: https://github.com/mikevan/Vixen/blob/6ac80c057dd3a05bb5d038d7b61171928393835d/android/app/build.gradle.kts
+[S47]: https://github.com/mikevan/Vixen/blob/69431deb27f33e9022a5c119bf40b9b14690ee0d/android/app/build.gradle.kts
+[S48]: https://github.com/mikevan/Vixen/blob/7a2081eeb4b81ff0a883c2af4553e2558aea9d4b/android/app/build.gradle.kts
+[S49]: https://github.com/mikevan/Vixen/blob/a848594a7ae17c0fea25f35752a3ac60ac3407ab/android/app/build.gradle.kts
+[S50]: https://github.com/mikevan/Vixen/blob/22a4ec53a1193eb3b21b1469d76873f579e16de7/android/app/build.gradle.kts
+[S51]: https://github.com/mikevan/Vixen/blob/b3d926d13b2571e3021683610cddc89e9312e2bb/android/app/build.gradle.kts
+[S52]: https://github.com/mikevan/Vixen/blob/3c865116c88bd779c60ab19cdf74018be0804c0b/docs/ui-design-language.md
+[S53]: https://github.com/mikevan/Vixen/blob/3c865116c88bd779c60ab19cdf74018be0804c0b/android/app/build.gradle.kts
+[S54]: https://github.com/mikevan/Vixen/blob/c028fb44092e00f4feadd2f7760d881c540e6f48/android/app/src/main/java/com/projectrevivesolutions/layertime/controller/signatures/LiveSignatureInput.kt
+[S55]: https://github.com/mikevan/Vixen/blob/c028fb44092e00f4feadd2f7760d881c540e6f48/docs/live-signature-mvp.md
+[S56]: https://github.com/mikevan/Hunter-TestHarness/blob/5f00861d44da00a5fc1d5696ce6070d16ab5a17e/docs/incremental-field-tests.md

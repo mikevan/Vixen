@@ -76,9 +76,17 @@ object LinkEvidence {
         val bytesExpected get() = indexes.values.sumOf { it.captured }
         val listed get() = indexes.size
 
-        fun onWindow(w: Window) { window = w }
-        fun onIndex(i: Index) { indexes[i.index] = i }
+        fun onWindow(w: Window) {
+            if(w.eventId!=eventId || w.retained !in 0..64 || window!=null) {gaps++;return}
+            window = w
+        }
+        fun onIndex(i: Index) {
+            if(i.index !in 0..63 || i.captured !in 1..1024 || i.onAir<i.captured || i.index in indexes) {gaps++;return}
+            indexes[i.index] = i
+        }
         fun onBytes(b: Bytes) {
+            val index=indexes[b.index]
+            if(index==null || b.offset<0 || b.offset+b.data.size>index.captured) {gaps++;return}
             val buf = parts.getOrPut(b.index) { ByteArrayOutputStream() }
             if (b.offset != buf.size()) { gaps++; return }   // out of order or repeated: refuse, don't splice
             buf.write(b.data)
@@ -90,14 +98,28 @@ object LinkEvidence {
             val got = parts[i.index]?.size() ?: 0
             if (got == i.captured) null else "frame ${i.index}: $got of ${i.captured} bytes"
         }
-        fun complete() = window != null && listed == window!!.retained && gaps == 0 && missing().isEmpty()
+        fun complete() = window != null && listed == window!!.retained && gaps == 0 && missing().isEmpty() &&
+            indexes.keys.toList() == (0 until window!!.retained).toList()
         fun frames(): List<Frame> = indexes.values.map { Frame(it, parts[it.index]?.toByteArray() ?: ByteArray(0)) }
+    }
+
+    /** Stable across PCAP wall-clock anchors and radiotap wrappers. Lengths delimit frames. */
+    fun payloadHash(frames:List<Frame>):String {
+        val digest=java.security.MessageDigest.getInstance("SHA-256")
+        for(frame in frames.sortedBy {it.index.index}) {
+            require(frame.bytes.size==frame.index.captured)
+            val length=frame.bytes.size
+            digest.update(ByteArray(4) {i -> (length ushr (8*i)).toByte()})
+            digest.update(frame.bytes)
+        }
+        return digest.digest().joinToString("") {"%02x".format(it)}
     }
 
     /**
      * The window as a pcap, radiotap link type 127, one record per frame, with the
-     * Hunter's channel and signal in the radiotap header. Times are the phone's
-     * wall clock at `triggerWallMs` plus each frame's offset from the trigger.
+     * Hunter's channel and signal in the radiotap header. Times use a synthetic anchor `triggerWallMs` plus each frame's trigger-relative
+     * offset. When the caller supplies receipt wall time, this is NOT synchronized
+     * Hunter capture time. Preserve the separate origin metadata for comparison.
      * A frame the Hunter cut at 1,024 bytes keeps its on-air length as orig_len.
      */
     fun toPcap(frames: List<Frame>, triggerWallMs: Long): ByteArray {
